@@ -5,7 +5,7 @@ clear:
 	rm -r cmd/*
 
 build:
-	go build -o cmd/bin/naera-auth cmd/main.go
+	go build -o cmd/bin/naera_auth cmd/main.go
 
 run:
 	go run cmd/main.go
@@ -15,4 +15,4 @@ test:
 
 compile:
 	echo "Compiling for linux"
-	env GOOS=linux go build -o cmd/bin/naera-auth cmd/main.go
+	env GOOS=linux go build -o cmd/bin/naera_auth cmd/main.go
