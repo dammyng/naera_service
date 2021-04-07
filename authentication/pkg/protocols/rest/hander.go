@@ -14,5 +14,8 @@ func NewAuthHandler() AuthHandler {
 
 func (handler *AuthHandler) LiveCheck(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]bool{"ok": true})
+}
 
+func (handler *AuthHandler) LiveUpdate(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(map[string]bool{"ok": true})
 }
