@@ -3,8 +3,6 @@ name: Go
 on:
   push:
     branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
 
 jobs:
 
@@ -35,5 +33,5 @@ jobs:
         known_hosts: ${{ secrets.KNOWN_HOSTS }}
         if_key_exists: replace # replace / ignore / fail; optional (defaults to fail)
       
-    - name: Build
-      run: sftp kd@${{ secrets.SERVER_IP }}
+    - name: Upload build
+      run: sftp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
