@@ -21,3 +21,7 @@ jobs:
     - name: Test
       working-directory: ./authentication
       run: make test
+    
+    - name: Build
+      working-directory: ./authentication
+      run: make build
