@@ -26,7 +26,7 @@ jobs:
       run: make clear
     
     - name: Build
-      run: make compile
+      run: make build
       
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
