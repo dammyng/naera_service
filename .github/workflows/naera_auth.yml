@@ -10,6 +10,9 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./authentication
     steps:
     - uses: actions/checkout@v2
 
@@ -19,9 +22,8 @@ jobs:
         go-version: 1.15
 
     - name: Test
-      working-directory: ./authentication
       run: make test
     
     - name: Build
-      working-directory: ./authentication
       run: make build
+    
