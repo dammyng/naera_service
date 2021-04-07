@@ -22,8 +22,11 @@ jobs:
     - name: Test
       run: make test
     
+    - name: Clear old build
+      run: rm cmd/bin/*
+    
     - name: Build
-      run: make build
+      run: make compile
       
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
