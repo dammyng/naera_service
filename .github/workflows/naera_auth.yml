@@ -23,7 +23,7 @@ jobs:
       run: make test
     
     - name: Clear old build
-      run: rm cmd/bin/*
+      run: make clear
     
     - name: Build
       run: make compile

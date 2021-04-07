@@ -2,7 +2,7 @@
 export 
 
 clear:
-	rm cmd/bin/*
+	rm -r cmd/*
 
 build:
 	go build -o cmd/bin/auth cmd/main.go
