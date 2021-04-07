@@ -1,6 +1,9 @@
 -include cmd/.env
 export 
 
+clear:
+	rm cmd/bin/*
+
 build:
 	go build -o cmd/bin/auth cmd/main.go
 
