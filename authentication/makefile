@@ -1,8 +1,6 @@
 -include cmd/.env
 export 
 
-clear:
-	rm -r cmd/*
 
 build:
 	go build -o cmd/bin/naera_auth cmd/main.go

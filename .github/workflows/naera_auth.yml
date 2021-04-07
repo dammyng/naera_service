@@ -22,9 +22,6 @@ jobs:
     - name: Test
       run: make test
     
-    - name: Clear old build
-      run: make clear
-    
     - name: Build
       run: make build
       
