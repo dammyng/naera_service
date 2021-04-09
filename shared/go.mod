@@ -1,4 +1,4 @@
-module naera_shared
+module shared
 
 go 1.14
 

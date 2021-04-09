@@ -2,8 +2,10 @@ package rest
 
 import (
 	"authentication/pkg/helpers"
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
+	"shared/amqp/events"
 	"time"
 
 	"github.com/twinj/uuid"
@@ -19,18 +21,25 @@ func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	_ = uuid.NewV4().String()
+	id := uuid.NewV4()
 
-	id, err := handler.DB.CreateUser()
+	_, err = handler.DB.CreateUser()
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
+	respondWithJSON(w, http.StatusCreated, id)
+
 	token := helpers.RandUpperAlpha(7)
 	handler.RedisService.Client.Set(reg.Email, token, time.Hour)
 
-	//handler.EventEmitter.Emit()
+	msg := events.UserCreatedEvent{
+		ID:    hex.EncodeToString(id.Bytes()),
+		Email: reg.Email,
+		Token: token,
+	}
 
-	respondWithJSON(w, http.StatusCreated, id)
+	handler.EventEmitter.Emit(&msg, "NaeraAuth")
+
 }

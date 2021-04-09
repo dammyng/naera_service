@@ -13,7 +13,7 @@ func RunServers(ctx context.Context) error {
 	
 	env := config.NewApConfig()
 
-	err := App.Initialize(env.DSN , env.ReddisHost, env.ReddisPass)
+	err := App.Initialize(env.DSN , env.ReddisHost, env.ReddisPass, env.AmqpBroker)
 
 	ctx, cancel := context.WithCancel(ctx)
 	grpcPort := os.Getenv("GRPC_PORT")

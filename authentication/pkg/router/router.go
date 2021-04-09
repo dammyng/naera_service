@@ -6,11 +6,12 @@ import (
 	"authentication/pkg/protocols/rest"
 
 	"github.com/gorilla/mux"
+	"shared/amqp/sender"
 )
 
-func InitServiceRouter(db db.Handler, redis myredis.MyRedis) *mux.Router {
+func InitServiceRouter(db db.Handler, redis myredis.MyRedis, emitter sender.EventEmitter) *mux.Router {
 	var r = mux.NewRouter()
-	handler := rest.NewAuthHandler(db, redis)
+	handler := rest.NewAuthHandler(db, redis, emitter)
 
 	r.Methods("GET", "POST").Path("/").HandlerFunc(handler.LiveCheck)
 

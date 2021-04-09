@@ -5,17 +5,20 @@ import (
 	"authentication/myredis"
 	"encoding/json"
 	"net/http"
+	"shared/amqp/sender"
 )
 
 type AuthHandler struct {
 	DB db.Handler
 	RedisService myredis.MyRedis
+	EventEmitter sender.EventEmitter
 }
 
-func NewAuthHandler(db db.Handler,  redis myredis.MyRedis) *AuthHandler {
+func NewAuthHandler(db db.Handler, redis myredis.MyRedis, emitter sender.EventEmitter) *AuthHandler {
 	return &AuthHandler{
 		DB: db,
 		RedisService: redis,
+		EventEmitter: emitter,
 	}
 }
 

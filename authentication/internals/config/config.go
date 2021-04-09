@@ -11,7 +11,7 @@ import (
 
 type AppConfig struct {
 	DSN        string
-	AmpqBroker string
+	AmqpBroker string
 	JWTKey     string
 	ReddisHost string
 	ReddisPass string
@@ -25,7 +25,7 @@ func NewApConfig() AppConfig {
 
 	var appConfig AppConfig
 	appConfig.DSN = getDSN(db.NewDBConfig())
-	appConfig.AmpqBroker = os.Getenv("AmpqHost")
+	appConfig.AmqpBroker = os.Getenv("AmqpHost")
 	appConfig.JWTKey = os.Getenv("JWTKey")
 	appConfig.ReddisHost = os.Getenv("ReddisHost")
 	appConfig.ReddisPass = os.Getenv("ReddisPass")

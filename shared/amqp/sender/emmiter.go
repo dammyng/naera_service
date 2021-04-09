@@ -2,7 +2,7 @@ package sender
 
 import (
 	"encoding/json"
-	"naera_shared/amqp/events"
+	"shared/amqp/events"
 
 	"github.com/streadway/amqp"
 )

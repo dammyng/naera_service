@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/streadway/amqp"
+	"shared/amqp/sender"
 )
 
 type Naera struct {
@@ -29,7 +31,7 @@ func NewNaera() *Naera {
 // 4. GRPC Client
 // 5. RabbitMQ Emitter
 // 6. Router
-func (n *Naera) Initialize(dsn, redisHost, redisPass string,) error {
+func (n *Naera) Initialize(dsn, redisHost, redisPass, ampqHost string,) error {
 
 	//DB
 	db := db.NewSqlLayer(dsn)
@@ -37,8 +39,18 @@ func (n *Naera) Initialize(dsn, redisHost, redisPass string,) error {
 	//Redis
 	redis := myredis.NewMyRedis(redisHost, redisPass)
 
+	//AMQP
+	conn, err := amqp.Dial(ampqHost)
+	if err != nil {
+		return  err
+	}
+	eventEmitter, err := sender.NewAmqpEventEmitter(conn, "NaeraAuth")
+	if err != nil {
+		return err
+	}
+
 	// Router
-	router := router.InitServiceRouter(db, redis)
+	router := router.InitServiceRouter(db, redis, eventEmitter)
 	n.Router = router
 	return nil
 }
