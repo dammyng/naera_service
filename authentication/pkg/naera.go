@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"authentication/internals/db"
 	"authentication/pkg/router"
 	"context"
 	"log"
@@ -27,10 +28,13 @@ func NewNaera() *Naera {
 // 4. GRPC Client
 // 5. RabbitMQ Emitter
 // 6. Router
-func (n *Naera) Initialize() error {
+func (n *Naera) Initialize(dsn string) error {
+
+	//DB
+	db := db.NewSqlLayer(dsn)
 
 	// Router
-	router := router.InitServiceRouter()
+	router := router.InitServiceRouter(db)
 	n.Router = router
 	return nil
 }

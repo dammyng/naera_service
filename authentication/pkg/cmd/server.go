@@ -9,6 +9,7 @@ import (
 var App pkg.Naera
 
 func RunServers(ctx context.Context) error {
+	
 	err := App.Initialize()
 
 	ctx, cancel := context.WithCancel(ctx)
