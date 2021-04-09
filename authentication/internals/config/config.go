@@ -15,6 +15,7 @@ type AppConfig struct {
 	JWTKey     string
 	ReddisHost string
 	ReddisPass string
+	GrpcHost string
 }
 
 func NewApConfig() AppConfig {
@@ -28,7 +29,7 @@ func NewApConfig() AppConfig {
 	appConfig.AmqpBroker = os.Getenv("AmqpHost")
 	appConfig.JWTKey = os.Getenv("JWTKey")
 	appConfig.ReddisHost = os.Getenv("ReddisHost")
-	appConfig.ReddisPass = os.Getenv("ReddisPass")
+	appConfig.GrpcHost = os.Getenv("GrpcHost")
 	return appConfig
 }
 

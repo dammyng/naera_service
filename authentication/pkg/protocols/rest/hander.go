@@ -2,6 +2,7 @@ package rest
 
 import (
 	"authentication/internals/db"
+	"authentication/models/v1"
 	"authentication/myredis"
 	"encoding/json"
 	"net/http"
@@ -12,13 +13,14 @@ type AuthHandler struct {
 	DB db.Handler
 	RedisService myredis.MyRedis
 	EventEmitter sender.EventEmitter
+	GrpcPlug models.NaeraServiceClient
 }
 
-func NewAuthHandler(db db.Handler, redis myredis.MyRedis, emitter sender.EventEmitter) *AuthHandler {
+func NewAuthHandler(redis myredis.MyRedis, emitter sender.EventEmitter, grpcPlug models.NaeraServiceClient) *AuthHandler {
 	return &AuthHandler{
-		DB: db,
 		RedisService: redis,
 		EventEmitter: emitter,
+		GrpcPlug: grpcPlug,
 	}
 }
 

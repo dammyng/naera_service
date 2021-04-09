@@ -10,10 +10,10 @@ import (
 var App pkg.Naera
 
 func RunServers(ctx context.Context) error {
-	
+
 	env := config.NewApConfig()
 
-	err := App.Initialize(env.DSN , env.ReddisHost, env.ReddisPass, env.AmqpBroker)
+	err := App.Initialize(env.ReddisHost, env.ReddisPass, env.AmqpBroker, env.GrpcHost)
 
 	ctx, cancel := context.WithCancel(ctx)
 	grpcPort := os.Getenv("GRPC_PORT")
@@ -22,7 +22,7 @@ func RunServers(ctx context.Context) error {
 	defer cancel()
 
 	go func() {
-		err = App.RunGRPCServer(ctx, grpcPort)
+		err = App.RunGRPCServer(ctx, grpcPort, env.DSN)
 
 	}()
 

@@ -23,6 +23,7 @@ func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.R
 
 	id := uuid.NewV4()
 
+	
 	_, err = handler.DB.CreateUser()
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())

@@ -1,17 +1,18 @@
 package router
 
 import (
-	"authentication/internals/db"
+	"authentication/models/v1"
 	"authentication/myredis"
 	"authentication/pkg/protocols/rest"
 
-	"github.com/gorilla/mux"
 	"shared/amqp/sender"
+
+	"github.com/gorilla/mux"
 )
 
-func InitServiceRouter(db db.Handler, redis myredis.MyRedis, emitter sender.EventEmitter) *mux.Router {
+func InitServiceRouter(redis myredis.MyRedis, emitter sender.EventEmitter, grpcPlug models.NaeraServiceClient) *mux.Router {
 	var r = mux.NewRouter()
-	handler := rest.NewAuthHandler(db, redis, emitter)
+	handler := rest.NewAuthHandler(redis, emitter, grpcPlug)
 
 	r.Methods("GET", "POST").Path("/").HandlerFunc(handler.LiveCheck)
 

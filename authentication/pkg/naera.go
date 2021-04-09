@@ -2,18 +2,23 @@ package pkg
 
 import (
 	"authentication/internals/db"
+	models "authentication/models/v1"
 	"authentication/myredis"
+	"authentication/naeragrpc"
 	"authentication/pkg/router"
 	"context"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
+	"shared/amqp/sender"
+
 	"github.com/gorilla/mux"
 	"github.com/streadway/amqp"
-	"shared/amqp/sender"
+	"google.golang.org/grpc"
 )
 
 type Naera struct {
@@ -31,18 +36,20 @@ func NewNaera() *Naera {
 // 4. GRPC Client
 // 5. RabbitMQ Emitter
 // 6. Router
-func (n *Naera) Initialize(dsn, redisHost, redisPass, ampqHost string,) error {
+func (n *Naera) Initialize(redisHost, redisPass, amqpHost, grpcHost string) error {
 
-	//DB
-	db := db.NewSqlLayer(dsn)
-
+	//GRPC
+	grpcClient, err := naeragrpc.NewNaeraRPClient(grpcHost)
+	if err != nil {
+		return  err
+	}
 	//Redis
 	redis := myredis.NewMyRedis(redisHost, redisPass)
 
 	//AMQP
-	conn, err := amqp.Dial(ampqHost)
+	conn, err := amqp.Dial(amqpHost)
 	if err != nil {
-		return  err
+		return err
 	}
 	eventEmitter, err := sender.NewAmqpEventEmitter(conn, "NaeraAuth")
 	if err != nil {
@@ -50,7 +57,7 @@ func (n *Naera) Initialize(dsn, redisHost, redisPass, ampqHost string,) error {
 	}
 
 	// Router
-	router := router.InitServiceRouter(db, redis, eventEmitter)
+	router := router.InitServiceRouter(redis, eventEmitter, grpcClient)
 	n.Router = router
 	return nil
 }
@@ -93,8 +100,19 @@ func (n *Naera) RunHTTPServer(ctx context.Context, port string) error {
 }
 
 // RunGRPCServer starts a GRPC server for the application
-func (n *Naera) RunGRPCServer(ctx context.Context, port string) error {
+func (n *Naera) RunGRPCServer(ctx context.Context, port , dsn string) error {
 	log.Println("Starting GRPC Server")
 
-	return nil
+	lis, err := net.Listen("tcp", port)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	db := db.NewSqlLayer(dsn)
+
+	grpcServer := grpc.NewServer()
+	_naeragrpc := naeragrpc.NewNaeraRpcServer(db)
+	models.RegisterNaeraServiceServer(grpcServer, _naeragrpc)
+	err = grpcServer.Serve(lis)
+	return err
 }
