@@ -2,17 +2,20 @@ package rest
 
 import (
 	"authentication/internals/db"
+	"authentication/myredis"
 	"encoding/json"
 	"net/http"
 )
 
 type AuthHandler struct {
 	DB db.Handler
+	RedisService myredis.MyRedis
 }
 
-func NewAuthHandler(db db.Handler) *AuthHandler {
+func NewAuthHandler(db db.Handler,  redis myredis.MyRedis) *AuthHandler {
 	return &AuthHandler{
 		DB: db,
+		RedisService: redis,
 	}
 }
 

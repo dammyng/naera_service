@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"authentication/internals/db"
+	"authentication/myredis"
 	"authentication/pkg/router"
 	"context"
 	"log"
@@ -28,13 +29,16 @@ func NewNaera() *Naera {
 // 4. GRPC Client
 // 5. RabbitMQ Emitter
 // 6. Router
-func (n *Naera) Initialize(dsn string) error {
+func (n *Naera) Initialize(dsn, redisHost, redisPass string,) error {
 
 	//DB
 	db := db.NewSqlLayer(dsn)
 
+	//Redis
+	redis := myredis.NewMyRedis(redisHost, redisPass)
+
 	// Router
-	router := router.InitServiceRouter(db)
+	router := router.InitServiceRouter(db, redis)
 	n.Router = router
 	return nil
 }

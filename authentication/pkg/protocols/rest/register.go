@@ -1,9 +1,12 @@
 package rest
 
 import (
+	"authentication/pkg/helpers"
 	"encoding/json"
-	"github.com/twinj/uuid"
 	"net/http"
+	"time"
+
+	"github.com/twinj/uuid"
 )
 
 func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +24,13 @@ func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.R
 	id, err := handler.DB.CreateUser()
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
+
+	token := helpers.RandUpperAlpha(7)
+	handler.RedisService.Client.Set(reg.Email, token, time.Hour)
+
+	//handler.EventEmitter.Emit()
 
 	respondWithJSON(w, http.StatusCreated, id)
 }

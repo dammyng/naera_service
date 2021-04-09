@@ -2,14 +2,15 @@ package router
 
 import (
 	"authentication/internals/db"
+	"authentication/myredis"
 	"authentication/pkg/protocols/rest"
 
 	"github.com/gorilla/mux"
 )
 
-func InitServiceRouter(db db.Handler) *mux.Router {
+func InitServiceRouter(db db.Handler, redis myredis.MyRedis) *mux.Router {
 	var r = mux.NewRouter()
-	handler := rest.NewAuthHandler(db)
+	handler := rest.NewAuthHandler(db, redis)
 
 	r.Methods("GET", "POST").Path("/").HandlerFunc(handler.LiveCheck)
 

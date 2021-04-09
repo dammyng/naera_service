@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"authentication/internals/config"
 	"authentication/pkg"
 	"context"
 	"os"
@@ -10,7 +11,9 @@ var App pkg.Naera
 
 func RunServers(ctx context.Context) error {
 	
-	err := App.Initialize()
+	env := config.NewApConfig()
+
+	err := App.Initialize(env.DSN , env.ReddisHost, env.ReddisPass)
 
 	ctx, cancel := context.WithCancel(ctx)
 	grpcPort := os.Getenv("GRPC_PORT")
