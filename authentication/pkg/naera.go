@@ -51,7 +51,7 @@ func (n *Naera) Initialize(redisHost, redisPass, amqpHost, grpcHost string) erro
 	if err != nil {
 		return err
 	}
-	eventEmitter, err := sender.NewAmqpEventEmitter(conn, "NaeraAuth")
+	eventEmitter, err := sender.NewAmqpEventEmitter(conn, "NaeraExchange")
 	if err != nil {
 		return err
 	}
