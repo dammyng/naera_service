@@ -14,3 +14,6 @@ test:
 compile:
 	echo "Compiling for linux"
 	env GOOS=linux go build -o cmd/bin/naera_auth cmd/main.go
+
+proto:
+	protoc -I=./ --go_out=plugins=grpc:./ models/v1/account.proto

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package models;
+
+
+message Account{
+    string id = 1;
+    string first_name = 2;
+    string surname = 3;
+    string user_name = 12;
+    string email = 4;
+    string phone_number =5;
+    int64 dob = 6;
+    string ref_code = 7;
+    string photo  = 8;
+    string bvn = 11;
+   }
+
+   message UserCreatedResponse{
+    string id = 1;
+   }
+
+   service NaeraService {
+    rpc RegisterAccount(Account) returns (UserCreatedResponse);
+  }
