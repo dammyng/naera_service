@@ -4,9 +4,6 @@ import (
 	"authentication/internals/db"
 	"authentication/models/v1"
 	"context"
-
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type NaeraRpcServer struct {
@@ -19,7 +16,13 @@ func NewNaeraRpcServer(db db.Handler) *NaeraRpcServer {
 	}
 }
 
-
 func (n *NaeraRpcServer) RegisterAccount(ctx context.Context, arg *models.Account) (*models.UserCreatedResponse, error) {
-    return nil, status.Error(codes.Unimplemented, "Execute() not implemented yet")
+
+	result, err := n.DB.CreateUser(arg)
+
+	if err != nil {
+		return nil, InternalError
+	}
+
+	return &models.UserCreatedResponse{Id: result}, nil
 }

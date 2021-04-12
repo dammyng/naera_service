@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"authentication/internals/db"
 	"authentication/models/v1"
 	"authentication/myredis"
 	"encoding/json"
@@ -10,7 +9,6 @@ import (
 )
 
 type AuthHandler struct {
-	DB db.Handler
 	RedisService myredis.MyRedis
 	EventEmitter sender.EventEmitter
 	GrpcPlug models.NaeraServiceClient

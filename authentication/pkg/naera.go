@@ -37,12 +37,12 @@ func NewNaera() *Naera {
 // 5. RabbitMQ Emitter
 // 6. Router
 func (n *Naera) Initialize(redisHost, redisPass, amqpHost, grpcHost string) error {
-
 	//GRPC
 	grpcClient, err := naeragrpc.NewNaeraRPClient(grpcHost)
 	if err != nil {
 		return  err
 	}
+
 	//Redis
 	redis := myredis.NewMyRedis(redisHost, redisPass)
 
@@ -101,12 +101,12 @@ func (n *Naera) RunHTTPServer(ctx context.Context, port string) error {
 
 // RunGRPCServer starts a GRPC server for the application
 func (n *Naera) RunGRPCServer(ctx context.Context, port , dsn string) error {
-	log.Println("Starting GRPC Server")
 
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+	log.Printf("Starting HTTP Server on port %v", lis.Addr().String())
 
 	db := db.NewSqlLayer(dsn)
 

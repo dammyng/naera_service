@@ -13,8 +13,8 @@ type AppConfig struct {
 	DSN        string
 	AmqpBroker string
 	JWTKey     string
-	ReddisHost string
-	ReddisPass string
+	RedisHost string
+	RedisPass string
 	GrpcHost string
 }
 
@@ -26,10 +26,11 @@ func NewApConfig() AppConfig {
 
 	var appConfig AppConfig
 	appConfig.DSN = getDSN(db.NewDBConfig())
-	appConfig.AmqpBroker = os.Getenv("AmqpHost")
+	appConfig.AmqpBroker = os.Getenv("AMQP_URL")
 	appConfig.JWTKey = os.Getenv("JWTKey")
-	appConfig.ReddisHost = os.Getenv("ReddisHost")
-	appConfig.GrpcHost = os.Getenv("GrpcHost")
+	appConfig.RedisHost = os.Getenv("Redis_Host")
+	appConfig.RedisPass = os.Getenv("RedisPass")
+	appConfig.GrpcHost = os.Getenv("GRPC_PORT")
 	return appConfig
 }
 

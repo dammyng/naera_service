@@ -1,9 +1,11 @@
 package db
 
 import (
+	"authentication/models/v1"
+	"log"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
 )
 
 type SqlLayer struct {
@@ -19,6 +21,11 @@ func NewSqlLayer(dsn string) *SqlLayer {
 	return &SqlLayer{Session: db}
 }
 
-func (sql *SqlLayer) CreateUser() (string, error) {
-	return "nil", nil
+func (sql *SqlLayer) CreateUser(user *models.Account) (string, error) {
+	sql.Session.AutoMigrate(&models.Account{})
+	err := sql.Session.Create(&user).Error
+	if err != nil {
+		return "", err
+	}
+	return user.Id, err
 }

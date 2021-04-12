@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"authentication/models/v1"
 	"authentication/pkg/helpers"
 	"encoding/hex"
 	"encoding/json"
@@ -9,6 +10,7 @@ import (
 	"time"
 
 	"github.com/twinj/uuid"
+	"google.golang.org/grpc"
 )
 
 func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.Request) {
@@ -23,8 +25,8 @@ func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.R
 
 	id := uuid.NewV4()
 
-	
-	_, err = handler.DB.CreateUser()
+	var opts []grpc.CallOption
+	_, err = handler.GrpcPlug.RegisterAccount(r.Context(), &models.Account{Id: id.String(), Email: reg.Email, FirstName: reg.FirstName, Surname: reg.LastName, PhoneNumber: reg.Phone, }, opts...)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
