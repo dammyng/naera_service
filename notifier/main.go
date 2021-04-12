@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	if os.Getenv("APP_ENV") != "production" {
+	if os.Getenv("Environment") != "production" {
 		loadEnv()
 	}
 	auth.StartAuthenticationListener(os.Getenv("AMQP_URL"), os.Getenv("Exchange"), os.Getenv("Queue"))
