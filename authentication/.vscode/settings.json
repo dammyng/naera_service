@@ -1,6 +1,10 @@
 {
     "makefile.extensionOutputFolder": "./.vscode",
     "cSpell.words": [
-        "Naera"
+        "Naera",
+        "amqp",
+        "grpc",
+        "myredis",
+        "naeragrpc"
     ]
 }

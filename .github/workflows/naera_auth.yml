@@ -21,8 +21,12 @@ jobs:
 
     - name: Test
       run: make test
+
+    - name: Build Notifiers
+      working-directory: ./notifier
+      run: make build
     
-    - name: Build
+    - name: Build Authentication
       run: make build
       
     - name: Install SSH key
@@ -32,6 +36,10 @@ jobs:
         name: id_rsa 
         known_hosts: ${{ secrets.KNOWN_HOSTS }}
         if_key_exists: replace 
+
+    - name: Upload auth build
+      working-directory: ./notifier
+      run: scp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
       
-    - name: Upload build
+    - name: Upload auth build
       run: scp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
