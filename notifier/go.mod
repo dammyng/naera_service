@@ -5,6 +5,7 @@ replace shared => ../shared
 go 1.14
 
 require (
+	github.com/joho/godotenv v1.3.0
 	github.com/sendgrid/rest v2.6.3+incompatible // indirect
 	github.com/sendgrid/sendgrid-go v3.8.0+incompatible
 	github.com/streadway/amqp v1.0.0

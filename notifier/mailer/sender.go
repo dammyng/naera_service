@@ -18,7 +18,7 @@ type EmailMessage struct {
 func SendMail(msg EmailMessage, sender, key string) {
 	log.Println("send mail called")
 
-	from := mail.NewEmail("Naera Support", sender)
+	from := mail.NewEmail("Naera", sender)
 	subject := msg.Subject
 	to := mail.NewEmail("Recipient", msg.To)
 	plainTextContent := msg.Text

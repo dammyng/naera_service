@@ -43,6 +43,6 @@ func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.R
 		Token: token,
 	}
 
-	handler.EventEmitter.Emit(&msg, "NaeraAuth")
+	handler.EventEmitter.Emit(&msg, "NaeraExchange")
 
 }
