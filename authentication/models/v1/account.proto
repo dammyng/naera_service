@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package models;
+import "google/protobuf/empty.proto";
 
 
 message Account{
@@ -11,15 +12,32 @@ message Account{
     string email = 4;
     string phone_number =5;
     int64 dob = 6;
+    int64 emailVerifiedAt = 9;
+    int64 phoneVerifiedAt = 10;
     string ref_code = 7;
     string photo  = 8;
     string bvn = 11;
+    bytes password = 13;
+    bytes pin = 14;
+    int64 created_at = 16;
+    int64 updated_at = 15;
    }
 
-   message UserCreatedResponse{
-    string id = 1;
-   }
+  message UserCreatedResponse{
+  string id = 1;
+  }
+
+  message UpdateAccountRequest{
+     Account old =1;
+     Account  new=2;
+  }
+
+
+
+
 
    service NaeraService {
     rpc RegisterAccount(Account) returns (UserCreatedResponse);
+    rpc FindAccount(Account) returns (Account);
+    rpc UpdateAccount(UpdateAccountRequest) returns (google.protobuf.Empty);
   }
