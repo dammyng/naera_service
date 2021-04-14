@@ -3,13 +3,17 @@ package rest
 import (
 	"authentication/models/v1"
 	"authentication/pkg/helpers"
-	"encoding/hex"
+	"log"
+
+	//"encoding/hex"
 	"encoding/json"
 	"net/http"
-	"shared/amqp/events"
+
+	//"shared/amqp/events"
 	"time"
 
 	"github.com/twinj/uuid"
+	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
 )
 
@@ -22,27 +26,38 @@ func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.R
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
+	var opts []grpc.CallOption
+
+	u, err := handler.GrpcPlug.FindAccount(r.Context(), &models.Account{Email: reg.Email}, opts...)
+
+	if u != nil {
+		respondWithError(w, http.StatusBadRequest, DuplicateUserAccount)
+		return
+	}
 
 	id := uuid.NewV4()
-
-	var opts []grpc.CallOption
-	_, err = handler.GrpcPlug.RegisterAccount(r.Context(), &models.Account{Id: id.String(), Email: reg.Email, FirstName: reg.FirstName, Surname: reg.LastName, PhoneNumber: reg.Phone, }, opts...)
+	hashedPass, err := bcrypt.GenerateFromPassword([]byte(reg.Password), bcrypt.DefaultCost)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error())
+	}
+	
+	res, err := handler.GrpcPlug.RegisterAccount(r.Context(), &models.Account{Id: id.String(), Email: reg.Email, FirstName: reg.FirstName, Surname: reg.LastName, PhoneNumber: reg.Phone, Password: hashedPass, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix()}, opts...)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	respondWithJSON(w, http.StatusCreated, id)
+	respondWithJSON(w, http.StatusCreated, res.Id)
 
 	token := helpers.RandUpperAlpha(7)
 	handler.RedisService.Client.Set(reg.Email, token, time.Hour)
-
-	msg := events.UserCreatedEvent{
+	log.Println(token)
+	/*msg := events.UserCreatedEvent{
 		ID:    hex.EncodeToString(id.Bytes()),
 		Email: reg.Email,
 		Token: token,
 	}
 
 	handler.EventEmitter.Emit(&msg, "NaeraExchange")
-
+	*/
 }
