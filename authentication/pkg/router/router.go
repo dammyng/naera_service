@@ -18,13 +18,13 @@ func InitServiceRouter(redis myredis.MyRedis, emitter sender.EventEmitter, grpcP
 
 	//v1
 	v1 := r.PathPrefix("/v1").Subrouter()
-	v1.HandleFunc("/login", handler.AccountLogin).Methods("POST")
-	v1.HandleFunc("/register", handler.AccountRegistration).Methods("POST")
-	v1.HandleFunc("/verify/{email}/{token}", handler.VerifyEmail).Methods("GET")
+	r.HandleFunc("/v1/login", handler.AccountLogin).Methods("POST")
+	r.HandleFunc("/v1/register", handler.AccountRegistration).Methods("POST")
+	r.HandleFunc("/v1/verify/{email}/{token}", handler.VerifyEmail).Methods("GET")
+	r.HandleFunc("/v1/newpassword/{email}", handler.NewPassword).Methods("POST")
+	r.HandleFunc("/v1/resetpassword", handler.ResetPasssword).Methods("POST")
 	v1.Use(authBearer)
-	v1.HandleFunc("/sendverification", handler.SendVerification).Methods("POST")
-	v1.HandleFunc("/newpassword", handler.NewPassword).Methods("POST")
-	v1.HandleFunc("/ressetpassword", handler.ResetPasssword).Methods("POST")
+	v1.HandleFunc("/sendverification/{email}", handler.SendVerification).Methods("POST")
 
 	return r
 }
