@@ -20,6 +20,7 @@ import (
 )
 
 func (handler *AuthHandler) NewPassword(w http.ResponseWriter, r *http.Request) {
+	setupCors(&w, r)
 	params := mux.Vars(r)
 	email := params["email"]
 	var opts []grpc.CallOption

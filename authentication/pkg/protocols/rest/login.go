@@ -13,6 +13,8 @@ import (
 )
 
 func (handler *AuthHandler) AccountLogin(w http.ResponseWriter, r *http.Request) {
+	setupCors(&w, r)
+
 	var reg LoginPayload
 
 	err := json.NewDecoder(r.Body).Decode(&reg)

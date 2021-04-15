@@ -18,6 +18,7 @@ import (
 )
 
 func (handler *AuthHandler) VerifyEmail(w http.ResponseWriter, r *http.Request) {
+	setupCors(&w, r)
 
 	//Get route parameters
 	params := mux.Vars(r)
@@ -62,6 +63,7 @@ func (handler *AuthHandler) VerifyEmail(w http.ResponseWriter, r *http.Request) 
 }
 
 func (handler *AuthHandler) SendVerification(w http.ResponseWriter, r *http.Request) {
+	setupCors(&w, r)
 
 	params := mux.Vars(r)
 	email := params["email"]

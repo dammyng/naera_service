@@ -18,6 +18,7 @@ import (
 )
 
 func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.Request) {
+	setupCors(&w, r)
 	var reg RegistrationPayload
 
 	err := json.NewDecoder(r.Body).Decode(&reg)

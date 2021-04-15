@@ -7,14 +7,18 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 
 # This program built for i386-apple-darwin11.3.0
 
-# Make data base, printed on Wed Apr 14 01:34:47 2021
+# Make data base, printed on Thu Apr 15 19:32:12 2021
 
 # Variables
 
+# environment
+VSCODE_GIT_ASKPASS_MAIN = /Applications/Visual Studio Code.app/Contents/Resources/app/extensions/git/dist/askpass-main.js
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # automatic
 ?F = $(notdir $?)
+# environment
+ELECTRON_NO_ATTACH_CONSOLE = 1
 # environment
 VSCODE_LOG_NATIVE = false
 # automatic
@@ -29,42 +33,48 @@ CURDIR := /Users/kdnotes/src/naera_service/authentication
 SHELL = /bin/sh
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-gb","availableLanguages":{},"_languagePackSupport":true}
-# makefile (from `cmd/.env', line 8)
+# makefile (from `cmd/.env', line 9)
 DBUser = root
 # environment
 _ = /usr/bin/make
 # makefile (from `cmd/.env', line 1)
 MAKEFILE_LIST :=  makefile cmd/.env
 # environment
-VSCODE_NODE_CACHED_DATA_DIR = /Users/kdnotes/Library/Application Support/Code/CachedData/08a217c4d27a02a5bcde898fd7981bda5b49391b
+VSCODE_NODE_CACHED_DATA_DIR = /Users/kdnotes/Library/Application Support/Code/CachedData/3c4e3df9e89829dce27b7b5c24508306b151f30d
 # environment
 VSCODE_VERBOSE_LOGGING = true
-# makefile (from `cmd/.env', line 7)
+# makefile (from `cmd/.env', line 8)
 DBDatabase = naeraauth
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-ipc-f093b74b-cc7d-4693-b441-db1f89cdd453.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-ipc-c6f09bf7-f4d4-44ae-80d2-dcf026b15381.sock
 # environment
-VSCODE_CWD = /
+VSCODE_CWD = /Users/kdnotes/src/naera_service
 # environment
 GOPROXY = https://proxy.golang.org,direct
 # environment
-PATH = /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go:/usr/local/go/bin:/Users/kdnotes/go:/Users/kdnotes/go/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/kdnotes/flutter/:/usr/local/mysql/bin/:/usr/local/sbin:/Users/kdnotes/google-cloud-sdk/bin:/Users/kdnotes/Library/Application Support/cloud-code/installer/google-cloud-sdk/bin
+PATH = /usr/local/go/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go:/Users/kdnotes/go:/Users/kdnotes/go/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/kdnotes/Library/Application Support/cloud-code/installer/google-cloud-sdk/bin:/Users/kdnotes/flutter/:/usr/local/mysql/bin/:/usr/local/sbin:/Users/kdnotes/Library/Android/sdk/emulator:/Users/kdnotes/Library/Android/sdk/tools:/usr/local/go:/users/kdnotes/go:/users/kdnotes/go/bin:/Users/kdnotes/Library/Android/sdk/tools/bin:/Users/kdnotes/flutter/bin:/Users/kdnotes/Library/Android/sdk/platform-tools:/Applications/Visual Studio Code.app/Contents/Resources/app/bin:/Users/kdnotes/google-cloud-sdk/bin
 # makefile (from `cmd/.env', line 1)
 HTTP_PORT = 0.0.0.0:5555
 # environment
-GOPATH = /Users/kdnotes/go
+GOPATH = /users/kdnotes/go
+# makefile (from `cmd/.env', line 5)
+RefreshKey = RefreshTopSecretKey
 # environment
 VSCODE_LOG_STACK = false
 # environment
 ELECTRON_RUN_AS_NODE = 1
+# environment
+ANDROID_HOME = /Users/kdnotes/Library/Android/sdk
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
 CLOUDSDK_METRICS_ENVIRONMENT = cloudcode.vscode
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.br3OEbZynl/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.IQ8E6hnfyE/Listeners
 # automatic
 %F = $(notdir $%)
+# environment
+GOBIN = /users/kdnotes/go/bin
 # environment
 CLOUDSDK_METRICS_ENVIRONMENT_VERSION = 1.10.0
 # environment
@@ -77,10 +87,12 @@ ORIGINAL_XDG_CURRENT_DESKTOP = undefined
 VSCODE_AMD_ENTRYPOINT = vs/workbench/services/extensions/node/extensionHostProcess
 # environment
 HOME = /Users/kdnotes
-# makefile (from `cmd/.env', line 5)
+# makefile (from `cmd/.env', line 6)
 Redis_Host = localhost:6379
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
+# environment
+VSCODE_CLI = 1
 # environment
 LOGNAME = kdnotes
 # environment
@@ -89,10 +101,14 @@ APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
-# makefile (from `cmd/.env', line 6)
+# makefile (from `cmd/.env', line 7)
 DBHost = localhost
 # environment
+MAKELEVEL := 0
+# environment
 XPC_FLAGS = 0x0
+# environment
+COLORTERM = truecolor
 # default
 MAKE = $(MAKE_COMMAND)
 # default
@@ -100,7 +116,7 @@ MAKECMDGOALS := all
 # makefile (from `cmd/.env', line 4)
 JWTKey = TopSecretKey
 # environment
-SHLVL = 1
+SHLVL = 3
 # makefile (from `cmd/.env', line 3)
 AMQP_URL = amqp://guest:guest@localhost:5672/
 # default
@@ -109,12 +125,16 @@ MAKE_VERSION := 3.81
 USER = kdnotes
 # makefile
 .DEFAULT_GOAL := build
+# environment
+GOROOT = /usr/local/go
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
-# makefile (from `cmd/.env', line 10)
+# makefile (from `cmd/.env', line 11)
 DBPort = 3306
 # default
 MAKE_COMMAND := /Applications/Xcode.app/Contents/Developer/usr/bin/make
+# environment
+TERM_PROGRAM = vscode
 # default
 .VARIABLES := 
 # environment
@@ -122,7 +142,9 @@ TMPDIR = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/kdnotes/Library/Application Support/Code/1.55.1-main.sock
+VSCODE_IPC_HOOK = /Users/kdnotes/Library/Application Support/Code/1.55.2-main.sock
+# environment
+VSCODE_GIT_ASKPASS_NODE = /Applications/Visual Studio Code.app/Contents/Frameworks/Code Helper (Renderer).app/Contents/MacOS/Code Helper (Renderer)
 # makefile
 MAKEFLAGS = Rrqp
 # environment
@@ -130,7 +152,9 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = com.microsoft.VSCode.29500
+TERM_PROGRAM_VERSION = 1.55.2
+# environment
+XPC_SERVICE_NAME = 0
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # makefile (from `cmd/.env', line 2)
@@ -139,12 +163,16 @@ GRPC_PORT = 0.0.0.0:6666
 +F = $(notdir $+)
 # environment
 __CF_USER_TEXT_ENCODING = 0x1F5:0x0:0x2
+# environment
+GIT_ASKPASS = /Applications/Visual Studio Code.app/Contents/Resources/app/extensions/git/dist/askpass.sh
 # default
 MAKEFILES := 
 # automatic
 <F = $(notdir $<)
-# makefile (from `cmd/.env', line 9)
+# makefile (from `cmd/.env', line 10)
 DBPassword = password
+# environment
+ANDROID_SDK_ROOT = /Users/kdnotes/Library/Android/sdk
 # automatic
 ^F = $(notdir $^)
 # default
@@ -152,13 +180,17 @@ SUFFIXES :=
 # default
 .INCLUDE_DIRS = /usr/local/include
 # environment
-MAKELEVEL := 0
+VSCODE_GIT_IPC_HANDLE = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-git-0832c8c34f.sock
 # environment
-VSCODE_PID = 894
-# makefile (from `cmd/.env', line 11)
+LANG = en_GB.UTF-8
+# environment
+TERM = xterm-256color
+# environment
+VSCODE_PID = 850
+# makefile (from `cmd/.env', line 12)
 RedisPass = password
 # variable set hash-table stats:
-# Load=73/1024=7%, Rehash=0, Collisions=1/99=1%
+# Load=89/1024=9%, Rehash=0, Collisions=3/115=3%
 
 # Pattern-specific Variable Values
 
@@ -166,7 +198,7 @@ RedisPass = password
 
 # Directories
 
-# . (device 16777223, inode 27173237): 13 files, no impossibilities.
+# . (device 16777221, inode 27173237): 13 files, no impossibilities.
 
 # 13 files, no impossibilities in 1 directories.
 
@@ -189,7 +221,7 @@ all:
 cmd/.env:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2021-04-12 01:50:43
+#  Last modified 2021-04-14 02:46:06
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -250,6 +282,9 @@ compile:
 #  File has not been updated.
 
 run:
+ 
+make: *** No rule to make target `all'.  Stop.
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -270,8 +305,6 @@ run:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4078 / max = 4078 / min = 4078 / avg = 4078
 
-# Finished Make data base on Wed Apr 14 01:34:47 2021
+# Finished Make data base on Thu Apr 15 19:32:12 2021
 
- 
-make: *** No rule to make target `all'.  Stop.
  
