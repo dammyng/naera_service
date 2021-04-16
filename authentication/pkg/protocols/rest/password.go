@@ -4,6 +4,7 @@ import (
 	"authentication/models/v1"
 	"authentication/pkg/helpers"
 	"log"
+    b64 "encoding/base64"
 
 	//"encoding/hex"
 	"encoding/json"
@@ -64,7 +65,7 @@ func (handler *AuthHandler) ResetPasssword(w http.ResponseWriter, r *http.Reques
 	u, err := handler.GrpcPlug.FindAccount(r.Context(), &models.Account{Email: reg.Email}, opts...)
 	if err != nil {
 		if grpc.ErrorDesc(err) == gorm.ErrRecordNotFound.Error() {
-			respondWithError(w, http.StatusNotFound, fmt.Errorf("No user was found with the email address:  %v", u.Email).Error())
+			respondWithError(w, http.StatusBadRequest, fmt.Errorf("Invalid email or incorrect token").Error())
 			return
 		}
 		respondWithError(w, http.StatusBadRequest, InternalServerError)
@@ -80,7 +81,9 @@ func (handler *AuthHandler) ResetPasssword(w http.ResponseWriter, r *http.Reques
 		respondWithError(w, http.StatusBadRequest, fmt.Errorf("Invalid or incorrect token").Error())
 		return
 	}
-	if match := reg.Token == storedToken; match {
+	//uEnc := b64.URLEncoding.EncodeToString([]byte(data))
+    uDec, _ := b64.URLEncoding.DecodeString(reg.Token)
+	if match := string(uDec) == storedToken; match {
 
 		hashedPass, err := bcrypt.GenerateFromPassword([]byte(reg.Password), bcrypt.DefaultCost)
 		if err != nil {
