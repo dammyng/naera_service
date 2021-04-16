@@ -51,15 +51,16 @@ func ProcessEvents(eventListener events.EventListener) error {
 			case *events.UserCreatedEvent:
 				//Send sign up email
 				log.Println("New user Mail")
-				subject := "Your Naera Pay Verification Code"
-				textContent := fmt.Sprintf("You're on your way! Your email verification code is %s", e.Token)
+				subject := "Your Naera Pay Verification"
+				link:= fmt.Sprintf("https://authentication.naerademo.com:5554/v1/verify/%s/%s", e.Email, e.Token)
+				textContent := fmt.Sprintf("You're on your way! Verify your email using this link %v This link would expire in one hour", link)
 				t := template.Must(template.New("email_confirm").Parse(`
-					You're on your way! Your email verification code is {{.Token}}`))
+					You're on your way! Your email verification link is {{.Link}} This link would expire in one hour`))
 				out := new(bytes.Buffer)
 				data := struct {
-					Token string
+					Link string
 				}{
-					e.Token,
+					link,
 				}
 				err = t.Execute(out, data)
 				if err != nil {
