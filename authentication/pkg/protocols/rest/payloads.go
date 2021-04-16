@@ -23,6 +23,7 @@ type ForgetPasswordPayload struct {
 }
 
 type ResetPasswordPayload struct {
+	Email    string `json:"email"`
 	Token    string `json:"token"`
 	Password string `json:"password"`
 }
@@ -31,4 +32,3 @@ type ChangePasswordPayload struct {
 	OldPassword string `json:"old"`
 	NewPassword string `json:"new"`
 }
-

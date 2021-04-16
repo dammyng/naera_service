@@ -5,6 +5,8 @@
         "amqp",
         "grpc",
         "myredis",
-        "naeragrpc"
+        "naeragrpc",
+        "proto",
+        "protobuf"
     ]
 }

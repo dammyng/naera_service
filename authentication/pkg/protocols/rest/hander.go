@@ -11,14 +11,14 @@ import (
 type AuthHandler struct {
 	RedisService myredis.MyRedis
 	EventEmitter sender.EventEmitter
-	GrpcPlug models.NaeraServiceClient
+	GrpcPlug     models.NaeraServiceClient
 }
 
 func NewAuthHandler(redis myredis.MyRedis, emitter sender.EventEmitter, grpcPlug models.NaeraServiceClient) *AuthHandler {
 	return &AuthHandler{
 		RedisService: redis,
 		EventEmitter: emitter,
-		GrpcPlug: grpcPlug,
+		GrpcPlug:     grpcPlug,
 	}
 }
 
@@ -31,13 +31,25 @@ func (handler *AuthHandler) LiveUpdate(w http.ResponseWriter, r *http.Request) {
 }
 
 func respondWithError(w http.ResponseWriter, code int, message string) {
-    respondWithJSON(w, code, map[string]string{"error": message})
+	respondWithJSON(w, code, map[string]string{"error": message})
 }
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
-    response, _ := json.Marshal(payload)
+	response, _ := json.Marshal(payload)
 
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(code)
-    w.Write(response)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	w.Write(response)
+}
+
+func setupCors(w *http.ResponseWriter, req *http.Request) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+
+	if req.Method == "OPTIONS" {
+		(*w).Header().Set("Access-Control-Max-Age", "1728000")
+		(*w).Header().Set("Response-Code", "204")
+	}
+
+	(*w).Header().Set("Access-Control-Allow-Methods", "*")
+	(*w).Header().Set("Access-Control-Allow-Headers", "*")
 }

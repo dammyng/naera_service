@@ -4,6 +4,10 @@ import (
 	"authentication/internals/db"
 	"authentication/models/v1"
 	"context"
+	"errors"
+
+	"github.com/golang/protobuf/ptypes/empty"
+	"gorm.io/gorm"
 )
 
 type NaeraRpcServer struct {
@@ -25,4 +29,27 @@ func (n *NaeraRpcServer) RegisterAccount(ctx context.Context, arg *models.Accoun
 	}
 
 	return &models.UserCreatedResponse{Id: result}, nil
+}
+
+
+
+func (n *NaeraRpcServer) FindAccount(ctx context.Context, arg *models.Account) (*models.Account, error) {
+
+	result, err := n.DB.FindUser(arg)
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, gorm.ErrRecordNotFound
+
+	}
+	
+	if err != nil {
+		return nil, InternalError
+	}
+
+	return result, nil
+}
+
+func (n *NaeraRpcServer) UpdateAccount(ctx context.Context, arg *models.UpdateAccountRequest) (*empty.Empty , error) {
+	err := n.DB.UpdateUser(arg.Old, arg.New)
+	return &empty.Empty{},err
 }

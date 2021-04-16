@@ -7,7 +7,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 
 # This program built for i386-apple-darwin11.3.0
 
-# Make data base, printed on Fri Apr  9 23:43:29 2021
+# Make data base, printed on Thu Apr 15 19:32:12 2021
 
 # Variables
 
@@ -33,16 +33,20 @@ CURDIR := /Users/kdnotes/src/naera_service/authentication
 SHELL = /bin/sh
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-gb","availableLanguages":{},"_languagePackSupport":true}
+# makefile (from `cmd/.env', line 9)
+DBUser = root
 # environment
 _ = /usr/bin/make
 # makefile (from `cmd/.env', line 1)
 MAKEFILE_LIST :=  makefile cmd/.env
 # environment
-VSCODE_NODE_CACHED_DATA_DIR = /Users/kdnotes/Library/Application Support/Code/CachedData/08a217c4d27a02a5bcde898fd7981bda5b49391b
+VSCODE_NODE_CACHED_DATA_DIR = /Users/kdnotes/Library/Application Support/Code/CachedData/3c4e3df9e89829dce27b7b5c24508306b151f30d
 # environment
 VSCODE_VERBOSE_LOGGING = true
+# makefile (from `cmd/.env', line 8)
+DBDatabase = naeraauth
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-ipc-e289db0c-28d4-4c12-a478-7782e6d5db37.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-ipc-c6f09bf7-f4d4-44ae-80d2-dcf026b15381.sock
 # environment
 VSCODE_CWD = /Users/kdnotes/src/naera_service
 # environment
@@ -53,6 +57,8 @@ PATH = /usr/local/go/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local
 HTTP_PORT = 0.0.0.0:5555
 # environment
 GOPATH = /users/kdnotes/go
+# makefile (from `cmd/.env', line 5)
+RefreshKey = RefreshTopSecretKey
 # environment
 VSCODE_LOG_STACK = false
 # environment
@@ -64,7 +70,7 @@ ANDROID_HOME = /Users/kdnotes/Library/Android/sdk
 # environment
 CLOUDSDK_METRICS_ENVIRONMENT = cloudcode.vscode
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.Eg9sabWuXJ/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.IQ8E6hnfyE/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
@@ -81,6 +87,8 @@ ORIGINAL_XDG_CURRENT_DESKTOP = undefined
 VSCODE_AMD_ENTRYPOINT = vs/workbench/services/extensions/node/extensionHostProcess
 # environment
 HOME = /Users/kdnotes
+# makefile (from `cmd/.env', line 6)
+Redis_Host = localhost:6379
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
@@ -93,6 +101,8 @@ APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
+# makefile (from `cmd/.env', line 7)
+DBHost = localhost
 # environment
 MAKELEVEL := 0
 # environment
@@ -103,8 +113,12 @@ COLORTERM = truecolor
 MAKE = $(MAKE_COMMAND)
 # default
 MAKECMDGOALS := all
+# makefile (from `cmd/.env', line 4)
+JWTKey = TopSecretKey
 # environment
 SHLVL = 3
+# makefile (from `cmd/.env', line 3)
+AMQP_URL = amqp://guest:guest@localhost:5672/
 # default
 MAKE_VERSION := 3.81
 # environment
@@ -115,6 +129,8 @@ USER = kdnotes
 GOROOT = /usr/local/go
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
+# makefile (from `cmd/.env', line 11)
+DBPort = 3306
 # default
 MAKE_COMMAND := /Applications/Xcode.app/Contents/Developer/usr/bin/make
 # environment
@@ -126,7 +142,7 @@ TMPDIR = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/kdnotes/Library/Application Support/Code/1.55.1-main.sock
+VSCODE_IPC_HOOK = /Users/kdnotes/Library/Application Support/Code/1.55.2-main.sock
 # environment
 VSCODE_GIT_ASKPASS_NODE = /Applications/Visual Studio Code.app/Contents/Frameworks/Code Helper (Renderer).app/Contents/MacOS/Code Helper (Renderer)
 # makefile
@@ -136,7 +152,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-TERM_PROGRAM_VERSION = 1.55.1
+TERM_PROGRAM_VERSION = 1.55.2
 # environment
 XPC_SERVICE_NAME = 0
 # automatic
@@ -153,6 +169,8 @@ GIT_ASKPASS = /Applications/Visual Studio Code.app/Contents/Resources/app/extens
 MAKEFILES := 
 # automatic
 <F = $(notdir $<)
+# makefile (from `cmd/.env', line 10)
+DBPassword = password
 # environment
 ANDROID_SDK_ROOT = /Users/kdnotes/Library/Android/sdk
 # automatic
@@ -168,9 +186,11 @@ LANG = en_GB.UTF-8
 # environment
 TERM = xterm-256color
 # environment
-VSCODE_PID = 1220
+VSCODE_PID = 850
+# makefile (from `cmd/.env', line 12)
+RedisPass = password
 # variable set hash-table stats:
-# Load=79/1024=8%, Rehash=0, Collisions=3/105=3%
+# Load=89/1024=9%, Rehash=0, Collisions=3/115=3%
 
 # Pattern-specific Variable Values
 
@@ -178,9 +198,9 @@ VSCODE_PID = 1220
 
 # Directories
 
-# . (device 16777225, inode 27173237): 12 files, no impossibilities.
+# . (device 16777221, inode 27173237): 13 files, no impossibilities.
 
-# 12 files, no impossibilities in 1 directories.
+# 13 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -201,7 +221,7 @@ all:
 cmd/.env:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2021-04-06 23:42:43
+#  Last modified 2021-04-14 02:46:06
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -218,7 +238,7 @@ proto:
 #  Modification time never checked.
 #  File has not been updated.
 #  commands to execute (from `makefile', line 19):
-	protoc -I=./ --go_out=plugins=grpc:./ models/v1/account.proto
+	protoc -I=./ --proto_path=models/party --go_out=plugins=grpc:./ models/v1/account.proto 
 	
 
 test:
@@ -232,7 +252,7 @@ test:
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-04-09 23:21:21
+#  Last modified 2021-04-13 22:58:15
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -262,6 +282,9 @@ compile:
 #  File has not been updated.
 
 run:
+ 
+make: *** No rule to make target `all'.  Stop.
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -282,8 +305,6 @@ run:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4078 / max = 4078 / min = 4078 / avg = 4078
 
-# Finished Make data base on Fri Apr  9 23:43:29 2021
+# Finished Make data base on Thu Apr 15 19:32:12 2021
 
- 
-make: *** No rule to make target `all'.  Stop.
  
