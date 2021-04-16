@@ -5,11 +5,11 @@ import (
 	"authentication/pkg/helpers"
 	"log"
 
-	//"encoding/hex"
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
 
-	//"shared/amqp/events"
+	"shared/amqp/events"
 	"time"
 
 	"github.com/twinj/uuid"
@@ -53,12 +53,12 @@ func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.R
 	token := helpers.RandUpperAlpha(7)
 	handler.RedisService.Client.Set(reg.Email, token, time.Hour)
 	log.Println(token)
-	/*msg := events.UserCreatedEvent{
+	msg := events.UserCreatedEvent{
 		ID:    hex.EncodeToString(id.Bytes()),
 		Email: reg.Email,
 		Token: token,
 	}
 
 	handler.EventEmitter.Emit(&msg, "NaeraExchange")
-	*/
+	
 }
