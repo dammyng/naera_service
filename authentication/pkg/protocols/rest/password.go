@@ -28,7 +28,7 @@ func (handler *AuthHandler) NewPassword(w http.ResponseWriter, r *http.Request) 
 	u, err := handler.GrpcPlug.FindAccount(r.Context(), &models.Account{Email: email}, opts...)
 	if err != nil {
 		if grpc.ErrorDesc(err) == gorm.ErrRecordNotFound.Error() {
-			respondWithError(w, http.StatusNotFound, fmt.Errorf("No user was found with the email address:  %v", u.Email).Error())
+			respondWithError(w, http.StatusNotFound, fmt.Errorf("No user was found with the email address:  %v", email).Error())
 			return
 		}
 		respondWithError(w, http.StatusOK, InternalServerError)
