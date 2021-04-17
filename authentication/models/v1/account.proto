@@ -21,6 +21,20 @@ message Account{
     bytes pin = 14;
     int64 created_at = 16;
     int64 updated_at = 15;
+    int64 deleted_at = 30;
+    bool isReady = 17;
+    int64 bvnVerifiedAt = 18;
+    int64 nubanVerifiedAt = 19;
+    string bankCode = 20;
+    string nuban = 21;
+    string address = 22;
+    string state = 23;
+    string city = 24;
+    string idCard = 26;
+    string document = 27;
+    string utilityBill = 28;
+    string nin = 29;
+
    }
 
   message UserCreatedResponse{
