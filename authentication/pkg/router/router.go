@@ -21,10 +21,17 @@ func InitServiceRouter(redis myredis.MyRedis, emitter sender.EventEmitter, grpcP
 	r.HandleFunc("/v1/login", handler.AccountLogin).Methods("POST", "OPTIONS")
 	r.HandleFunc("/v1/register", handler.AccountRegistration).Methods("POST", "OPTIONS")
 	r.HandleFunc("/v1/verify/{email}/{token}", handler.VerifyEmail).Methods("GET", "OPTIONS")
+	r.HandleFunc("/v1/verifysms/{phone}/{token}", handler.VerifyPhone).Methods("GET", "OPTIONS")
 	r.HandleFunc("/v1/newpassword/{email}", handler.NewPassword).Methods("POST", "OPTIONS")
 	r.HandleFunc("/v1/resetpassword", handler.ResetPasssword).Methods("POST", "OPTIONS")
+	r.HandleFunc("/v1/getsetupprofile", handler.GetSetUpProfile).Methods("GET", "OPTIONS")
+	r.HandleFunc("/v1/updatesetupprofile", handler.UpdateSetUpProfile).Methods("PUT", "OPTIONS")
+	r.HandleFunc("/v1/sendverification/{email}", handler.SendVerification).Methods("POST", "OPTIONS")
+	r.HandleFunc("/v1/sendverificationsms/{phone}", handler.SendVerificationSMS).Methods("POST", "OPTIONS")
+
 	v1.Use(authBearer)
-	v1.HandleFunc("/sendverification/{email}", handler.SendVerification).Methods("POST", "OPTIONS")
+	v1.HandleFunc("/profile", handler.GetProfile).Methods("GET", "OPTIONS")
+	v1.HandleFunc("/profile/{id}", handler.GetProfile).Methods("PUT", "OPTIONS")
 
 	return r
 }
