@@ -15,6 +15,7 @@ var (
 	WalletNotFound              = "Sorry! Wallet not found. Please retry."
 	RecordUpdateSuccessful      = "Great! Your record update is successful."
 	EmailVerificationSuccessful = "Great! Email verification successful"
+	PhoneVerificationSuccessful = "Great! Phone verification successful"
 	UserNotFound                = "Oops! User doesn’t exist. Please retry."
 	DuplicateUserAccount        = "Oops! A Naera Pay user with this email already exist."
 )

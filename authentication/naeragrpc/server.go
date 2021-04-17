@@ -15,6 +15,7 @@ type NaeraRpcServer struct {
 }
 
 func NewNaeraRpcServer(db db.Handler) *NaeraRpcServer {
+	
 	return &NaeraRpcServer{
 		DB: db,
 	}
@@ -25,10 +26,10 @@ func (n *NaeraRpcServer) RegisterAccount(ctx context.Context, arg *models.Accoun
 	result, err := n.DB.CreateUser(arg)
 
 	if err != nil {
-		return nil, InternalError
+		return nil, err
 	}
 
-	return &models.UserCreatedResponse{Id: result}, nil
+	return &models.UserCreatedResponse{Id: result}, err
 }
 
 
