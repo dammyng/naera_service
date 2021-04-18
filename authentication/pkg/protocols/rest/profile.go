@@ -5,6 +5,7 @@ import (
 	"authentication/models/v1"
 	"authentication/pkg/helpers"
 	"encoding/json"
+	"time"
 
 	//"encoding/hex"
 
@@ -13,6 +14,7 @@ import (
 	//"shared/amqp/events"
 
 	"github.com/jinzhu/copier"
+	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 )
@@ -107,6 +109,14 @@ func (handler *AuthHandler) UpdateSetUpProfile(w http.ResponseWriter, r *http.Re
 		respondWithError(w, http.StatusOK, InternalServerError)
 		return
 	}
+	if len(u.Pin) > 1{
+		hashedPin, err := bcrypt.GenerateFromPassword([]byte(u.Pin), bcrypt.DefaultCost)
+		if err != nil {
+			respondWithError(w, http.StatusBadRequest, err.Error())
+		}
+		u.PinUpdatedAt = time.Now().Unix()
+		u.Pin = hashedPin
+	}
 	_, err = handler.GrpcPlug.UpdateAccount(r.Context(), &models.UpdateAccountRequest{Old: user, New: &u}, opts...)
 	if err != nil {
 		respondWithError(w, http.StatusOK, InternalServerError)
@@ -114,7 +124,7 @@ func (handler *AuthHandler) UpdateSetUpProfile(w http.ResponseWriter, r *http.Re
 	}
 	profileIsReady := helpers.AccountReady(user)
 
-	_, err = handler.GrpcPlug.UpdateAccount(r.Context(), &models.UpdateAccountRequest{Old: user, New: &models.Account{IsReady: profileIsReady}}, opts...)
+	_, err = handler.GrpcPlug.UpdateAccount(r.Context(), &models.UpdateAccountRequest{Old: user, New: &models.Account{IsReady: profileIsReady , UpdatedAt: time.Now().Unix()}}, opts...)
 	if err != nil {
 		respondWithError(w, http.StatusOK, InternalServerError)
 		return
