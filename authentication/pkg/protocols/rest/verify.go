@@ -5,15 +5,15 @@ import (
 	"authentication/pkg/helpers"
 
 
-	//"encoding/hex"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"net/http"
-	//"net/url"
-	//"encoding/json"
-	//"os"
-	//"strings"
-	//"shared/amqp/events"
+	"net/url"
+	"encoding/json"
+	"os"
+	"strings"
+	"shared/amqp/events"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -114,13 +114,13 @@ func (handler *AuthHandler) SendVerification(w http.ResponseWriter, r *http.Requ
 	token := helpers.RandUpperAlpha(7)
 	handler.RedisService.Client.Set(email, token, time.Hour)
 	log.Println(token)
-	/*msg := events.ResendEmailEvent{
+	msg := events.ResendEmailEvent{
 		ID:    hex.EncodeToString([]byte(u.Id)),
 		Email: email,
 		Token: token,
 	}
 
-	handler.EventEmitter.Emit(&msg, "NaeraExchange")*/
+	handler.EventEmitter.Emit(&msg, "NaeraExchange")
 
 }
 
@@ -159,7 +159,7 @@ func (handler *AuthHandler) SendVerificationSMS(w http.ResponseWriter, r *http.R
 	token := helpers.RandUpperAlpha(7)
 	handler.RedisService.Client.Set(phone, token, time.Hour)
 	log.Println(token)
-/*
+
 	NUMBER_FROM := os.Getenv("TwilloPhone")
 	accountSid := os.Getenv("TwilloSID")
 	authToken := os.Getenv("TwilloToken")
@@ -193,13 +193,7 @@ func (handler *AuthHandler) SendVerificationSMS(w http.ResponseWriter, r *http.R
 	}
 
 	log.Println(token)
-	msg := events.ResendEmailEvent{
-		ID:    hex.EncodeToString([]byte(u.Id)),
-		Email: email,
-		Token: token,
-	}
 
-	handler.EventEmitter.Emit(&msg, "NaeraExchange")*/
 
 }
 
