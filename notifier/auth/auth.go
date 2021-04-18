@@ -109,14 +109,15 @@ func ProcessEvents(eventListener events.EventListener) error {
 				//Send sign up email
 				log.Println("New user Mail")
 				subject := "Naera pay password reset"
-				textContent := fmt.Sprintf("You recently request to reset your naera pay password. Continue with this token: %s", e.Token)
+				link:= fmt.Sprintf("https://consumer.naerademo.com:/auth/resetpassword/%s", e.Token)
+				textContent := fmt.Sprintf("You recently request to reset your naera pay password. select continue to reset your password: %s", link)
 				t := template.Must(template.New("password_reset").Parse(`
-				You recently request to reset your naera pay password. Continue with this token: {{.Token}}`))
+				You recently request to reset your naera pay password. select continue to reset your password: {{.Link}}`))
 				out := new(bytes.Buffer)
 				data := struct {
-					Token string
+					Link string
 				}{
-					e.Token,
+					link,
 				}
 				err = t.Execute(out, data)
 				if err != nil {
