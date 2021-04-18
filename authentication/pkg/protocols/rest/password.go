@@ -6,12 +6,12 @@ import (
 	"log"
     b64 "encoding/base64"
 
-	//"encoding/hex"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
-	//"shared/amqp/events"
+	"shared/amqp/events"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -21,7 +21,7 @@ import (
 )
 
 func (handler *AuthHandler) NewPassword(w http.ResponseWriter, r *http.Request) {
-	setupCors(&w, r)
+	helpers.SetupCors(&w, r)
 	params := mux.Vars(r)
 	email := params["email"]
 	var opts []grpc.CallOption
@@ -39,14 +39,16 @@ func (handler *AuthHandler) NewPassword(w http.ResponseWriter, r *http.Request) 
 
 	token := helpers.RandUpperAlpha(7)
 	handler.RedisService.Client.Set(fmt.Sprintf("%s_password_reset", u.Email), token, time.Hour)
+	uEnc := b64.URLEncoding.EncodeToString([]byte(token))
+
 	log.Println(token)
-	/*msg := events.PasswordResetRequest{
+	msg := events.PasswordResetRequest{
 		ID:    hex.EncodeToString([]byte(u.Id)),
 		Email: email,
-		Token: token,
+		Token: uEnc,
 	}
 
-	handler.EventEmitter.Emit(&msg, "NaeraExchange")*/
+	handler.EventEmitter.Emit(&msg, "NaeraExchange")
 
 }
 
@@ -81,7 +83,6 @@ func (handler *AuthHandler) ResetPasssword(w http.ResponseWriter, r *http.Reques
 		respondWithError(w, http.StatusBadRequest, fmt.Errorf("Invalid or incorrect token").Error())
 		return
 	}
-	//uEnc := b64.URLEncoding.EncodeToString([]byte(data))
     uDec, _ := b64.URLEncoding.DecodeString(reg.Token)
 	if match := string(uDec) == storedToken; match {
 

@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"authentication/internals/db"
+	"authentication/models/migration"
 	models "authentication/models/v1"
 	"authentication/myredis"
 	"authentication/naeragrpc"
@@ -109,6 +110,7 @@ func (n *Naera) RunGRPCServer(ctx context.Context, port , dsn string) error {
 	log.Printf("Starting HTTP Server on port %v", lis.Addr().String())
 
 	db := db.NewSqlLayer(dsn)
+	db.Session.AutoMigrate(migration.Account{})
 
 	grpcServer := grpc.NewServer()
 	_naeragrpc := naeragrpc.NewNaeraRpcServer(db)

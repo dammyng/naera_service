@@ -35,7 +35,7 @@ func StartAuthenticationListener(AMQP_HOST, Exchange, Queue string) {
 }
 
 func ProcessEvents(eventListener events.EventListener) error {
-	received, errors, err := eventListener.Listen("NaeraExchange", "user.created")
+	received, errors, err := eventListener.Listen("NaeraExchange", "user.created", "user.resendemailvalidation", "user.passwordresetrequest")
 	if err != nil {
 		log.Fatalf("event listenner error %v", err.Error())
 	}
@@ -52,10 +52,67 @@ func ProcessEvents(eventListener events.EventListener) error {
 				//Send sign up email
 				log.Println("New user Mail")
 				subject := "Your Naera Pay Verification"
-				link:= fmt.Sprintf("https://authentication.naerademo.com:5554/v1/verify/%s/%s", e.Email, e.Token)
-				textContent := fmt.Sprintf("You're on your way! Verify your email using this link %v This link would expire in one hour", link)
+				textContent := fmt.Sprintf("You're on your way! Your email verification code is %s", e.Token)
 				t := template.Must(template.New("email_confirm").Parse(`
-					You're on your way! Your email verification link is {{.Link}} This link would expire in one hour`))
+				You're on your way! Your email verification code is {{.Token}}`))
+				out := new(bytes.Buffer)
+				data := struct {
+					Token string
+				}{
+					e.Token,
+				}
+				err = t.Execute(out, data)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				htmlBytes := out.Bytes()
+				htmlContent := string(htmlBytes)
+				msg := mailer.EmailMessage{
+					subject,
+					e.Email,
+					textContent,
+					htmlContent,
+				}
+
+				mailer.SendMail(msg, os.Getenv("AlphaAdmin"), os.Getenv("SendGridKey"))
+			case *events.ResendEmailEvent:
+				//Send sign up email
+				log.Println("Resend Email")
+				subject := "Your Naera Pay Verification"
+				textContent := fmt.Sprintf("You're on your way! Your email verification code is %s", e.Token)
+				t := template.Must(template.New("email_confirm").Parse(`
+					You're on your way! Your email verification code is {{.Token}}`))
+				out := new(bytes.Buffer)
+				data := struct {
+					Token string
+				}{
+					e.Token,
+				}
+				err = t.Execute(out, data)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				htmlBytes := out.Bytes()
+				htmlContent := string(htmlBytes)
+				msg := mailer.EmailMessage{
+					subject,
+					e.Email,
+					textContent,
+					htmlContent,
+				}
+
+				mailer.SendMail(msg, os.Getenv("AlphaAdmin"), os.Getenv("SendGridKey"))
+
+			case *events.PasswordResetRequest:
+				//Send sign up email
+				log.Println("New user Mail")
+				subject := "Naera pay password reset"
+				link:= fmt.Sprintf("https://consumer.naerademo.com:/auth/resetpassword/%s", e.Token)
+				textContent := fmt.Sprintf("You recently request to reset your naera pay password. select continue to reset your password: %s", link)
+				t := template.Must(template.New("password_reset").Parse(`
+				You recently request to reset your naera pay password. select continue to reset your password: {{.Link}}`))
 				out := new(bytes.Buffer)
 				data := struct {
 					Link string
@@ -77,7 +134,6 @@ func ProcessEvents(eventListener events.EventListener) error {
 				}
 
 				mailer.SendMail(msg, os.Getenv("AlphaAdmin"), os.Getenv("SendGridKey"))
-
 			default:
 				log.Printf("unknown event: %t", e)
 			}
