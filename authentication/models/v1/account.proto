@@ -25,6 +25,7 @@ message Account{
     bool isReady = 17;
     int64 bvnVerifiedAt = 18;
     int64 nubanVerifiedAt = 19;
+    int64 pinUpdatedAt = 31;
     string bankCode = 20;
     string nuban = 21;
     string address = 22;

@@ -11,6 +11,7 @@ type Account struct {
 	EmailVerifiedAt int64  `json:"emailVerifiedAt,omitempty"`
 	PhoneVerifiedAt int64  `json:"phoneVerifiedAt,omitempty"`
 	RefCode         string `json:"ref_code;unique,omitempty"`
+	PinUpdatedAt    int64  `json:"pinUpdatedAt,omitempty"`
 	Photo           string `json:"photo,omitempty"`
 	Bvn             string `json:"bvn;unique,omitempty"`
 	Password        []byte `gorm:"not null" json:"password,omitempty"`
@@ -46,7 +47,7 @@ type CleanAccount struct {
 	RefCode         string `json:"ref_code;unique,omitempty"`
 	Photo           string `json:"photo,omitempty"`
 	Bvn             string `json:"bvn;unique,omitempty"`
-	Pin             []byte `json:"pin,omitempty"`
+	PinUpdatedAt    int64  `json:"pinUpdatedAt,omitempty"`
 	CreatedAt       int64  `gorm:"not null" json:"created_at,omitempty"`
 	UpdatedAt       int64  `json:"updated_at,omitempty"`
 	DeletedAt       int64  `json:"deleted_at,omitempty"`
