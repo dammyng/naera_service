@@ -4,6 +4,7 @@ import (
 	"authentication/models/v1"
 	"authentication/pkg/helpers"
 	"log"
+	"os"
 
 	"encoding/hex"
 	"encoding/json"
@@ -70,12 +71,16 @@ func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.R
 	token := helpers.RandUpperAlpha(7)
 	handler.RedisService.Client.Set(reg.Email, token, time.Hour)
 	log.Println(token)
-	msg := events.UserCreatedEvent{
-		ID:    hex.EncodeToString(id.Bytes()),
-		Email: reg.Email,
-		Token: token,
-	}
 
-	handler.EventEmitter.Emit(&msg, "NaeraExchange")
+	if os.Getenv("Environment") == "production" {
+		msg := events.UserCreatedEvent{
+			ID:    hex.EncodeToString(id.Bytes()),
+			Email: reg.Email,
+			Token: token,
+		}
+	
+		handler.EventEmitter.Emit(&msg, "NaeraExchange")
+		}
+
 	
 }
