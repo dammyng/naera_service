@@ -13,6 +13,7 @@ func InitServiceRouter() *mux.Router {
 	handler := rest.NewBillHandler()
 
 	r.Methods("GET", "POST").Path("/").HandlerFunc(handler.LiveCheck)
+	r.Methods("GET").Path("/allbills").HandlerFunc(handler.AllBills)
 
 	return r	
 }
