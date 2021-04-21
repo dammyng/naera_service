@@ -1,18 +1,18 @@
 package rest
 
 import (
+	"bills/internals/db"
 	"encoding/json"
-	"net/http")
-
-
+	"net/http"
+)
 
 type BillHandler struct {
-
+	DB db.Handler
 }
 
-func NewBillHandler() *BillHandler {
+func NewBillHandler(db db.Handler) *BillHandler {
 	return &BillHandler{
-	
+		DB: db,
 	}
 }
 
@@ -27,7 +27,6 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.WriteHeader(code)
 	w.Write(response)
 }
-
 
 func (handler *BillHandler) LiveCheck(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]bool{"ok": true})

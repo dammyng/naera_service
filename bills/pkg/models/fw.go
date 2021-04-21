@@ -1,22 +1,9 @@
 package models
 
-var FW_BILL_PAYMENT = `{
-	"country": "NG",
-	"customer": "+23490803840303",
-	"amount": 500,
-	"recurrence": "ONCE",
-	"type": "AIRTIME",
-	"reference": "9300049404444"
- }`
-
-type DisplayBill struct {
-	Id                int     `json:"id"`
-	Provider          string  `json:"provider"`
-	Amount          string  `json:"amount"`
-	Title          string  `json:"title"`
-	Caption          string  `json:"caption"`
-
-
+type FwBillCategory struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+	Data []FwBill `json:"data"`
 }
 
 type FwBill struct {
@@ -34,4 +21,11 @@ type FwBill struct {
 	CommissionOnFee   bool    `json:"commission_on_fee"`
 	LabelName         string  `json:"label_name"`
 	Amount            float32 `json:"amount"`
+}
+
+func (fwBill *FwBill) ToDefaults(provider string) DisplayBill  {
+	return DisplayBill{
+		Provider: provider,
+		Title: fwBill.ShortName,
+	}
 }

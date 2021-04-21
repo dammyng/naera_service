@@ -1,17 +1,17 @@
 package pkg
 
 import (
+	"bills/internals/db"
+	"bills/pkg/router"
 	"context"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
-	"bills/pkg/router"
 
 	"github.com/gorilla/mux"
 )
-
 
 type NaeraBill struct {
 	Router *mux.Router
@@ -23,10 +23,13 @@ func NewNaeraBill() *NaeraBill {
 
 func (n *NaeraBill) Initialize() error {
 
-		// Router
-		router := router.InitServiceRouter()
-		n.Router = router
-		return nil
+	//
+	db := db.NewMockLayer()
+
+	// Router
+	router := router.InitServiceRouter(db)
+	n.Router = router
+	return nil
 }
 
 func (n *NaeraBill) RunHTTPServer(ctx context.Context, port string) error {
@@ -65,6 +68,6 @@ func (n *NaeraBill) RunHTTPServer(ctx context.Context, port string) error {
 	return nil
 }
 
-func (n *NaeraBill) RunGRPCServer(ctx context.Context, port , dsn string) error {
+func (n *NaeraBill) RunGRPCServer(ctx context.Context, port, dsn string) error {
 	return nil
 }
