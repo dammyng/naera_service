@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package models;
+import "google/protobuf/empty.proto";
+
+
+message Biller{
+    string id = 1;
+    string card_token = 2;
+    string cart =3;
+}
