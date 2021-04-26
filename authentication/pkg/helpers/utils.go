@@ -18,11 +18,16 @@ func SetupCors(w *http.ResponseWriter, req *http.Request) {
 }
 
 func AccountReady(a *models.Account)  bool {
-	if a.EmailVerifiedAt < 1000  || a.PhoneVerifiedAt < 1000 ||  a.BvnVerifiedAt < 1000 ||  a.NubanVerifiedAt < 1000 {
+	/**if a.EmailVerifiedAt < 1000  || a.PhoneVerifiedAt < 1000 ||  a.BvnVerifiedAt < 1000 ||  a.NubanVerifiedAt < 1000 {
 		return false
 	}
 	if a.IdCard == "" {
 		return false
 	}
+	**/
+	if a.EmailVerifiedAt < 1000 {
+		return false
+	}
+	
 	return true
 }

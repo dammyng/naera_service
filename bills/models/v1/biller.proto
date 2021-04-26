@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package models;
+import "google/protobuf/empty.proto";
+
+
+message Biller{
+    string id = 1;
+    string card_token = 2;
+    string cart =3;
+    int64 created_at = 7;
+    int64 updated_at = 8;
+    int64 deleted_at = 9;
+}
+
+message UpdateBillerRequest{
+    Biller old =1;
+    Biller  new=2;
+ }
+
+message BillerCreatedResponse{
+    string id = 1;
+    }
+
+service NaeraBillsService {
+    rpc CreateBiller(Biller) returns (BillerCreatedResponse);
+    rpc FindBiller(Biller) returns (Biller);
+    rpc UpdateBiller(UpdateBillerRequest) returns (google.protobuf.Empty);
+  }

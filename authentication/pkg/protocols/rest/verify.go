@@ -114,6 +114,8 @@ func (handler *AuthHandler) SendVerification(w http.ResponseWriter, r *http.Requ
 	token := helpers.RandUpperAlpha(7)
 	handler.RedisService.Client.Set(email, token, time.Hour)
 	log.Println(token)
+	if os.Getenv("Environment") == "production" {
+
 	msg := events.ResendEmailEvent{
 		ID:    hex.EncodeToString([]byte(u.Id)),
 		Email: email,
@@ -121,6 +123,7 @@ func (handler *AuthHandler) SendVerification(w http.ResponseWriter, r *http.Requ
 	}
 
 	handler.EventEmitter.Emit(&msg, "NaeraExchange")
+}
 
 }
 
@@ -154,11 +157,12 @@ func (handler *AuthHandler) SendVerificationSMS(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, map[string]interface{}{"message": fmt.Sprintf("Verification sms has been sent to %v", u.Email)})
+	respondWithJSON(w, http.StatusOK, map[string]interface{}{"message": fmt.Sprintf("Verification sms has been sent to %v", u.PhoneNumber)})
 
 	token := helpers.RandUpperAlpha(7)
 	handler.RedisService.Client.Set(phone, token, time.Hour)
 	log.Println(token)
+	if os.Getenv("Environment") == "production" {
 
 	NUMBER_FROM := os.Getenv("TwilloPhone")
 	accountSid := os.Getenv("TwilloSID")
@@ -191,9 +195,9 @@ func (handler *AuthHandler) SendVerificationSMS(w http.ResponseWriter, r *http.R
 	} else {
 		fmt.Println(resp.Status)
 	}
+}
 
 	log.Println(token)
-
 
 }
 

@@ -52,11 +52,12 @@ func (handler *AuthHandler) GetProfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func (handler *AuthHandler) GetSetUpProfile(w http.ResponseWriter, r *http.Request) {
+	helpers.SetupCors(&w, r)
+
 	if r.Method == "OPTIONS"{
 		respondWithJSON(w, http.StatusOK, nil)
 		return
 	}
-	helpers.SetupCors(&w, r)
 	key := helpers.ExtractToken(r)
 	
 
@@ -78,11 +79,11 @@ func (handler *AuthHandler) GetSetUpProfile(w http.ResponseWriter, r *http.Reque
 
 
 func (handler *AuthHandler) UpdateSetUpProfile(w http.ResponseWriter, r *http.Request) {
+	helpers.SetupCors(&w, r)
 	if r.Method == "OPTIONS"{
 		respondWithJSON(w, http.StatusOK, nil)
 		return
 	}
-	helpers.SetupCors(&w, r)
 	key := helpers.ExtractToken(r)
 	
 	var opts []grpc.CallOption
