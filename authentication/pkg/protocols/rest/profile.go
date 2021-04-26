@@ -68,31 +68,7 @@ func (handler *AuthHandler) GetSetUpProfile(w http.ResponseWriter, r *http.Reque
 	}
 	var cleanUser migration.CleanAccount
 	copier.Copy(&cleanUser, &user)
-	var res setupP
-	res.User = cleanUser
-	res.AccessToken = user.Id
-
-	if user.IsReady == true {
-		ts, err := helpers.CreateToken(user.Id)
-		if err != nil {
-			respondWithError(w, http.StatusBadRequest, InternalServerError)
-			return
-		}
-		saveErr := helpers.CreateAuth(user.Id, ts, handler.RedisService)
-		if saveErr != nil {
-			respondWithError(w, http.StatusBadRequest, InternalServerError)
-		}
-
-		res.AccessToken = ts.AccessToken
-
-	}
-
-	respondWithJSON(w, http.StatusOK, res)
-}
-
-type setupP struct {
-	User        migration.CleanAccount `json:"user"`
-	AccessToken string                 `json:"access_token"`
+	respondWithJSON(w, http.StatusOK, cleanUser)
 }
 
 func (handler *AuthHandler) UpdateSetUpProfile(w http.ResponseWriter, r *http.Request) {
