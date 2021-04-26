@@ -2,7 +2,7 @@ package services
 
 import (
 	"bills/pkg/helpers"
-	"bills/pkg/models"
+	"bills/models"
 	"encoding/json"
 )
 

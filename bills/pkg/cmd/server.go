@@ -12,9 +12,9 @@ var App pkg.NaeraBill
 
 func RunServers(ctx context.Context) error {
 
-	_ = config.NewApConfig()
+	env := config.NewApConfig()
 
-	err := App.Initialize()
+	err := App.Initialize(env.GrpcHost)
 	if err != nil {
 		return err
 	}
@@ -27,7 +27,7 @@ func RunServers(ctx context.Context) error {
 
 	
 	go func() {
-		err = App.RunGRPCServer(ctx, grpcPort, "env.DSN")
+		err = App.RunGRPCServer(ctx, grpcPort, env.DSN)
 
 		if err != nil {
 			log.Panic("GRPC connection failed")

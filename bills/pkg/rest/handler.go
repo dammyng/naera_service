@@ -1,18 +1,18 @@
 package rest
 
 import (
-	"bills/internals/db"
+	"bills/models/v1"
 	"encoding/json"
 	"net/http"
 )
 
 type BillHandler struct {
-	DB db.Handler
+	GrpcPlug models.NaeraBillsServiceClient
 }
 
-func NewBillHandler(db db.Handler) *BillHandler {
+func NewBillHandler(grpcPlug models.NaeraBillsServiceClient) *BillHandler {
 	return &BillHandler{
-		DB: db,
+		GrpcPlug: grpcPlug,
 	}
 }
 

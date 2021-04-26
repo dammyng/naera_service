@@ -1,7 +1,7 @@
 package router
 
 import (
-	"bills/internals/db"
+	"bills/models/v1"
 	"bills/pkg/rest"
 
 	"github.com/gorilla/mux"
@@ -10,9 +10,9 @@ import (
 
 
 
-func InitServiceRouter(db db.Handler) *mux.Router {
+func InitServiceRouter(grpcPlug models.NaeraBillsServiceClient) *mux.Router {
 	var r = mux.NewRouter()
-	handler := rest.NewBillHandler(db)
+	handler := rest.NewBillHandler(grpcPlug)
 
 	r.Methods("GET", "POST").Path("/").HandlerFunc(handler.LiveCheck)
 	r.Methods("GET").Path("/livebills").HandlerFunc(handler.LiveCategories)

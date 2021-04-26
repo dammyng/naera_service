@@ -1,16 +1,21 @@
 package pkg
 
 import (
+	"bills/billsgrpc"
 	"bills/internals/db"
+	"bills/models/migration"
+	"bills/models/v1"
 	"bills/pkg/router"
 	"context"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/gorilla/mux"
+	"google.golang.org/grpc"
 )
 
 type NaeraBill struct {
@@ -21,13 +26,16 @@ func NewNaeraBill() *NaeraBill {
 	return &NaeraBill{}
 }
 
-func (n *NaeraBill) Initialize() error {
+func (n *NaeraBill) Initialize(grpcHost string) error {
 
-	//
-	db := db.NewMockLayer()
+	//GRPC
+	grpcClient, err := billsgrpc.NewNaeraRPClient(grpcHost)
+	if err != nil {
+		return err
+	}
 
 	// Router
-	router := router.InitServiceRouter(db)
+	router := router.InitServiceRouter(grpcClient)
 	n.Router = router
 	return nil
 }
@@ -69,5 +77,17 @@ func (n *NaeraBill) RunHTTPServer(ctx context.Context, port string) error {
 }
 
 func (n *NaeraBill) RunGRPCServer(ctx context.Context, port, dsn string) error {
-	return nil
-}
+	lis, err := net.Listen("tcp", port)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	log.Printf("Starting HTTP Server on port %v", lis.Addr().String())
+
+	db := db.NewSqlLayer(dsn)
+	db.Session.AutoMigrate(migration.Biller{})
+
+	grpcServer := grpc.NewServer()
+	_naeragrpc := billsgrpc.NewNaeraBillsRpcServer(db)
+	models.RegisterNaeraBillsServiceServer(grpcServer, _naeragrpc)
+	err = grpcServer.Serve(lis)
+	return err}

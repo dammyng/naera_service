@@ -1,5 +1,6 @@
 package db
 
+/****
 import "bills/internals/models/v1"
 
 type MockLayer struct {
@@ -22,3 +23,4 @@ func (ml *MockLayer) GetLiveCategories() ([]models.DisplayCategory, error) {
 	}
 	return result, nil
 }
+**/
