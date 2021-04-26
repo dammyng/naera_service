@@ -13,6 +13,7 @@ func NewMyRedis(dsn , pass string) MyRedis {
 		Addr: dsn, Password: pass, 
 	})
 
+
 	_, err := client.Ping().Result()
 	if err != nil {
 		panic(err)
