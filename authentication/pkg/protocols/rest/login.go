@@ -55,14 +55,14 @@ func (handler *AuthHandler) AccountLogin(w http.ResponseWriter, r *http.Request)
 	}
 
 	
-	//if u.IsReady == false{
-	//	res := LoginResponse{
-	//		AccessToken:  u.Id,
-	//		RefreshToken: u.Id,
-	//	}
-	//	respondWithJSON(w, http.StatusOK, res)
-	//	return
-	//}
+	if u.IsReady == false{
+		res := LoginResponse{
+			AccessToken:  u.Id,
+			RefreshToken: u.Id,
+		}
+		respondWithJSON(w, http.StatusOK, res)
+	return
+	}
 
 	ts, err := helpers.CreateToken(u.Id)
 	if err != nil {
