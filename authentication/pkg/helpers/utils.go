@@ -28,8 +28,6 @@ func AccountReady(a *models.Account)  bool {
 	if a.EmailVerifiedAt < 1000 {
 		return false
 	}
-	if a.IdCard == "" {
-		return false
-	}
+	
 	return true
 }
