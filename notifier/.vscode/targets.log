@@ -10,7 +10,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 make: *** No rule to make target `all'.  Stop.
  
 
-# Make data base, printed on Mon Apr 26 19:28:33 2021
+# Make data base, printed on Mon Apr 26 19:28:53 2021
 
 # Variables
 
@@ -27,41 +27,31 @@ VSCODE_LOG_NATIVE = false
 # automatic
 @F = $(notdir $@)
 # makefile
-CURDIR := /Users/kdnotes/src/naera_service/authentication
+CURDIR := /Users/kdnotes/src/naera_service/notifier
 # makefile
 SHELL = /bin/sh
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-gb","availableLanguages":{},"_languagePackSupport":true}
-# makefile (from `cmd/.env', line 9)
-DBUser = root
 # environment
 _ = /usr/bin/make
-# makefile (from `cmd/.env', line 1)
-MAKEFILE_LIST :=  makefile cmd/.env
+# makefile (from `makefile', line 1)
+MAKEFILE_LIST :=  makefile
 # environment
 VSCODE_NODE_CACHED_DATA_DIR = /Users/kdnotes/Library/Application Support/Code/CachedData/3c4e3df9e89829dce27b7b5c24508306b151f30d
 # environment
 VSCODE_VERBOSE_LOGGING = true
-# makefile (from `cmd/.env', line 14)
-TwilloToken = a5a84f35e80adcde4987cf087a67d89b
-# makefile (from `cmd/.env', line 8)
-DBDatabase = naeraauth
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-ipc-4754e1d9-ae31-4dfe-acbe-b4a5b05cb218.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-ipc-39b86e32-fdf4-4330-a882-b6e4696007e2.sock
 # environment
 VSCODE_CWD = /
 # environment
 GOPROXY = https://proxy.golang.org,direct
 # environment
 PATH = /Users/kdnotes/.yarn/bin:/Users/kdnotes/.config/yarn/global/node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go:/usr/local/go/bin:/Users/kdnotes/go:/Users/kdnotes/go/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/kdnotes/flutter/:/usr/local/mysql/bin/:/usr/local/sbin:/Users/kdnotes/google-cloud-sdk/bin:/Users/kdnotes/Library/Application Support/cloud-code/installer/google-cloud-sdk/bin
-# makefile (from `cmd/.env', line 1)
-HTTP_PORT = 0.0.0.0:5555
 # environment
 GOPATH = /Users/kdnotes/go
 # environment
 LaunchInstanceID = A01FE0EF-42E5-482E-9E0A-6AF31EB7DE59
-# makefile (from `cmd/.env', line 5)
-RefreshKey = RefreshTopSecretKey
 # environment
 VSCODE_LOG_STACK = false
 # environment
@@ -70,8 +60,6 @@ ELECTRON_RUN_AS_NODE = 1
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
 CLOUDSDK_METRICS_ENVIRONMENT = cloudcode.vscode
-# makefile (from `cmd/.env', line 13)
-TwilloSID = AC56464c412d3a5e05eee77f45c741d912
 # environment
 SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.kZKNKktEqN/Listeners
 # automatic
@@ -81,15 +69,13 @@ CLOUDSDK_METRICS_ENVIRONMENT_VERSION = 1.10.0
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
-PWD = /Users/kdnotes/src/naera_service/authentication
+PWD = /Users/kdnotes/src/naera_service/notifier
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = undefined
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/services/extensions/node/extensionHostProcess
 # environment
 HOME = /Users/kdnotes
-# makefile (from `cmd/.env', line 6)
-Redis_Host = localhost:6379
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
@@ -100,20 +86,14 @@ APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
-# makefile (from `cmd/.env', line 7)
-DBHost = localhost
 # environment
 XPC_FLAGS = 0x0
 # default
 MAKE = $(MAKE_COMMAND)
 # default
 MAKECMDGOALS := all
-# makefile (from `cmd/.env', line 4)
-JWTKey = TopSecretKey
 # environment
 SHLVL = 1
-# makefile (from `cmd/.env', line 3)
-AMQP_URL = amqp://guest:guest@localhost:5672/
 # default
 MAKE_VERSION := 3.81
 # environment
@@ -122,8 +102,6 @@ USER = kdnotes
 .DEFAULT_GOAL := build
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
-# makefile (from `cmd/.env', line 11)
-DBPort = 3306
 # default
 MAKE_COMMAND := /Applications/Xcode.app/Contents/Developer/usr/bin/make
 # default
@@ -144,8 +122,6 @@ MFLAGS = -Rrqp
 XPC_SERVICE_NAME = com.apple.xpc.launchd.oneshot.0x10000000.Electron
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
-# makefile (from `cmd/.env', line 2)
-GRPC_PORT = 0.0.0.0:6666
 # automatic
 +F = $(notdir $+)
 # environment
@@ -156,10 +132,6 @@ COMMAND_MODE = unix2003
 MAKEFILES := 
 # automatic
 <F = $(notdir $<)
-# makefile (from `cmd/.env', line 10)
-DBPassword = password
-# makefile (from `cmd/.env', line 15)
-TwilloPhone = +14436489834
 # environment
 SECURITYSESSIONID = 186a8
 # automatic
@@ -172,20 +144,19 @@ SUFFIXES :=
 MAKELEVEL := 0
 # environment
 VSCODE_PID = 365
-# makefile (from `cmd/.env', line 12)
-RedisPass = password
 # variable set hash-table stats:
-# Load=80/1024=8%, Rehash=0, Collisions=3/106=3%
+# Load=65/1024=6%, Rehash=0, Collisions=1/89=1%
 
 # Pattern-specific Variable Values
 
 # No pattern-specific variable values.
+ 
 
 # Directories
 
-# . (device 16777223, inode 27173237): 12 files, no impossibilities.
+# . (device 16777223, inode 27665034): 10 files, no impossibilities.
 
-# 12 files, no impossibilities in 1 directories.
+# 10 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -203,41 +174,15 @@ all:
 # Load=0/32=0%, Rehash=0, Collisions=0/0=0%
 
 # Not a target:
-cmd/.env:
-#  A default, MAKEFILES, or -include/sinclude makefile.
-#  Implicit rule search has been done.
-#  Last modified 2021-04-17 21:21:24
-#  File has been updated.
-#  Successfully updated.
-# variable set hash-table stats:
-# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
-
-# Not a target:
 .SUFFIXES:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
-proto:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  commands to execute (from `makefile', line 19):
-	protoc -I=./ --proto_path=models/party --go_out=plugins=grpc:./ models/v1/account.proto 
-	
-
-test:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  commands to execute (from `makefile', line 12):
-	go test ./...
-	
-
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-04-13 22:58:15
+#  Last modified 2021-04-13 21:33:13
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -247,17 +192,8 @@ build:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `makefile', line 6):
-	go build -o cmd/bin/naera_auth cmd/main.go
-	
-
-compile:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  commands to execute (from `makefile', line 15):
-	echo "Compiling for linux"
-	env GOOS=linux go build -o cmd/bin/naera_auth cmd/main.go
+#  commands to execute (from `makefile', line 4):
+	go build -o cmd/bin/naera_notifier main.go
 	
 
 # Not a target:
@@ -266,27 +202,19 @@ compile:
 #  Modification time never checked.
 #  File has not been updated.
 
-run:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-#  commands to execute (from `makefile', line 9):
-	go run cmd/main.go
-	
-
 # files hash-table stats:
-# Load=10/1024=1%, Rehash=0, Collisions=0/23=0%
+# Load=5/1024=0%, Rehash=0, Collisions=0/17=0%
 # VPATH Search Paths
 
 # No `vpath' search paths.
 
 # No general (`VPATH' variable) search path.
 
-# # of strings in strcache: 2
+# # of strings in strcache: 1
 # # of strcache buffers: 1
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
-# strcache free: total = 4078 / max = 4078 / min = 4078 / avg = 4078
+# strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Mon Apr 26 19:28:33 2021
+# Finished Make data base on Mon Apr 26 19:28:53 2021
 
  

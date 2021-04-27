@@ -6,11 +6,8 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # PARTICULAR PURPOSE.
 
 # This program built for i386-apple-darwin11.3.0
- 
-make: *** No rule to make target `all'.  Stop.
- 
 
-# Make data base, printed on Sun Apr 25 03:04:04 2021
+# Make data base, printed on Tue Apr 27 05:18:19 2021
 
 # Variables
 
@@ -49,9 +46,9 @@ FL_KEY_LIVE = 2795fda29f314b1e28585d75
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # makefile (from `cmd/.env', line 14)
-DBDatabase = naeraauth
+DBDatabase = naerabills
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-ipc-e1b5bd8b-030f-4165-9bca-4586ec61f81e.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-ipc-d8783952-d2ac-495e-af7e-0e7bf3655ba9.sock
 # environment
 VSCODE_CWD = /Users/kdnotes/src/naera_service
 # environment
@@ -60,6 +57,8 @@ PATH = /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go:/usr/local/go/
 HTTP_PORT = 0.0.0.0:7777
 # environment
 GOPATH = /users/kdnotes/go
+# environment
+LaunchInstanceID = A01FE0EF-42E5-482E-9E0A-6AF31EB7DE59
 # makefile (from `cmd/.env', line 11)
 RefreshKey = RefreshTopSecretKey
 # environment
@@ -73,7 +72,7 @@ ANDROID_HOME = /Users/kdnotes/Library/Android/sdk
 # environment
 CLOUDSDK_METRICS_ENVIRONMENT = cloudcode.vscode
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.D0wgVS5XL8/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.kZKNKktEqN/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
@@ -169,6 +168,8 @@ GRPC_PORT = 0.0.0.0:8888
 # environment
 __CF_USER_TEXT_ENCODING = 0x1F5:0x0:0x2
 # environment
+COMMAND_MODE = unix2003
+# environment
 GIT_ASKPASS = /Applications/Visual Studio Code.app/Contents/Resources/app/extensions/git/dist/askpass.sh
 # default
 MAKEFILES := 
@@ -180,6 +181,8 @@ DBPassword = password
 ANDROID_SDK_ROOT = /Users/kdnotes/Library/Android/sdk
 # makefile (from `cmd/.env', line 4)
 FL_KEY_TEST = FLWSECK_TESTc5fc82d7d2b7
+# environment
+SECURITYSESSIONID = 186a8
 # automatic
 ^F = $(notdir $^)
 # default
@@ -195,11 +198,11 @@ LANG = en_GB.UTF-8
 # environment
 TERM = xterm-256color
 # environment
-VSCODE_PID = 1779
+VSCODE_PID = 365
 # makefile (from `cmd/.env', line 18)
 RedisPass = password
 # variable set hash-table stats:
-# Load=92/1024=9%, Rehash=0, Collisions=3/118=3%
+# Load=95/1024=9%, Rehash=0, Collisions=3/121=2%
 
 # Pattern-specific Variable Values
 
@@ -207,9 +210,9 @@ RedisPass = password
 
 # Directories
 
-# . (device 16777222, inode 28582520): 10 files, no impossibilities.
+# . (device 16777223, inode 28582520): 12 files, no impossibilities.
 
-# 10 files, no impossibilities in 1 directories.
+# 12 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -230,7 +233,7 @@ all:
 cmd/.env:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2021-04-21 01:07:21
+#  Last modified 2021-04-25 04:26:00
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -261,7 +264,7 @@ test:
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-04-25 03:03:24
+#  Last modified 2021-04-25 04:49:03
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -270,6 +273,9 @@ makefile:
 build:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
+make: *** No rule to make target `all'.  Stop.
+ 
 #  File has not been updated.
 #  commands to execute (from `makefile', line 6):
 	go build -o cmd/bin/naera_auth cmd/main.go
@@ -286,7 +292,6 @@ compile:
 
 # Not a target:
 .DEFAULT:
- 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -312,6 +317,6 @@ run:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4078 / max = 4078 / min = 4078 / avg = 4078
 
-# Finished Make data base on Sun Apr 25 03:04:04 2021
+# Finished Make data base on Tue Apr 27 05:18:19 2021
 
  
