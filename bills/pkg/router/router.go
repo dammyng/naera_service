@@ -17,7 +17,7 @@ func InitServiceRouter(grpcPlug models.NaeraBillingServiceClient) *mux.Router {
 	r.Methods("GET", "POST").Path("/").HandlerFunc(handler.LiveCheck)
 	v1 := r.PathPrefix("/v1").Subrouter()
 
-	v1.Methods("GET").Path("/livebills").HandlerFunc(handler.LiveCategories)
+	v1.Path("/livebills").HandlerFunc(handler.LiveCategories).Methods("GET", "OPTIONS")
 	v1.Methods("GET").Path("/bills/airtime").HandlerFunc(handler.AllAirtimes)
 	v1.Methods("GET").Path("/bills/cable").HandlerFunc(handler.AllCables)
 	v1.Methods("GET").Path("/bills/databundle").HandlerFunc(handler.AllDataBundles)

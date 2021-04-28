@@ -62,9 +62,9 @@ func (handler *AuthHandler) VerifyEmail(w http.ResponseWriter, r *http.Request) 
 			log.Fatal(err)
 			return
 		}
-		handler.RedisService.Client.Del(email)
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write([]byte(Redirection))
+		//handler.RedisService.Client.Del(email)
+		//w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		//w.Write([]byte(Redirection))
 		return
 	} else {
 		respondWithError(w, http.StatusNotFound, fmt.Errorf("Invalid or incorrect token").Error())

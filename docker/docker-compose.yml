@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  redis:
+    image: 'redis:6.2.2'
+    restart: always
+    hostname: redis
+    container_name: redis
+    ports:
+      - '6379:6379'
+    command: redis-server --requirepass password
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    container_name: rabbitmq
+    hostname: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+    ports:
+      - "5672:5672"
+      - "15672:15672" 
+  authentication:
+    build: 
+      context: ../
+      dockerfile: authentication/Dockerfile
+    restart: always
+    ports:
+        - "6666:6666"
+    links:
+        - "redis:myredis"
+        - "rabbitmq:myrabbit"
+  billing:
+    build: ../bills
+    restart: always
+    ports:
+        - "7777:7777"
+    links:
+        - "redis:myredis"
+        - "rabbitmq:myrabbit"
