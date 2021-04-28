@@ -10,7 +10,7 @@ import (
 
 
 
-func InitServiceRouter(grpcPlug models.NaeraBillsServiceClient) *mux.Router {
+func InitServiceRouter(grpcPlug models.NaeraBillingServiceClient) *mux.Router {
 	var r = mux.NewRouter()
 	handler := rest.NewBillHandler(grpcPlug)
 

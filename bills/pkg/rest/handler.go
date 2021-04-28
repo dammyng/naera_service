@@ -7,10 +7,10 @@ import (
 )
 
 type BillHandler struct {
-	GrpcPlug models.NaeraBillsServiceClient
+	GrpcPlug models.NaeraBillingServiceClient
 }
 
-func NewBillHandler(grpcPlug models.NaeraBillsServiceClient) *BillHandler {
+func NewBillHandler(grpcPlug models.NaeraBillingServiceClient) *BillHandler {
 	return &BillHandler{
 		GrpcPlug: grpcPlug,
 	}

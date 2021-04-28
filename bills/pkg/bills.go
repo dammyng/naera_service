@@ -81,13 +81,13 @@ func (n *NaeraBill) RunGRPCServer(ctx context.Context, port, dsn string) error {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	log.Printf("Starting HTTP Server on port %v", lis.Addr().String())
+	log.Printf("Starting GRPC Server on port %v", lis.Addr().String())
 
 	db := db.NewSqlLayer(dsn)
-	db.Session.AutoMigrate(migration.Biller{})
+	db.Session.AutoMigrate(migration.Biller{}, migration.Bill{}, migration.BillCategory{})
 
 	grpcServer := grpc.NewServer()
 	_naeragrpc := billsgrpc.NewNaeraBillsRpcServer(db)
-	models.RegisterNaeraBillsServiceServer(grpcServer, _naeragrpc)
+	models.RegisterNaeraBillingServiceServer(grpcServer, _naeragrpc)
 	err = grpcServer.Serve(lis)
 	return err}
