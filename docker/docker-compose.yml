@@ -23,15 +23,17 @@ services:
   authentication:
     build: 
       context: ../
-      dockerfile: authentication/Dockerfile
+      dockerfile: auth.Dockerfile
     restart: always
     ports:
-        - "6666:6666"
+        - "5555:5555"
     links:
         - "redis:myredis"
         - "rabbitmq:myrabbit"
   billing:
-    build: ../bills
+    build: 
+      context: ../
+      dockerfile: bills.Dockerfile
     restart: always
     ports:
         - "7777:7777"

@@ -54,7 +54,7 @@ func (n *NaeraBill) RunHTTPServer(ctx context.Context, port string) error {
 	go func() {
 		log.Printf("Starting HTTP Server on port %v", server.Addr)
 		if err := server.ListenAndServe(); err != nil {
-			log.Panicln(err)
+			log.Panicln(err.Error())
 		}
 	}()
 

@@ -1,6 +1,6 @@
 module authentication
 
-replace shared => ./shared
+replace shared => ../shared
 
 go 1.14
 
