@@ -18,12 +18,12 @@ func InitServiceRouter(grpcPlug models.NaeraBillingServiceClient) *mux.Router {
 	v1 := r.PathPrefix("/v1").Subrouter()
 
 	v1.Path("/livebills").HandlerFunc(handler.LiveCategories).Methods("GET", "OPTIONS")
-	v1.Methods("GET").Path("/bills/airtime").HandlerFunc(handler.AllAirtimes)
-	v1.Methods("GET").Path("/bills/cable").HandlerFunc(handler.AllCables)
-	v1.Methods("GET").Path("/bills/databundle").HandlerFunc(handler.AllDataBundles)
-	v1.Methods("GET").Path("/bills/internet").HandlerFunc(handler.AllInternet)
-	v1.Methods("GET").Path("/bills/power").HandlerFunc(handler.AllPower)
-	v1.Methods("PUT").Path("/bills/updatebiller").HandlerFunc(handler.UpdateBiller)
+	v1.Path("/bills/airtime").HandlerFunc(handler.AllAirtimes).Methods("GET", "OPTIONS")
+	v1.Path("/bills/cable").HandlerFunc(handler.AllCables).Methods("GET", "OPTIONS")
+	v1.Path("/bills/databundle").HandlerFunc(handler.AllDataBundles).Methods("GET", "OPTIONS")
+	v1.Path("/bills/internet").HandlerFunc(handler.AllInternet).Methods("GET", "OPTIONS")
+	v1.Path("/bills/power").HandlerFunc(handler.AllPower).Methods("GET", "OPTIONS")
+	v1.Path("/bills/updatebiller").HandlerFunc(handler.UpdateBiller).Methods("PUT", "OPTIONS")
 
 	return r	
 }

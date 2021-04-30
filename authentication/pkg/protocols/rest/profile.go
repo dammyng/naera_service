@@ -166,6 +166,7 @@ func (handler *AuthHandler) UpdateProfile(w http.ResponseWriter, r *http.Request
 		return
 	}
 	user, err := handler.GrpcPlug.FindAccount(r.Context(), &models.Account{Id: userId}, opts...)
+	isReady := user.IsReady
 	if err != nil {
 		if grpc.ErrorDesc(err) == gorm.ErrRecordNotFound.Error() {
 			respondWithError(w, http.StatusNotFound, UserNotFound)
@@ -180,12 +181,14 @@ func (handler *AuthHandler) UpdateProfile(w http.ResponseWriter, r *http.Request
 		return
 	}
 	profileIsReady := helpers.AccountReady(user)
-
-	_, err = handler.GrpcPlug.UpdateAccount(r.Context(), &models.UpdateAccountRequest{Old: user, New: &models.Account{IsReady: profileIsReady}}, opts...)
-	if err != nil {
-		respondWithError(w, http.StatusOK, InternalServerError)
-		return
+	if profileIsReady != isReady {
+		_, err = handler.GrpcPlug.UpdateAccount(r.Context(), &models.UpdateAccountRequest{Old: user, New: &models.Account{IsReady: profileIsReady}}, opts...)
+		if err != nil {
+			respondWithError(w, http.StatusOK, InternalServerError)
+			return
+		}
 	}
+	
 
 	var cleanUser  migration.CleanAccount
 	copier.Copy(&cleanUser, &user)
