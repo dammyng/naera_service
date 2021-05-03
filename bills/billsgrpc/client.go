@@ -124,3 +124,32 @@ func (c *naeraBillsServiceClient) UpdateBillCategory(ctx context.Context, in *mo
 	}
 	return out, nil
 }
+
+
+func (c *naeraBillsServiceClient) CreateTransaction(ctx context.Context, in *models.Transaction, opts ...grpc.CallOption) (*models.TransactionCreatedResponse, error) {
+	ss := models.NewNaeraBillingServiceClient(c.Conn)
+	result, err := ss.CreateTransaction(ctx, in, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return result, err
+}
+
+func (c *naeraBillsServiceClient) BillerTransactions(ctx context.Context, in *models.GetBillerTransactionsRequest, opts ...grpc.CallOption) (*models.TransactionsResponse, error) {
+	var out *models.TransactionsResponse
+	err := c.Conn.Invoke(ctx, "/models.NaeraBillingService/GetBillerBills", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+
+func (c *naeraBillsServiceClient) FindTransaction(ctx context.Context, in *models.Transaction, opts ...grpc.CallOption) (*models.Transaction, error) {
+	ss := models.NewNaeraBillingServiceClient(c.Conn)
+	result, err := ss.FindTransaction(ctx, in, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return result, err
+}

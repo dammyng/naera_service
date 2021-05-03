@@ -20,7 +20,11 @@ ENV GO111MODULE=on \
     RedisPass=password \
     TwilloSID=AC56464c412d3a5e05eee77f45c741d912 \
     TwilloToken=a5a84f35e80adcde4987cf087a67d89b \
-    TwilloPhone=+14436489834 
+    TwilloPhone=+14436489834 \
+    FL_SECRETKEY_LIVE=FLWSECK-2795fda29f319fba2067279cb8300ecb-X \
+    FL_KEY_LIVE=2795fda29f314b1e28585d75 \
+    FL_SECRETKEY_TEST=FLWSECK_TEST-be6475503d295c1be0b10ee8e971671f-X \
+    FL_KEY_TEST=FLWSECK_TESTc5fc82d7d2b7 
 
 # Move to working directory /build
 WORKDIR /build

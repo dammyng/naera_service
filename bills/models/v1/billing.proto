@@ -7,6 +7,7 @@ import "google/protobuf/empty.proto";
 message Biller{
     string id = 1;
     string card_token = 2;
+    string email =13;
     string cart =3;
     int64 created_at = 7;
     int64 updated_at = 8;
@@ -47,10 +48,14 @@ message BillerCreatedResponse{
 
 message Bill{
     string id = 1;
+    string biller = 11;
     string cart =2;
+    string by =12;
     string title =10;
+    string transactionId =13;
     bool reoccurring =3;
     int64 nextPaymentDate =4;
+    int64 LastPaymentDate =14;
     bool active =5;
     enum PayingWith {
         LOAN = 0;
@@ -80,6 +85,29 @@ message BillCreatedResponse{
         Bill  new=2;
      }
 
+     message Transaction{
+        string id = 1;
+        string biller = 2;
+        string title = 7;
+        string billingMethod = 8;
+        float amount = 5;
+        string transRef = 6;
+        string bill = 3;
+        bool Charged = 9;
+        bool Served = 10;
+        int64 created_at = 4;
+    }
+    message TransactionCreatedResponse{
+        string id = 1;
+        }
+
+        message GetBillerTransactionsRequest{
+            string billerID = 1;
+         }
+        message TransactionsResponse{
+            repeated Transaction transactions = 1;
+            }
+
 service NaeraBillingService {
     rpc CreateBiller(Biller) returns (BillerCreatedResponse);
     rpc FindBiller(Biller) returns (Biller);
@@ -95,4 +123,7 @@ service NaeraBillingService {
     rpc FindBillCategory(BillCategory) returns (BillCategory);
     rpc UpdateBillCategory(UpdateBillCategoryRequest) returns (google.protobuf.Empty);
 
+    rpc CreateTransaction(Transaction) returns (TransactionCreatedResponse);
+    rpc FindTransaction(Transaction) returns (Transaction);
+    rpc BillerTransactions(GetBillerTransactionsRequest) returns (TransactionsResponse);
   }

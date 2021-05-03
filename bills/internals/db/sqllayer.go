@@ -132,3 +132,37 @@ func (sql *SqlLayer) UpdateABillCategoryMap(arg *models.BillCategory, dict map[s
 	session := sql.Session
 	return session.Model(&arg).Updates(dict).Error
 }
+
+
+func (sql *SqlLayer) CreateATransaction(transaction *models.Transaction) (string, error) {
+	err := sql.Session.Create(&transaction).Error
+	if err != nil {
+		return "", err
+	}
+	return transaction.Id, err
+}
+
+func (sql *SqlLayer) BillerTransactions(arg string) ([]*models.Transaction, error) {
+	args := models.Transaction{Id: arg}
+	session := sql.Session
+	 dTs := []*models.Transaction{}
+
+	err := session.Where(&args).Find(dTs).Error
+	if err != nil {
+		return nil, err
+	}
+	return dTs, nil
+}
+
+func (sql *SqlLayer) FindATransaction(arg *models.Transaction) (*models.Transaction, error) {
+	session := sql.Session
+	var dA models.Transaction
+	err := session.Where(arg).First(&dA).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, gorm.ErrRecordNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &dA, err
+}

@@ -29,10 +29,16 @@ func (handler *BillHandler) CreateBiller(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	key := helpers.ExtractToken(r)
+	access, err := helpers.ExtractTokenMetadata(r)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+	u.Id = access.UserId
+
 	var opts []grpc.CallOption
 
-	biller := &models.Biller{Id: key,
+	biller := &models.Biller{Id: access.UserId,
 		CardToken: u.CardToken,
 		Cart: u.Cart,
 		CreatedAt: time.Now().Unix(),
@@ -66,16 +72,24 @@ func (handler *BillHandler) UpdateBiller(w http.ResponseWriter, r *http.Request)
 	}
 
 	var opts []grpc.CallOption
-	key := helpers.ExtractToken(r)
-
-	biller, err := handler.GrpcPlug.FindBiller(r.Context(), &models.Biller{Id: key}, opts...)
+	access, err := helpers.ExtractTokenMetadata(r)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+	u.Id = access.UserId
+	biller, err := handler.GrpcPlug.FindBiller(r.Context(), &models.Biller{Id: access.UserId}, opts...)
 
 	if err != nil {
 		if grpc.ErrorDesc(err) == gorm.ErrRecordNotFound.Error() {
-			respondWithError(w, http.StatusNotFound, BillerNotFound)
+			_, err := handler.GrpcPlug.CreateBiller(r.Context(), &u, opts...)
+			if err != nil {
+				respondWithError(w, http.StatusNotFound, BillerNotFound)
+			}
+			respondWithJSON(w, http.StatusCreated, "")
 			return
 		}
-		respondWithError(w, http.StatusBadRequest, InternalServerError)
+		respondWithError(w, http.StatusBadRequest, err.Error() + "---"+ InternalServerError)
 		return
 	}
 
@@ -84,6 +98,6 @@ func (handler *BillHandler) UpdateBiller(w http.ResponseWriter, r *http.Request)
 		respondWithError(w, http.StatusInternalServerError, InternalServerError)
 		return
 	}
-	respondWithJSON(w, http.StatusOK, nil)
+	respondWithJSON(w, http.StatusCreated, "")
 
 }

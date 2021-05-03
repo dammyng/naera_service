@@ -9,7 +9,7 @@ run:
 	go run cmd/main.go
 
 test:
-	go test ./...
+	go test ./... -v
 
 compile:
 	echo "Compiling for linux"

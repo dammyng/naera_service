@@ -19,4 +19,11 @@ type Handler interface {
 	CreateABillCategory(*models.BillCategory) (string, error)
 	FindABillCategory(*models.BillCategory) (*models.BillCategory, error)
 	UpdateABillCategory(*models.BillCategory, *models.BillCategory) error
+
+	CreateATransaction(*models.Transaction) (string, error)
+	BillerTransactions(string) ([]*models.Transaction, error)
+	FindATransaction(*models.Transaction) (*models.Transaction, error)
+
+
+
 }

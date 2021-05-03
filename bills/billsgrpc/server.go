@@ -131,3 +131,39 @@ func (n *NaeraBillsRpcServer) UpdateBillCategory(ctx context.Context, arg *model
 	err := n.DB.UpdateABillCategory(arg.Old, arg.New)
 	return &empty.Empty{}, err
 }
+
+
+func (n *NaeraBillsRpcServer) CreateTransaction(ctx context.Context, arg *models.Transaction) (*models.TransactionCreatedResponse, error) {
+
+	result, err := n.DB.CreateATransaction(arg)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &models.TransactionCreatedResponse{Id: result}, err
+}
+
+func (n *NaeraBillsRpcServer) BillerTransactions(ctx context.Context, arg  *models.GetBillerTransactionsRequest) (*models.TransactionsResponse, error) {
+	result, err := n.DB.BillerTransactions(arg.BillerID)
+	if err != nil {
+		return nil, InternalError
+	}
+	return &models.TransactionsResponse{Transactions: result}, err
+}
+
+func (n *NaeraBillsRpcServer) FindTransaction(ctx context.Context, arg *models.Transaction) (*models.Transaction, error) {
+
+	result, err := n.DB.FindATransaction(arg)
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, gorm.ErrRecordNotFound
+
+	}
+
+	if err != nil {
+		return nil, InternalError
+	}
+
+	return result, nil
+}
