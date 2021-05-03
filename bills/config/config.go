@@ -46,7 +46,7 @@ func getDSN(db config.DBConfig) string {
 
 func loadEnv() {
 	log.Println("env loading...")
-	err := godotenv.Load("/Users/kdnotes/src/naera_service/bills/cmd/.env")
+	err := godotenv.Load("C:\\Users\\KD\\Desktop\\naera_service\\bills\\cmd\\.env")
 	if err != nil {
 		log.Fatalf("Error loading .env file %v", err)
 	}

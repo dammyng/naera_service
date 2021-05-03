@@ -22,7 +22,7 @@ var TestBills pkg.NaeraBill
 
 func TestMain(m *testing.M) {
 	os.Setenv("Environment", "test")
-	os.Setenv("test_token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImQ3MGViN2Y1LTM5ZGEtNDcwYi1iNzY0LWRhN2ExZWQxNGZlYiIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyMDAxNjg2MiwidXNlcl9pZCI6IjZlZjEwNzkwLTIzMjItNGI3OC05MjczLWRhZWQ0MTE1NTlmOSJ9.kn3sua-Kd8-xK2WhAT28xK83MZd2Y5m6JTPcvQTqloE")
+	os.Setenv("test_token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjNhNzU1NjVhLWQ4OTItNDEyZC1hM2IxLTEwMDAzZDczMzlhMCIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyMDA0MzczNCwidXNlcl9pZCI6IjdiYTg3MGJiLWQ2NzMtNGU4ZC05YjUxLTExODhjZjVkZWQ4MyJ9.PsrbbRvi38ZQ5gj27dL68M24R9uIbv-DQ2kWJDVor5I")
 	GRPC_PORT := "0.0.0.0:9999"
 
 	env := config.NewApConfig()

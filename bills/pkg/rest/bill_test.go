@@ -15,9 +15,9 @@ func TestCreateBill(t *testing.T) {
 	bill := models.Bill{
 		Cart:          `[
 			{
-				"id":"35635d-1fc52687bbkb","beneficiary":"08069475323","provider":"Airtime NG","amount":10},
+				"id":"35635d-1fc52687bbkb","beneficiary":"08069475323","provider":"Airtime NG","amount":2000},
 				{
-					"id":"35635d-4b36-7b0a","beneficiary":"09069475323","provider":"Airtime NG","amount":10}
+					"id":"35635d-4b36-7b0a","beneficiary":"09069475323","provider":"Airtime NG","amount":2000}
 				
 			
 			]`,
