@@ -52,7 +52,6 @@ message Bill{
     string cart =2;
     string by =12;
     string title =10;
-    string transactionId =13;
     bool reoccurring =3;
     int64 nextPaymentDate =4;
     int64 LastPaymentDate =14;
@@ -93,8 +92,7 @@ message BillCreatedResponse{
         float amount = 5;
         string transRef = 6;
         string bill = 3;
-        bool Charged = 9;
-        bool Served = 10;
+        string flRef = 11;
         int64 created_at = 4;
     }
     message TransactionCreatedResponse{
@@ -108,6 +106,29 @@ message BillCreatedResponse{
             repeated Transaction transactions = 1;
             }
 
+
+    
+            message Order{
+                string id = 1;
+                string title = 7;
+                string transactionId = 8;
+                float amount = 5;
+                bool charged = 9;
+                bool fulfilled = 10;
+                int64 created_at = 4;
+            }
+            message OrderCreatedResponse{
+                string id = 1;
+                }
+        
+                message GetTransactionOrdersRequest{
+                    string transactionID = 1;
+                 }
+                message OrdersResponse{
+                    repeated Order orders = 1;
+                    }
+        
+        
 service NaeraBillingService {
     rpc CreateBiller(Biller) returns (BillerCreatedResponse);
     rpc FindBiller(Biller) returns (Biller);
@@ -126,4 +147,9 @@ service NaeraBillingService {
     rpc CreateTransaction(Transaction) returns (TransactionCreatedResponse);
     rpc FindTransaction(Transaction) returns (Transaction);
     rpc BillerTransactions(GetBillerTransactionsRequest) returns (TransactionsResponse);
-  }
+
+    rpc CreateOrder(Order) returns (OrderCreatedResponse);
+    rpc FindOrder(Order) returns (Order);
+    rpc TransactionOrders(GetTransactionOrdersRequest) returns (OrdersResponse);
+ 
+}

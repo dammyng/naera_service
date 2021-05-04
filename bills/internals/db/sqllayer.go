@@ -143,7 +143,7 @@ func (sql *SqlLayer) CreateATransaction(transaction *models.Transaction) (string
 }
 
 func (sql *SqlLayer) BillerTransactions(arg string) ([]*models.Transaction, error) {
-	args := models.Transaction{Id: arg}
+	args := models.Transaction{Biller: arg}
 	session := sql.Session
 	 dTs := []*models.Transaction{}
 
@@ -157,6 +157,41 @@ func (sql *SqlLayer) BillerTransactions(arg string) ([]*models.Transaction, erro
 func (sql *SqlLayer) FindATransaction(arg *models.Transaction) (*models.Transaction, error) {
 	session := sql.Session
 	var dA models.Transaction
+	err := session.Where(arg).First(&dA).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, gorm.ErrRecordNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &dA, err
+}
+
+
+
+func (sql *SqlLayer) CreateAOrder(order *models.Order) (string, error) {
+	err := sql.Session.Create(&order).Error
+	if err != nil {
+		return "", err
+	}
+	return order.Id, err
+}
+
+func (sql *SqlLayer) TransactionOrders(arg string) ([]*models.Order, error) {
+	args := models.Order{TransactionId: arg}
+	session := sql.Session
+	 dTs := []*models.Order{}
+
+	err := session.Where(&args).Find(dTs).Error
+	if err != nil {
+		return nil, err
+	}
+	return dTs, nil
+}
+
+func (sql *SqlLayer) FindAOrder(arg *models.Order) (*models.Order, error) {
+	session := sql.Session
+	var dA models.Order
 	err := session.Where(arg).First(&dA).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, gorm.ErrRecordNotFound

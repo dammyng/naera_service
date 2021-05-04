@@ -26,4 +26,9 @@ type Handler interface {
 
 
 
+	CreateAOrder(*models.Order) (string, error)
+	TransactionOrders(string) ([]*models.Order, error)
+	FindAOrder(*models.Order) (*models.Order, error)
+
+
 }

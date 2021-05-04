@@ -153,3 +153,33 @@ func (c *naeraBillsServiceClient) FindTransaction(ctx context.Context, in *model
 	}
 	return result, err
 }
+
+
+func (c *naeraBillsServiceClient) CreateOrder(ctx context.Context, in *models.Order, opts ...grpc.CallOption) (*models.OrderCreatedResponse, error) {
+	ss := models.NewNaeraBillingServiceClient(c.Conn)
+	result, err := ss.CreateOrder(ctx, in, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return result, err
+}
+
+func (c *naeraBillsServiceClient) TransactionOrders(ctx context.Context, in *models.GetTransactionOrdersRequest, opts ...grpc.CallOption) (*models.OrdersResponse, error) {
+	var out *models.OrdersResponse
+	ss := models.NewNaeraBillingServiceClient(c.Conn)
+	out, err := ss.TransactionOrders(ctx, in, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+
+func (c *naeraBillsServiceClient) FindOrder(ctx context.Context, in *models.Order, opts ...grpc.CallOption) (*models.Order, error) {
+	ss := models.NewNaeraBillingServiceClient(c.Conn)
+	result, err := ss.FindOrder(ctx, in, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return result, err
+}

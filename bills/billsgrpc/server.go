@@ -167,3 +167,40 @@ func (n *NaeraBillsRpcServer) FindTransaction(ctx context.Context, arg *models.T
 
 	return result, nil
 }
+
+
+
+func (n *NaeraBillsRpcServer) CreateOrder(ctx context.Context, arg *models.Order) (*models.OrderCreatedResponse, error) {
+
+	result, err := n.DB.CreateAOrder(arg)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &models.OrderCreatedResponse{Id: result}, err
+}
+
+func (n *NaeraBillsRpcServer) TransactionOrders(ctx context.Context, arg  *models.GetTransactionOrdersRequest) (*models.OrdersResponse, error) {
+	result, err := n.DB.TransactionOrders(arg.TransactionID)
+	if err != nil {
+		return nil, InternalError
+	}
+	return &models.OrdersResponse{Orders: result}, err
+}
+
+func (n *NaeraBillsRpcServer) FindOrder(ctx context.Context, arg *models.Order) (*models.Order, error) {
+
+	result, err := n.DB.FindAOrder(arg)
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, gorm.ErrRecordNotFound
+
+	}
+
+	if err != nil {
+		return nil, InternalError
+	}
+
+	return result, nil
+}
