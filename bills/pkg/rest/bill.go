@@ -76,22 +76,11 @@ func (handler *BillHandler) CreateBill(w http.ResponseWriter, r *http.Request) {
 	if err := json.Unmarshal([]byte(bill.Cart), &items); err != nil {
 		panic(err)
 	}
-
-	log.Printf("Cart: %v", items)
-
-	//serviceError := make(map[string][]string)
 	
 	fatalErrors := make(chan error,len(items))
-
-	Data_format := make([]string, len(items))
-	//Service_Transaction := make([]string, len(items))
-	Transaction_Record := make([]string, len(items))
-	log.Printf("	Number of Item in Cart %v", len(items))
-
 	var wg sync.WaitGroup
-	wg.Add(2)
-	for i, v := range items {
-		log.Printf("Request from cart Item %v: %v", i, v)
+	wg.Add(len(items))
+	for _, v := range items {
 
 		go func(v models.InCartItem) {
 
@@ -107,8 +96,6 @@ func (handler *BillHandler) CreateBill(w http.ResponseWriter, r *http.Request) {
 			}
 			_request, err := json.Marshal(&request)
 			if err != nil {
-				Data_format[i] = errors.New("Invalid data structure - " + err.Error() + request.Type + "_" + request.Customer).Error()
-				//serviceError["Data_format"] = Data_format
 				t := createUnservedTransaction(bill, data)
 				_, err = handler.GrpcPlug.CreateTransaction(r.Context(), &t, opts...)
 			}
@@ -127,36 +114,19 @@ func (handler *BillHandler) CreateBill(w http.ResponseWriter, r *http.Request) {
 			}
 			log.Printf("Service payment response for %v is %v, %v:  ", v.ID, eer, err)
 			if err != nil {
-				log.Print(22)
-
-				//log.Println(err)
 				fatalErrors <- errors.New("We are unable to service your transaction for - " + err.Error() + request.Type + "_" + request.Customer) 
-				log.Print(33)
-				//serviceError["Service_Transaction"] = Service_Transaction
 				transaction.Served = false
 			}
-			log.Print(2)
-
 			_, err = handler.GrpcPlug.CreateTransaction(r.Context(), transaction, opts...)
-			log.Print(3)
-
 			if err != nil {
-				Transaction_Record[i] = errors.New("Your transaction could not be tracked- " + err.Error() + request.Type + "_" + request.Customer).Error()
-				//serviceError["Transaction_Record"] = Transaction_Record
 			}
-			time.Sleep(24 * time.Second)
 			wg.Done()
-			log.Print(44)
-
-
 		}(v)
 
 	}
-	log.Print(66)
 
 	wg.Wait()
 	close(fatalErrors)
-	log.Print(55)
 	var total string
 
 	resErrors := ""
@@ -164,8 +134,6 @@ func (handler *BillHandler) CreateBill(w http.ResponseWriter, r *http.Request) {
 	for msg := range fatalErrors {
 		resErrors += fmt.Sprintf("%v, ",msg)
     }
-
-	log.Println(resErrors)
 
 	if resErrors != "" {
 		respondWithJSON(w, http.StatusBadRequest, total)

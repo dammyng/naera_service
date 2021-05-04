@@ -61,7 +61,7 @@ type TokenDetails struct {
 func CreateToken(userId string) (*TokenDetails, error) {
 	td := &TokenDetails{}
 
-	td.AtExpires = time.Now().Add(time.Minute * 15).Unix()
+	td.AtExpires = time.Now().Add(time.Minute * 1).Unix()
 	td.AccessUuid = uuid.NewV4().String()
 
 	td.RtExpires = time.Now().Add(time.Hour * 24 * 7).Unix()
@@ -160,17 +160,16 @@ func DeleteAuth(givenUuid string, client myredis.MyRedis) (int64, error) {
 
 func Refresh(refreshToken string, client myredis.MyRedis) (interface{}, error) {
 	//verify the token
-	os.Getenv("REFRESH_SECRET") //this should be in an env file
+	os.Getenv("RefreshKey") 
 	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
 		//Make sure that the token method conform to "SigningMethodHMAC"
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(os.Getenv("REFRESH_SECRET")), nil
+		return []byte(os.Getenv("RefreshKey")), nil
 	})
 	//if there is an error, the token must have expired
 	if err != nil {
-
 		return nil, err
 	}
 	//is token valid?

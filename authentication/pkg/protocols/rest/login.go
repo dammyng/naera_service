@@ -82,11 +82,12 @@ func (handler *AuthHandler) AccountLogin(w http.ResponseWriter, r *http.Request)
 	encoded, err := s.Encode("cookie-name", ts.RefreshToken)
 	if err == nil {
 		cookie := &http.Cookie{
-			HttpOnly: true,
 			Name:     "cookie-name",
 			Value:    encoded,
-			Path:     "/",
-			//Domain: "localhost",
+			MaxAge : 99999,
+			Path: "/",
+			HttpOnly: true,
+			SameSite: http.SameSiteNoneMode,
 		}
 		http.SetCookie(w, cookie)
 	}else{
@@ -101,6 +102,7 @@ func (handler *AuthHandler) AccountLogin(w http.ResponseWriter, r *http.Request)
 
 func (handler *AuthHandler) ReadCookieHandler(w http.ResponseWriter, r *http.Request) {
 	if cookie, err := r.Cookie("cookie-name"); err == nil {
+		log.Println(cookie)
 		var hashKey = []byte("cookie-namecookie-namecookie-nam")
 		var blockKey = []byte("cookie-namecookie-namecookie-nam")
 		var s = securecookie.New(hashKey, blockKey)
@@ -109,8 +111,13 @@ func (handler *AuthHandler) ReadCookieHandler(w http.ResponseWriter, r *http.Req
 			token, err := helpers.Refresh(value, handler.RedisService)
 			if err != nil {
 				respondWithError(w, http.StatusUnauthorized, err.Error())
+				return
 			}
+			log.Println(token)
+
 			respondWithJSON(w, http.StatusOK, token)
 		}
+	}else{
+		respondWithError(w, http.StatusUnauthorized, err.Error())
 	}
 }

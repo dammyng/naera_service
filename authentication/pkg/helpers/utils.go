@@ -7,6 +7,7 @@ import (
 
 func SetupCors(w *http.ResponseWriter, req *http.Request) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Credentials", "true")
 
 	if req.Method == "OPTIONS" {
 		(*w).Header().Set("Access-Control-Max-Age", "1728000")

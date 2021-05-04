@@ -6,18 +6,19 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # PARTICULAR PURPOSE.
 
 # This program built for i386-apple-darwin11.3.0
- 
-make: *** No rule to make target `all'.  Stop.
- 
 
-# Make data base, printed on Mon Apr 26 19:28:33 2021
+# Make data base, printed on Mon May  3 19:32:27 2021
 
 # Variables
 
+# environment
+VSCODE_GIT_ASKPASS_MAIN = /Applications/Visual Studio Code.app/Contents/Resources/app/extensions/git/dist/askpass-main.js
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # automatic
 ?F = $(notdir $?)
+# environment
+ELECTRON_NO_ATTACH_CONSOLE = 1
 # environment
 VSCODE_LOG_NATIVE = false
 # automatic
@@ -47,25 +48,25 @@ TwilloToken = a5a84f35e80adcde4987cf087a67d89b
 # makefile (from `cmd/.env', line 8)
 DBDatabase = naeraauth
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-ipc-4754e1d9-ae31-4dfe-acbe-b4a5b05cb218.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-ipc-2f2eb06c-f7d3-4455-8b2c-cdba5c0bcede.sock
 # environment
-VSCODE_CWD = /
+VSCODE_CWD = /Users/kdnotes/src/naera_service
 # environment
 GOPROXY = https://proxy.golang.org,direct
 # environment
-PATH = /Users/kdnotes/.yarn/bin:/Users/kdnotes/.config/yarn/global/node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go:/usr/local/go/bin:/Users/kdnotes/go:/Users/kdnotes/go/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/kdnotes/flutter/:/usr/local/mysql/bin/:/usr/local/sbin:/Users/kdnotes/google-cloud-sdk/bin:/Users/kdnotes/Library/Application Support/cloud-code/installer/google-cloud-sdk/bin
+PATH = /usr/local/go/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go:/Users/kdnotes/go:/Users/kdnotes/go/bin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/kdnotes/Library/Application Support/cloud-code/installer/google-cloud-sdk/bin:/Users/kdnotes/.yarn/bin:/Users/kdnotes/.config/yarn/global/node_modules/.bin:/Users/kdnotes/flutter/:/usr/local/mysql/bin/:/usr/local/sbin:/Users/kdnotes/Library/Android/sdk/emulator:/Users/kdnotes/Library/Android/sdk/tools:/usr/local/go:/users/kdnotes/go:/users/kdnotes/go/bin:/Users/kdnotes/Library/Android/sdk/tools/bin:/Users/kdnotes/flutter/bin:/Users/kdnotes/Library/Android/sdk/platform-tools:/Applications/Visual Studio Code.app/Contents/Resources/app/bin:/Users/kdnotes/google-cloud-sdk/bin
 # makefile (from `cmd/.env', line 1)
 HTTP_PORT = 0.0.0.0:5555
 # environment
-GOPATH = /Users/kdnotes/go
-# environment
-LaunchInstanceID = A01FE0EF-42E5-482E-9E0A-6AF31EB7DE59
+GOPATH = /users/kdnotes/go
 # makefile (from `cmd/.env', line 5)
 RefreshKey = RefreshTopSecretKey
 # environment
 VSCODE_LOG_STACK = false
 # environment
 ELECTRON_RUN_AS_NODE = 1
+# environment
+ANDROID_HOME = /Users/kdnotes/Library/Android/sdk
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
@@ -73,11 +74,13 @@ CLOUDSDK_METRICS_ENVIRONMENT = cloudcode.vscode
 # makefile (from `cmd/.env', line 13)
 TwilloSID = AC56464c412d3a5e05eee77f45c741d912
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.kZKNKktEqN/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.pDFWgEUwNW/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
-CLOUDSDK_METRICS_ENVIRONMENT_VERSION = 1.10.0
+GOBIN = /users/kdnotes/go/bin
+# environment
+CLOUDSDK_METRICS_ENVIRONMENT_VERSION = 1.11.0
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
@@ -93,6 +96,8 @@ Redis_Host = localhost:6379
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
+VSCODE_CLI = 1
+# environment
 LOGNAME = kdnotes
 # environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
@@ -103,7 +108,11 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # makefile (from `cmd/.env', line 7)
 DBHost = localhost
 # environment
+MAKELEVEL := 0
+# environment
 XPC_FLAGS = 0x0
+# environment
+COLORTERM = truecolor
 # default
 MAKE = $(MAKE_COMMAND)
 # default
@@ -111,7 +120,7 @@ MAKECMDGOALS := all
 # makefile (from `cmd/.env', line 4)
 JWTKey = TopSecretKey
 # environment
-SHLVL = 1
+SHLVL = 3
 # makefile (from `cmd/.env', line 3)
 AMQP_URL = amqp://guest:guest@localhost:5672/
 # default
@@ -120,12 +129,16 @@ MAKE_VERSION := 3.81
 USER = kdnotes
 # makefile
 .DEFAULT_GOAL := build
+# environment
+GOROOT = /usr/local/go
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # makefile (from `cmd/.env', line 11)
 DBPort = 3306
 # default
 MAKE_COMMAND := /Applications/Xcode.app/Contents/Developer/usr/bin/make
+# environment
+TERM_PROGRAM = vscode
 # default
 .VARIABLES := 
 # environment
@@ -134,6 +147,8 @@ TMPDIR = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/
 *F = $(notdir $*)
 # environment
 VSCODE_IPC_HOOK = /Users/kdnotes/Library/Application Support/Code/1.55.2-main.sock
+# environment
+VSCODE_GIT_ASKPASS_NODE = /Applications/Visual Studio Code.app/Contents/Frameworks/Code Helper (Renderer).app/Contents/MacOS/Code Helper (Renderer)
 # makefile
 MAKEFLAGS = Rrqp
 # environment
@@ -141,7 +156,9 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = com.apple.xpc.launchd.oneshot.0x10000000.Electron
+TERM_PROGRAM_VERSION = 1.55.2
+# environment
+XPC_SERVICE_NAME = 0
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # makefile (from `cmd/.env', line 2)
@@ -151,17 +168,17 @@ GRPC_PORT = 0.0.0.0:6666
 # environment
 __CF_USER_TEXT_ENCODING = 0x1F5:0x0:0x2
 # environment
-COMMAND_MODE = unix2003
+GIT_ASKPASS = /Applications/Visual Studio Code.app/Contents/Resources/app/extensions/git/dist/askpass.sh
 # default
 MAKEFILES := 
 # automatic
 <F = $(notdir $<)
 # makefile (from `cmd/.env', line 10)
 DBPassword = password
+# environment
+ANDROID_SDK_ROOT = /Users/kdnotes/Library/Android/sdk
 # makefile (from `cmd/.env', line 15)
 TwilloPhone = +14436489834
-# environment
-SECURITYSESSIONID = 186a8
 # automatic
 ^F = $(notdir $^)
 # default
@@ -169,13 +186,17 @@ SUFFIXES :=
 # default
 .INCLUDE_DIRS = /usr/local/include
 # environment
-MAKELEVEL := 0
+VSCODE_GIT_IPC_HANDLE = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-git-0832c8c34f.sock
 # environment
-VSCODE_PID = 365
+LANG = en_GB.UTF-8
+# environment
+TERM = xterm-256color
+# environment
+VSCODE_PID = 2579
 # makefile (from `cmd/.env', line 12)
 RedisPass = password
 # variable set hash-table stats:
-# Load=80/1024=8%, Rehash=0, Collisions=3/106=3%
+# Load=92/1024=9%, Rehash=0, Collisions=5/118=4%
 
 # Pattern-specific Variable Values
 
@@ -183,9 +204,9 @@ RedisPass = password
 
 # Directories
 
-# . (device 16777223, inode 27173237): 12 files, no impossibilities.
+# . (device 16777224, inode 27173237): 13 files, no impossibilities.
 
-# 12 files, no impossibilities in 1 directories.
+# 13 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -254,6 +275,9 @@ build:
 compile:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
+make: *** No rule to make target `all'.  Stop.
+ 
 #  File has not been updated.
 #  commands to execute (from `makefile', line 15):
 	echo "Compiling for linux"
@@ -287,6 +311,6 @@ run:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4078 / max = 4078 / min = 4078 / avg = 4078
 
-# Finished Make data base on Mon Apr 26 19:28:33 2021
+# Finished Make data base on Mon May  3 19:32:27 2021
 
  
