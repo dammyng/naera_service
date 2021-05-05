@@ -28,6 +28,10 @@ jobs:
     
     - name: Build Authentication
       run: make build
+
+    - name: Build Bills
+      working-directory: ./bills
+      run: make build
       
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
@@ -40,6 +44,12 @@ jobs:
     - name: Upload notifier build
       working-directory: ./notifier
       run: scp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
+
+    - name: Upload bills build
+      working-directory: ./bills
+      run: scp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
       
     - name: Upload auth build
       run: scp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
+
+
