@@ -3,7 +3,7 @@ export
 
 
 build:
-	go build -o cmd/bin/naera_auth cmd/main.go
+	go build -o cmd/bin/naera_bills cmd/main.go
 
 run:
 	go run cmd/main.go
