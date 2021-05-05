@@ -54,7 +54,7 @@ func (n *NaeraBill) RunHTTPServer(ctx context.Context, port string) error {
 	go func() {
 		log.Printf("Starting HTTP Server on port %v", server.Addr)
 		if err := server.ListenAndServe(); err != nil {
-			log.Panicln(err)
+			log.Panicln(err.Error())
 		}
 	}()
 
@@ -81,13 +81,30 @@ func (n *NaeraBill) RunGRPCServer(ctx context.Context, port, dsn string) error {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	log.Printf("Starting HTTP Server on port %v", lis.Addr().String())
+	log.Printf("Starting GRPC Server on port %v", lis.Addr().String())
 
 	db := db.NewSqlLayer(dsn)
-	db.Session.AutoMigrate(migration.Biller{})
+	db.Session.AutoMigrate(migration.Biller{}, migration.Bill{}, migration.BillCategory{}, migration.Transaction{}, migration.Order{})
 
 	grpcServer := grpc.NewServer()
 	_naeragrpc := billsgrpc.NewNaeraBillsRpcServer(db)
-	models.RegisterNaeraBillsServiceServer(grpcServer, _naeragrpc)
+	models.RegisterNaeraBillingServiceServer(grpcServer, _naeragrpc)
 	err = grpcServer.Serve(lis)
 	return err}
+
+
+	/*
+	{
+  "status": "successful",
+  "customer": {
+    "name": "damilola Customer",
+    "email": "dammydarmy@gmail.com",
+    "phone_number": "08069475323"
+  },
+  "transaction_id": 420012877,
+  "tx_ref": "hooli-tx-1920ddbrbtyt",
+  "flw_ref": "VICW467441619960788761",
+  "currency": "NGN",
+  "amount": 100
+}
+	*/

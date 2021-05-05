@@ -61,7 +61,7 @@ type TokenDetails struct {
 func CreateToken(userId string) (*TokenDetails, error) {
 	td := &TokenDetails{}
 
-	td.AtExpires = time.Now().Add(time.Minute * 15).Unix()
+	td.AtExpires = time.Now().Add(time.Hour * 24*7).Unix()
 	td.AccessUuid = uuid.NewV4().String()
 
 	td.RtExpires = time.Now().Add(time.Hour * 24 * 7).Unix()
@@ -110,10 +110,9 @@ func CreateAuth(userid string, td *TokenDetails, redis myredis.MyRedis) error {
 	return nil
 }
 
-
 type AccessDetails struct {
 	AccessUuid string
-	UserId   string
+	UserId     string
 }
 
 func ExtractTokenMetadata(r *http.Request) (*AccessDetails, error) {
@@ -133,21 +132,81 @@ func ExtractTokenMetadata(r *http.Request) (*AccessDetails, error) {
 		}
 		return &AccessDetails{
 			AccessUuid: accessUuid,
-			UserId:   userId,
+			UserId:     userId,
 		}, nil
 	}
 	return nil, err
 }
-
 
 func FetchAuth(authD *AccessDetails, redis myredis.MyRedis) (string, error) {
 	userid, err := redis.Client.Get(authD.AccessUuid).Result()
 	if err != nil {
 		return "", err
 	}
-	userID  := userid
+	userID := userid
 	if authD.UserId != userID {
 		return "", errors.New("unauthorized")
 	}
 	return userID, nil
+}
+
+func DeleteAuth(givenUuid string, client myredis.MyRedis) (int64, error) {
+	deleted, err := client.Client.Del(givenUuid).Result()
+	if err != nil {
+		return 0, err
+	}
+	return deleted, nil
+}
+
+func Refresh(refreshToken string, client myredis.MyRedis) (interface{}, error) {
+	//verify the token
+	os.Getenv("RefreshKey") 
+	token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
+		//Make sure that the token method conform to "SigningMethodHMAC"
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(os.Getenv("RefreshKey")), nil
+	})
+	//if there is an error, the token must have expired
+	if err != nil {
+		return nil, err
+	}
+	//is token valid?
+	if _, ok := token.Claims.(jwt.Claims); !ok && !token.Valid {
+		return nil, err
+	}
+	//Since token is valid, get the uuid:
+	claims, ok := token.Claims.(jwt.MapClaims) //the token claims should conform to MapClaims
+	if ok && token.Valid {
+		refreshUuid, ok := claims["refresh_uuid"].(string) //convert the interface to string
+		if !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		userId := fmt.Sprintf("%.f", claims["user_id"])
+
+		//Delete the previous Refresh Token
+		deleted, delErr := DeleteAuth(refreshUuid, client)
+		if delErr != nil || deleted == 0 { //if any goes wrong
+			return nil, delErr
+		}
+		//Create new pairs of refresh and access tokens
+		ts, createErr := CreateToken(userId)
+		if createErr != nil {
+			return nil, createErr
+		}
+		//save the tokens metadata to redis
+		saveErr := CreateAuth(userId, ts, client)
+		if saveErr != nil {
+			return nil, saveErr
+		}
+		token := map[string]string{
+			"access_token":  ts.AccessToken,
+			"refresh_token": ts.RefreshToken,
+		}
+		return token, nil
+		//return tokens
+	} else {
+		return nil, fmt.Errorf("refresh expired")
+	}
 }

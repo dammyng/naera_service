@@ -9,9 +9,9 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-redis/redis/v7 v7.4.0
-	github.com/gofrs/uuid v4.0.0+incompatible
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/securecookie v1.1.1
 	github.com/jinzhu/copier v0.2.9
 	github.com/joho/godotenv v1.3.0
 	github.com/myesui/uuid v1.0.0 // indirect

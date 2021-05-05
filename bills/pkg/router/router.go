@@ -10,17 +10,25 @@ import (
 
 
 
-func InitServiceRouter(grpcPlug models.NaeraBillsServiceClient) *mux.Router {
+func InitServiceRouter(grpcPlug models.NaeraBillingServiceClient) *mux.Router {
 	var r = mux.NewRouter()
 	handler := rest.NewBillHandler(grpcPlug)
 
 	r.Methods("GET", "POST").Path("/").HandlerFunc(handler.LiveCheck)
-	r.Methods("GET").Path("/livebills").HandlerFunc(handler.LiveCategories)
-	r.Methods("GET").Path("/bills/airtime").HandlerFunc(handler.AllAirtimes)
-	r.Methods("GET").Path("/bills/cable").HandlerFunc(handler.AllCables)
-	r.Methods("GET").Path("/bills/databundle").HandlerFunc(handler.AllDataBundles)
-	r.Methods("GET").Path("/bills/internet").HandlerFunc(handler.AllInternet)
-	r.Methods("GET").Path("/bills/power").HandlerFunc(handler.AllPower)
+	v1 := r.PathPrefix("/v1").Subrouter()
 
+	v1.Path("/livebills").HandlerFunc(handler.LiveCategories).Methods("GET", "OPTIONS")
+	v1.Path("/bills/airtime").HandlerFunc(handler.AllAirtimes).Methods("GET", "OPTIONS")
+	v1.Path("/bills/cable").HandlerFunc(handler.AllCables).Methods("GET", "OPTIONS")
+	v1.Path("/bills/databundle").HandlerFunc(handler.AllDataBundles).Methods("GET", "OPTIONS")
+	v1.Path("/bills/internet").HandlerFunc(handler.AllInternet).Methods("GET", "OPTIONS")
+	v1.Path("/bills/power").HandlerFunc(handler.AllPower).Methods("GET", "OPTIONS")
+	v1.Path("/bills/updatebiller").HandlerFunc(handler.UpdateBiller).Methods("PUT", "OPTIONS")
+	v1.Path("/bills/createbill").HandlerFunc(handler.CreateBill).Methods("POST", "OPTIONS")
+	v1.Path("/bills/mybills").HandlerFunc(handler.MyBills).Methods("Get", "OPTIONS")
+	v1.Path("/bills/savebill").HandlerFunc(handler.CreateBill).Methods("POST", "OPTIONS")
+	v1.Path("/bills/vetnewcart").HandlerFunc(handler.VerifyNewCart).Methods("GET", "OPTIONS")
+	v1.Path("/bills/paybill/{bill_id}").HandlerFunc(handler.PayForBill).Methods("POST", "OPTIONS")
+	v1.Path("/bills/updatebill/{bill_id}").HandlerFunc(handler.UpdateBill).Methods("PUT", "OPTIONS")
 	return r	
 }

@@ -5,18 +5,20 @@ import (
 	"authentication/pkg/helpers"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	valid "github.com/asaskevich/govalidator"
+	"github.com/gorilla/securecookie"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 )
 
 func (handler *AuthHandler) AccountLogin(w http.ResponseWriter, r *http.Request) {
-	
+
 	helpers.SetupCors(&w, r)
-	if r.Method == "OPTIONS"{
+	if r.Method == "OPTIONS" {
 		respondWithJSON(w, http.StatusOK, nil)
 		return
 	}
@@ -33,7 +35,7 @@ func (handler *AuthHandler) AccountLogin(w http.ResponseWriter, r *http.Request)
 	_, err = valid.ValidateStruct(reg)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
-		return	
+		return
 	}
 	var opts []grpc.CallOption
 
@@ -54,8 +56,7 @@ func (handler *AuthHandler) AccountLogin(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	
-	if u.IsReady == false{
+	if u.IsReady == false {
 		res := LoginResponse{
 			AccessToken:  u.Id,
 			RefreshToken: u.Id,
@@ -74,9 +75,49 @@ func (handler *AuthHandler) AccountLogin(w http.ResponseWriter, r *http.Request)
 		respondWithError(w, http.StatusBadRequest, InternalServerError)
 	}
 
+	var hashKey = []byte("cookie-namecookie-namecookie-nam")
+	var blockKey = []byte("cookie-namecookie-namecookie-nam")
+
+	var s = securecookie.New(hashKey, blockKey)
+	encoded, err := s.Encode("cookie-name", ts.RefreshToken)
+	if err == nil {
+		cookie := &http.Cookie{
+			Name:     "cookie-name",
+			Value:    encoded,
+			MaxAge : 99999,
+			Path: "/",
+			HttpOnly: true,
+			SameSite: http.SameSiteNoneMode,
+		}
+		http.SetCookie(w, cookie)
+	}else{
+		log.Println(err)
+	}
+
 	res := LoginResponse{
-		AccessToken:  ts.AccessToken,
-		RefreshToken: ts.RefreshToken,
+		AccessToken: ts.AccessToken,
 	}
 	respondWithJSON(w, http.StatusOK, res)
+}
+
+func (handler *AuthHandler) ReadCookieHandler(w http.ResponseWriter, r *http.Request) {
+	if cookie, err := r.Cookie("cookie-name"); err == nil {
+		log.Println(cookie)
+		var hashKey = []byte("cookie-namecookie-namecookie-nam")
+		var blockKey = []byte("cookie-namecookie-namecookie-nam")
+		var s = securecookie.New(hashKey, blockKey)
+		var value string
+		if err = s.Decode("cookie-name", cookie.Value, &value); err == nil {
+			token, err := helpers.Refresh(value, handler.RedisService)
+			if err != nil {
+				respondWithError(w, http.StatusUnauthorized, err.Error())
+				return
+			}
+			log.Println(token)
+
+			respondWithJSON(w, http.StatusOK, token)
+		}
+	}else{
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+	}
 }

@@ -1,0 +1,155 @@
+syntax = "proto3";
+
+package models;
+import "google/protobuf/empty.proto";
+
+
+message Biller{
+    string id = 1;
+    string card_token = 2;
+    string email =13;
+    string cart =3;
+    int64 created_at = 7;
+    int64 updated_at = 8;
+    int64 deleted_at = 9;
+}
+
+message UpdateBillerRequest{
+    Biller old =1;
+    Biller  new=2;
+ }
+
+message BillerCreatedResponse{
+    string id = 1;
+    }
+
+    message BillCategory{
+        string id =10;
+        string refTitle =2;
+        string displayTitle =3;
+        float currentDiscount =4;
+        bool active =5;
+        int64 created_at = 7;
+        int64 updated_at = 8;
+    }
+
+    message BillCategoryCreatedResponse{
+        string id = 1;
+        }
+
+    message UpdateBillCategoryRequest{
+        BillCategory old =1;
+        BillCategory  new=2;
+     }
+
+     message BillCategoriesResponse{
+        repeated BillCategory categories = 1;
+        }
+
+message Bill{
+    string id = 1;
+    string biller = 11;
+    string cart =2;
+    string by =12;
+    string title =10;
+    bool reoccurring =3;
+    int64 nextPaymentDate =4;
+    int64 LastPaymentDate =14;
+    bool active =5;
+    enum PayingWith {
+        LOAN = 0;
+        MYSELF = 1;
+        EXTERNAL = 2;
+      }
+    PayingWith payingWith = 6;
+    int64 created_at = 7;
+    int64 updated_at = 8;
+    int64 deleted_at = 9;
+}
+
+message GetBillerBillsRequest{
+    string billerID = 1;
+ }
+
+message BillsResponse{
+    repeated Bill bills = 1;
+    }
+
+message BillCreatedResponse{
+    string id = 1;
+    }
+
+    message UpdateBillRequest{
+        Bill old =1;
+        Bill  new=2;
+     }
+
+     message Transaction{
+        string id = 1;
+        string biller = 2;
+        string title = 7;
+        string billingMethod = 8;
+        float amount = 5;
+        string transRef = 6;
+        string bill = 3;
+        string flRef = 11;
+        int64 created_at = 4;
+    }
+    message TransactionCreatedResponse{
+        string id = 1;
+        }
+
+        message GetBillerTransactionsRequest{
+            string billerID = 1;
+         }
+        message TransactionsResponse{
+            repeated Transaction transactions = 1;
+            }
+
+
+    
+            message Order{
+                string id = 1;
+                string title = 7;
+                string transactionId = 8;
+                float amount = 5;
+                bool charged = 9;
+                bool fulfilled = 10;
+                int64 created_at = 4;
+            }
+            message OrderCreatedResponse{
+                string id = 1;
+                }
+        
+                message GetTransactionOrdersRequest{
+                    string transactionID = 1;
+                 }
+                message OrdersResponse{
+                    repeated Order orders = 1;
+                    }
+        
+        
+service NaeraBillingService {
+    rpc CreateBiller(Biller) returns (BillerCreatedResponse);
+    rpc FindBiller(Biller) returns (Biller);
+    rpc UpdateBiller(UpdateBillerRequest) returns (google.protobuf.Empty);
+
+    rpc GetBillerBills(GetBillerBillsRequest) returns (BillsResponse);
+    rpc CreateBill(Bill) returns (BillCreatedResponse);
+    rpc FindBill(Bill) returns (Bill);
+    rpc UpdateBill(UpdateBillRequest) returns (google.protobuf.Empty);
+
+    rpc GetBillCategories(google.protobuf.Empty) returns (BillCategoriesResponse);
+    rpc CreateBillCategory(BillCategory) returns (BillCategoryCreatedResponse);
+    rpc FindBillCategory(BillCategory) returns (BillCategory);
+    rpc UpdateBillCategory(UpdateBillCategoryRequest) returns (google.protobuf.Empty);
+
+    rpc CreateTransaction(Transaction) returns (TransactionCreatedResponse);
+    rpc FindTransaction(Transaction) returns (Transaction);
+    rpc BillerTransactions(GetBillerTransactionsRequest) returns (TransactionsResponse);
+
+    rpc CreateOrder(Order) returns (OrderCreatedResponse);
+    rpc FindOrder(Order) returns (Order);
+    rpc TransactionOrders(GetTransactionOrdersRequest) returns (OrdersResponse);
+ 
+}

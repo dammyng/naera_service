@@ -21,13 +21,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const Redirection = `
-<h5>
-Your Email has been successfully verified. You will be redirected back in 3 seconds
-</h5>
-<h6>Click <a href="https://consumer.naerademo.com/signout"> here </a>to manually redirect</h6>
-<script type="text/javascript"> setTimeout(function(){ window.location.replace("https://consumer.naerademo.com/signout") }, 2000)</script>
-`
 
 func (handler *AuthHandler) VerifyEmail(w http.ResponseWriter, r *http.Request) {
 	helpers.SetupCors(&w, r)
@@ -69,9 +62,9 @@ func (handler *AuthHandler) VerifyEmail(w http.ResponseWriter, r *http.Request) 
 			log.Fatal(err)
 			return
 		}
-		handler.RedisService.Client.Del(email)
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write([]byte(Redirection))
+		//handler.RedisService.Client.Del(email)
+		//w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		//w.Write([]byte(Redirection))
 		return
 	} else {
 		respondWithError(w, http.StatusNotFound, fmt.Errorf("Invalid or incorrect token").Error())

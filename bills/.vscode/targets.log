@@ -10,7 +10,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 make: *** No rule to make target `all'.  Stop.
  
 
-# Make data base, printed on Sun Apr 25 03:04:04 2021
+# Make data base, printed on Sun May  2 02:24:22 2021
 
 # Variables
 
@@ -49,9 +49,9 @@ FL_KEY_LIVE = 2795fda29f314b1e28585d75
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # makefile (from `cmd/.env', line 14)
-DBDatabase = naeraauth
+DBDatabase = naerabills
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-ipc-e1b5bd8b-030f-4165-9bca-4586ec61f81e.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/hl/htpk9vv96jl55t0wnz1y1n3w0000gn/T/vscode-ipc-4108efb5-4b23-4698-bf15-d18b853fc22e.sock
 # environment
 VSCODE_CWD = /Users/kdnotes/src/naera_service
 # environment
@@ -73,13 +73,13 @@ ANDROID_HOME = /Users/kdnotes/Library/Android/sdk
 # environment
 CLOUDSDK_METRICS_ENVIRONMENT = cloudcode.vscode
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.D0wgVS5XL8/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.pDFWgEUwNW/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
 GOBIN = /users/kdnotes/go/bin
 # environment
-CLOUDSDK_METRICS_ENVIRONMENT_VERSION = 1.10.0
+CLOUDSDK_METRICS_ENVIRONMENT_VERSION = 1.11.0
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
@@ -195,7 +195,7 @@ LANG = en_GB.UTF-8
 # environment
 TERM = xterm-256color
 # environment
-VSCODE_PID = 1779
+VSCODE_PID = 2579
 # makefile (from `cmd/.env', line 18)
 RedisPass = password
 # variable set hash-table stats:
@@ -207,9 +207,9 @@ RedisPass = password
 
 # Directories
 
-# . (device 16777222, inode 28582520): 10 files, no impossibilities.
+# . (device 16777224, inode 28582520): 14 files, no impossibilities.
 
-# 10 files, no impossibilities in 1 directories.
+# 14 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -230,7 +230,7 @@ all:
 cmd/.env:
 #  A default, MAKEFILES, or -include/sinclude makefile.
 #  Implicit rule search has been done.
-#  Last modified 2021-04-21 01:07:21
+#  Last modified 2021-04-25 04:26:00
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -247,7 +247,7 @@ proto:
 #  Modification time never checked.
 #  File has not been updated.
 #  commands to execute (from `makefile', line 19):
-	protoc -I=./ --proto_path=models/party --go_out=plugins=grpc:./ models/v1/biller.proto
+	protoc -I=./ --proto_path=models/party --go_out=plugins=grpc:./ models/v1/billing.proto
 	
 
 test:
@@ -255,13 +255,13 @@ test:
 #  Modification time never checked.
 #  File has not been updated.
 #  commands to execute (from `makefile', line 12):
-	go test ./...
+	go test ./... -v
 	
 
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-04-25 03:03:24
+#  Last modified 2021-05-01 14:38:54
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -312,6 +312,6 @@ run:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4078 / max = 4078 / min = 4078 / avg = 4078
 
-# Finished Make data base on Sun Apr 25 03:04:04 2021
+# Finished Make data base on Sun May  2 02:24:22 2021
 
  

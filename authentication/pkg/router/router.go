@@ -19,6 +19,7 @@ func InitServiceRouter(redis myredis.MyRedis, emitter sender.EventEmitter, grpcP
 	//v1
 	v1 := r.PathPrefix("/v1").Subrouter()
 	r.HandleFunc("/v1/login", handler.AccountLogin).Methods("POST", "OPTIONS")
+	r.HandleFunc("/v1/refresh_token", handler.ReadCookieHandler).Methods("POST", "OPTIONS","GET")
 	r.HandleFunc("/v1/register", handler.AccountRegistration).Methods("POST", "OPTIONS")
 	r.HandleFunc("/v1/verify/{email}/{token}", handler.VerifyEmail).Methods("GET", "OPTIONS")
 	r.HandleFunc("/v1/verifysms/{phone}/{token}", handler.VerifyPhone).Methods("GET", "OPTIONS")

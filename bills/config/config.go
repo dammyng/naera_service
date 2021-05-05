@@ -46,7 +46,7 @@ func getDSN(db config.DBConfig) string {
 
 func loadEnv() {
 	log.Println("env loading...")
-	err := godotenv.Load(".env")
+	err := godotenv.Load(os.Getenv("CMD_PATH")+".env")
 	if err != nil {
 		log.Fatalf("Error loading .env file %v", err)
 	}
