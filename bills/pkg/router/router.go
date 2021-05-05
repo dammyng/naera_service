@@ -25,7 +25,9 @@ func InitServiceRouter(grpcPlug models.NaeraBillingServiceClient) *mux.Router {
 	v1.Path("/bills/power").HandlerFunc(handler.AllPower).Methods("GET", "OPTIONS")
 	v1.Path("/bills/updatebiller").HandlerFunc(handler.UpdateBiller).Methods("PUT", "OPTIONS")
 	v1.Path("/bills/createbill").HandlerFunc(handler.CreateBill).Methods("POST", "OPTIONS")
-	v1.Path("/bills/validateorder").HandlerFunc(handler.vA).Methods("POST", "OPTIONS")
+	v1.Path("/bills/mybills").HandlerFunc(handler.MyBills).Methods("Get", "OPTIONS")
+	v1.Path("/bills/savebill").HandlerFunc(handler.CreateBill).Methods("POST", "OPTIONS")
+	v1.Path("/bills/vetnewcart").HandlerFunc(handler.VerifyNewCart).Methods("GET", "OPTIONS")
 	v1.Path("/bills/paybill/{bill_id}").HandlerFunc(handler.PayForBill).Methods("POST", "OPTIONS")
 	v1.Path("/bills/updatebill/{bill_id}").HandlerFunc(handler.UpdateBill).Methods("PUT", "OPTIONS")
 	return r	

@@ -64,7 +64,8 @@ func (c *naeraBillsServiceClient) CreateBill(ctx context.Context, in *models.Bil
 
 func (c *naeraBillsServiceClient) GetBillerBills(ctx context.Context, in *models.GetBillerBillsRequest, opts ...grpc.CallOption) (*models.BillsResponse, error) {
 	var out *models.BillsResponse
-	err := c.Conn.Invoke(ctx, "/models.NaeraBillingService/GetBillerBills", in, out, opts...)
+	ss := models.NewNaeraBillingServiceClient(c.Conn)
+	out, err := ss.GetBillerBills(ctx, in, opts...)
 	if err != nil {
 		return nil, err
 	}

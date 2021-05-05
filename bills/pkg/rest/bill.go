@@ -1,6 +1,7 @@
 package rest
 
 import (
+	m "bills/models"
 	"bills/models/v1"
 	"bills/pkg/helpers"
 	"bills/pkg/restclient"
@@ -11,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -19,6 +21,26 @@ import (
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 )
+
+func (handler *BillHandler) MyBills(w http.ResponseWriter, r *http.Request) {
+	helpers.SetupCors(&w, r)
+	if r.Method == "OPTIONS" {
+		respondWithJSON(w, http.StatusOK, nil)
+		return
+	}
+	access, err := helpers.ExtractTokenMetadata(r)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+	var opts []grpc.CallOption
+
+	tRes, err := handler.GrpcPlug.GetBillerBills(r.Context(), &models.GetBillerBillsRequest{BillerID: access.UserId}, opts...)
+	if err != nil {
+		err = errors.New("Error creating the bill record")
+	}
+	respondWithJSON(w, http.StatusCreated, tRes)
+}
 
 func (handler *BillHandler) CreateBill(w http.ResponseWriter, r *http.Request) {
 	helpers.SetupCors(&w, r)
@@ -38,6 +60,7 @@ func (handler *BillHandler) CreateBill(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Please send a request body", 400)
 		return
 	}
+	log.Println(r.Body)
 	err = json.NewDecoder(r.Body).Decode(&u)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
@@ -47,7 +70,7 @@ func (handler *BillHandler) CreateBill(w http.ResponseWriter, r *http.Request) {
 	var opts []grpc.CallOption
 
 	bill := &models.Bill{
-		Biller:          u.Biller,
+		Biller:          access.UserId,
 		Cart:            u.Cart,
 		Reoccurring:     u.Reoccurring,
 		NextPaymentDate: u.NextPaymentDate,
@@ -152,7 +175,6 @@ func (handler *BillHandler) PayForBill(w http.ResponseWriter, r *http.Request) {
 				Reference:  v.ID,
 			}
 			_request, _ := json.Marshal(&request)
-		
 
 			_, err := restclient.ServiceTransaction(key, string(_request))
 			order := &models.Order{
@@ -160,7 +182,7 @@ func (handler *BillHandler) PayForBill(w http.ResponseWriter, r *http.Request) {
 				CreatedAt:     time.Now().Unix(),
 				Amount:        float32(data.Data.Amount),
 				Id:            uuid.NewV4().String(),
-				Title:         request.Type +" "+ request.Customer,
+				Title:         request.Type + " " + request.Customer,
 				Charged:       true,
 				Fulfilled:     true,
 			}
@@ -254,29 +276,72 @@ func (handler *BillHandler) DeleteBill(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (handler *BillHandler) VerifyCart(w http.ResponseWriter, r *http.Request) {
-
-	var u models.Bill
-	if r.Body == nil {
-		http.Error(w, "Please send a request body", 400)
+func (handler *BillHandler) VerifyNewCart(w http.ResponseWriter, r *http.Request) {
+	helpers.SetupCors(&w, r)
+	if r.Method == "OPTIONS" {
+		respondWithJSON(w, http.StatusOK, nil)
 		return
 	}
-
-	err = json.NewDecoder(r.Body).Decode(&u)
+	access, err := helpers.ExtractTokenMetadata(r)
 	if err != nil {
-		http.Error(w, err.Error(), 400)
+		respondWithError(w, http.StatusUnauthorized, err.Error())
 		return
 	}
+	var opts []grpc.CallOption
 
+	biller, err:= handler.GrpcPlug.FindBiller(r.Context(), &models.Biller{Id: access.UserId}, opts...)
+	if err != nil {
+		respondWithJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
 	var items []models.InCartItem
-	if err := json.Unmarshal([]byte(bill.Cart), &items); err != nil {
+	var verifiedItems []m.DisplayVerifyBill
+	if err := json.Unmarshal([]byte(biller.Cart), &items); err != nil {
 		panic(err)
 	}
-
-	res := services.ValidateOrderItem()
+	var wg sync.WaitGroup
+	wg.Add(len(items))
+	ItemCode := ""
+	BillerCode := ""
+	for _, v := range items {
+		go func(v models.InCartItem) {
+			if strings.Contains(v.Provider, "Airtime") {
+				ItemCode = "AT099"
+				BillerCode = "BIL099"
+			}
+			order :=m.OrderRequest{
+				ItemCode: ItemCode,
+				Customer: v.Beneficiary,
+				BillerCode: BillerCode,
+			}
+			res, err := services.ValidateOrderItem(order)
+			if err != nil {
+				_item := m.DisplayVerifyBill{
+					Id: v.ID,
+					Name: v.Provider,
+					Amount: 0,
+					Title: fmt.Sprintf("%s for %s", v.Provider , v.Beneficiary),
+					Beneficiary: v.Beneficiary,
+					Status: err.Error(),
+				}
+				verifiedItems = append(verifiedItems, _item)
+			}else{
+				_item := m.DisplayVerifyBill{
+					Id: v.ID,
+					Name: res.Data.Name,
+					Amount: v.Amount,
+					Title: fmt.Sprintf("%s for %s", res.Data.Name, res.Data.Customer),
+					Beneficiary: res.Data.Customer,
+					Status: res.Data.ResponseMessage,
+				}
+				verifiedItems = append(verifiedItems, _item)
+			}
+			wg.Done()
+		}(v)
+	}
+	wg.Wait()
+	respondWithJSON(w, http.StatusOK, verifiedItems)
 }
-
-
 
 /**func createUnservedTransaction(bill *models.Bill, data *restclient.FlwVerifiedTransaction) models.Transaction {
 	return models.Transaction{

@@ -83,7 +83,7 @@ func (n *NaeraBillsRpcServer) FindBill(ctx context.Context, arg *models.Bill) (*
 func (n *NaeraBillsRpcServer) GetBillerBills(ctx context.Context, arg  *models.GetBillerBillsRequest) (*models.BillsResponse, error) {
 	result, err := n.DB.BillerBills(arg.BillerID)
 	if err != nil {
-		return nil, InternalError
+		return nil, err
 	}
 	return &models.BillsResponse{Bills: result}, err
 }

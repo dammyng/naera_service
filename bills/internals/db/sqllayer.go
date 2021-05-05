@@ -62,11 +62,11 @@ func (sql *SqlLayer) CreateABill(bill *models.Bill) (string, error) {
 }
 
 func (sql *SqlLayer) BillerBills(arg string) ([]*models.Bill, error) {
-	args := models.Bill{Id: arg}
+	args := models.Bill{Biller: arg}
 	session := sql.Session
 	 dTs := []*models.Bill{}
-
-	err := session.Where(&args).Find(dTs).Error
+	err := session.Where(&args).Find(&dTs).Error
+	
 	if err != nil {
 		return nil, err
 	}
