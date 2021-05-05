@@ -30,7 +30,7 @@ func NewApConfig() AppConfig {
 	appConfig.JWTKey = os.Getenv("JWTKey")
 	appConfig.RedisHost = os.Getenv("Redis_Host")
 	appConfig.RedisPass = os.Getenv("RedisPass")
-	appConfig.GrpcHost = os.Getenv("GRPC_PORT")
+	appConfig.GrpcHost = os.Getenv("BILL_GRPC_PORT")
 	return appConfig
 }
 
