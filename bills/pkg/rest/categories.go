@@ -18,6 +18,7 @@ func (handler *BillHandler) LiveCategories(w http.ResponseWriter, r *http.Reques
 	res, err := handler.GrpcPlug.GetBillCategories(r.Context(), &emptypb.Empty{}, opts...)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
 	}
 	if len(res.Categories) ==0 {
 		respondWithJSON(w, http.StatusOK, make([]string, 0))
