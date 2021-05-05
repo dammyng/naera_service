@@ -20,8 +20,8 @@ func RunServers(ctx context.Context) error {
 	}
 
 	ctx, cancel := context.WithCancel(ctx)
-	grpcPort := os.Getenv("GRPC_PORT")
-	httpPort := os.Getenv("HTTP_PORT")
+	grpcPort := os.Getenv("BILL_GRPC_PORT")
+	httpPort := os.Getenv("BILL_HTTP_PORT")
 
 	defer cancel()
 
