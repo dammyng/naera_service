@@ -138,7 +138,19 @@ func (c *naeraBillsServiceClient) CreateTransaction(ctx context.Context, in *mod
 
 func (c *naeraBillsServiceClient) BillerTransactions(ctx context.Context, in *models.GetBillerTransactionsRequest, opts ...grpc.CallOption) (*models.TransactionsResponse, error) {
 	var out *models.TransactionsResponse
-	err := c.Conn.Invoke(ctx, "/models.NaeraBillingService/GetBillerBills", in, out, opts...)
+	ss := models.NewNaeraBillingServiceClient(c.Conn)
+	out, err := ss.BillerTransactions(ctx, in, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *naeraBillsServiceClient) BillTransactions(ctx context.Context, in *models.GetBillTransactionsRequest, opts ...grpc.CallOption) (*models.TransactionsResponse, error) {
+	
+	var out *models.TransactionsResponse
+	ss := models.NewNaeraBillingServiceClient(c.Conn)
+	out, err := ss.BillTransactions(ctx, in, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -183,4 +195,45 @@ func (c *naeraBillsServiceClient) FindOrder(ctx context.Context, in *models.Orde
 		return nil, err
 	}
 	return result, err
+}
+
+
+
+func (c *naeraBillsServiceClient) CreateCard(ctx context.Context, in *models.Card, opts ...grpc.CallOption) (*models.CardCreatedResponse, error) {
+	ss := models.NewNaeraBillingServiceClient(c.Conn)
+	result, err := ss.CreateCard(ctx, in, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return result, err
+}
+
+func (c *naeraBillsServiceClient) GetBillerCards(ctx context.Context, in *models.GetBillerCardsRequest, opts ...grpc.CallOption) (*models.CardsResponse, error) {
+	var out *models.CardsResponse
+	ss := models.NewNaeraBillingServiceClient(c.Conn)
+	out, err := ss.GetBillerCards(ctx, in, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+
+func (c *naeraBillsServiceClient) FindCard(ctx context.Context, in *models.Card, opts ...grpc.CallOption) (*models.Card, error) {
+	ss := models.NewNaeraBillingServiceClient(c.Conn)
+	result, err := ss.FindCard(ctx, in, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return result, err
+}
+
+
+func (c *naeraBillsServiceClient) UpdateCard(ctx context.Context, in *models.UpdateCardRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.Conn.Invoke(ctx, "/models.NaeraBillingService/UpdateCard", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }

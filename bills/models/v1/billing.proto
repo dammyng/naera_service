@@ -3,10 +3,10 @@ syntax = "proto3";
 package models;
 import "google/protobuf/empty.proto";
 
+option go_package = "models/v1/;models"; 
 
 message Biller{
     string id = 1;
-    string card_token = 2;
     string email =13;
     string cart =3;
     int64 created_at = 7;
@@ -52,6 +52,7 @@ message Bill{
     string cart =2;
     string by =12;
     string title =10;
+    string cardId =15;
     bool reoccurring =3;
     int64 nextPaymentDate =4;
     int64 LastPaymentDate =14;
@@ -102,6 +103,9 @@ message BillCreatedResponse{
         message GetBillerTransactionsRequest{
             string billerID = 1;
          }
+         message GetBillTransactionsRequest{
+            string billID = 1;
+         }
         message TransactionsResponse{
             repeated Transaction transactions = 1;
             }
@@ -128,6 +132,37 @@ message BillCreatedResponse{
                     repeated Order orders = 1;
                     }
         
+message Card{
+    string id = 1;
+    string token = 2;
+    string email =3;
+    string status =11;
+    string lastDigits =5;
+    string firstDigits =6;
+    string provider =4;
+    string expires =12;
+    string addedBy =10;
+    int64 created_at = 7;
+    int64 updated_at = 8;
+    int64 deleted_at = 9;
+}
+
+message CardCreatedResponse{
+    string id = 1;
+    }
+
+    message GetBillerCardsRequest{
+        string addedBy = 1;
+     }
+
+message CardsResponse{
+    repeated Card cards = 1;
+    }
+
+    message UpdateCardRequest{
+        Card old =1;
+        Card  new=2;
+     }
         
 service NaeraBillingService {
     rpc CreateBiller(Biller) returns (BillerCreatedResponse);
@@ -147,9 +182,16 @@ service NaeraBillingService {
     rpc CreateTransaction(Transaction) returns (TransactionCreatedResponse);
     rpc FindTransaction(Transaction) returns (Transaction);
     rpc BillerTransactions(GetBillerTransactionsRequest) returns (TransactionsResponse);
+    rpc BillTransactions(GetBillTransactionsRequest) returns (TransactionsResponse);
 
     rpc CreateOrder(Order) returns (OrderCreatedResponse);
     rpc FindOrder(Order) returns (Order);
     rpc TransactionOrders(GetTransactionOrdersRequest) returns (OrdersResponse);
  
+
+    rpc GetBillerCards(GetBillerCardsRequest) returns (CardsResponse);
+    rpc CreateCard(Card) returns (CardCreatedResponse);
+    rpc FindCard(Card) returns (Card);
+    rpc UpdateCard(UpdateCardRequest) returns (google.protobuf.Empty);
+
 }

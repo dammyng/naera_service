@@ -6,7 +6,7 @@ type Bill struct {
 	By              string `gorm:"not null" json:"by,omitempty"`
 	Cart            string `json:"cart,omitempty"`
 	Title           string `json:"title,omitempty"`
-	TransactionId   string `json:"transaction_id,omitempty"`
+	CardId   string `json:"cardId,omitempty"`
 	Reoccurring     bool   `json:"reoccurring,omitempty"`
 	NextPaymentDate int64  `json:"nextPaymentDate,omitempty"`
 	Active          bool   `json:"active,omitempty"`

@@ -144,6 +144,15 @@ func (n *NaeraBillsRpcServer) CreateTransaction(ctx context.Context, arg *models
 	return &models.TransactionCreatedResponse{Id: result}, err
 }
 
+
+func (n *NaeraBillsRpcServer) BillTransactions(ctx context.Context, arg  *models.GetBillTransactionsRequest) (*models.TransactionsResponse, error) {
+	result, err := n.DB.BillTransactions(arg.BillID)
+	if err != nil {
+		return nil, InternalError
+	}
+	return &models.TransactionsResponse{Transactions: result}, err
+}
+
 func (n *NaeraBillsRpcServer) BillerTransactions(ctx context.Context, arg  *models.GetBillerTransactionsRequest) (*models.TransactionsResponse, error) {
 	result, err := n.DB.BillerTransactions(arg.BillerID)
 	if err != nil {
@@ -204,3 +213,47 @@ func (n *NaeraBillsRpcServer) FindOrder(ctx context.Context, arg *models.Order) 
 
 	return result, nil
 }
+
+
+
+func (n *NaeraBillsRpcServer) CreateCard(ctx context.Context, arg *models.Card) (*models.CardCreatedResponse, error) {
+
+	result, err := n.DB.CreateACard(arg)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &models.CardCreatedResponse{Id: result}, err
+}
+
+func (n *NaeraBillsRpcServer) GetBillerCards(ctx context.Context, arg  *models.GetBillerCardsRequest) (*models.CardsResponse, error) {
+	result, err := n.DB.BillerCards(arg.AddedBy)
+	if err != nil {
+		return nil, InternalError
+	}
+	return &models.CardsResponse{Cards: result}, err
+}
+
+func (n *NaeraBillsRpcServer) FindCard(ctx context.Context, arg *models.Card) (*models.Card, error) {
+
+	result, err := n.DB.FindACard(arg)
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, gorm.ErrRecordNotFound
+
+	}
+
+	if err != nil {
+		return nil, InternalError
+	}
+
+	return result, nil
+}
+
+func (n *NaeraBillsRpcServer) UpdateCard(ctx context.Context, arg *models.UpdateCardRequest) (*empty.Empty, error) {
+	err := n.DB.UpdateACard(arg.Old, arg.New)
+	return &empty.Empty{}, err
+}
+
+

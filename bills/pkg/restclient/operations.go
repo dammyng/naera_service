@@ -74,7 +74,7 @@ func ServiceTransaction(key, body string) (*ServicedTransaction, error) {
 	return &response, err
 }
 
-func ChargeCard(key, body string) error {
+func ChargeCard(key, body string) (*FlwVerifiedTransaction, error) {
 	reqURL, _ := url.Parse(fmt.Sprintf("https://api.flutterwave.com/v3/tokenized-charges"))
 	flutterReq := &http.Request{
 		Method: "POST",
@@ -87,6 +87,9 @@ func ChargeCard(key, body string) error {
 	}
 
 	result, err := HttpReq(flutterReq)
+	if err != nil {
+		return nil, err
+	}
 	defer result.Body.Close()
 	bytes, err := ioutil.ReadAll(result.Body)
 	if err != nil {
@@ -96,11 +99,12 @@ func ChargeCard(key, body string) error {
 	var response FlwVerifiedTransaction
 	err = json.Unmarshal(bytes, &response)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	if response.Status == "error" {
-		return flutterError(response.Message)
+	if response.Status == "error" || response.Status == "Application error" {
+		return nil, flutterError(response.Message)
 	}
-	return err
+	fmt.Println(response)
+	return &response, err
 }

@@ -84,7 +84,7 @@ func (n *NaeraBill) RunGRPCServer(ctx context.Context, port, dsn string) error {
 	log.Printf("Starting GRPC Server on port %v", lis.Addr().String())
 
 	db := db.NewSqlLayer(dsn)
-	db.Session.AutoMigrate(migration.Biller{}, migration.Bill{}, migration.BillCategory{}, migration.Transaction{}, migration.Order{})
+	db.Session.AutoMigrate(migration.Biller{}, migration.Bill{}, migration.BillCategory{}, migration.Transaction{}, migration.Order{}, migration.Card{})
 
 	grpcServer := grpc.NewServer()
 	_naeragrpc := billsgrpc.NewNaeraBillsRpcServer(db)
