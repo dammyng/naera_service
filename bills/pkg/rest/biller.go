@@ -4,7 +4,6 @@ import (
 	"bills/models/v1"
 	"bills/pkg/helpers"
 	"encoding/json"
-	"log"
 	"net/http"
 	"time"
 
@@ -80,8 +79,7 @@ func (handler *BillHandler) UpdateBiller(w http.ResponseWriter, r *http.Request)
 	}
 	u.Id = access.UserId
 	biller, err := handler.GrpcPlug.FindBiller(r.Context(), &models.Biller{Id: access.UserId}, opts...)
-	log.Println(biller)
-	log.Println(err.Error())
+	
 	if err != nil {
 		if grpc.ErrorDesc(err) == gorm.ErrRecordNotFound.Error() {
 			_, err := handler.GrpcPlug.CreateBiller(r.Context(), &u, opts...)
