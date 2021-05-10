@@ -7,17 +7,17 @@ type DisplayCategory struct {
 }
 
 type ServiceRequestPayload struct {
-	Country    string `json:"country"`
-	Customer   string `json:"customer"`
-	Amount     float64    `json:"amount"`
-	Recurrence string `json:"recurrence"`
-	Type       string `json:"type"`
-	Reference  string `json:"reference"`
+	Country    string  `json:"country"`
+	Customer   string  `json:"customer"`
+	Amount     float64 `json:"amount"`
+	Recurrence string  `json:"recurrence"`
+	Type       string  `json:"type"`
+	Reference  string  `json:"reference"`
 }
 
 type InCartItem struct {
-	ID          string `json:"id"`
-	Beneficiary string `json:"beneficiary"`
-	Provider    string `json:"provider"`
+	ID          string  `json:"id"`
+	Beneficiary string  `json:"beneficiary"`
+	Provider    string  `json:"provider"`
 	Amount      float64 `json:"amount"`
 }

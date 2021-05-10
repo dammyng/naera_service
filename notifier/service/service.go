@@ -1,12 +1,22 @@
 package service
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
+	"notifier/billoperations"
+	"notifier/models"
+	"os"
+	"strings"
+	"time"
 
 	"shared/amqp/events"
 	"shared/amqp/receiver"
 	"shared/amqp/sender"
 
+	"github.com/gofrs/uuid"
 	"github.com/streadway/amqp"
 )
 
@@ -30,6 +40,8 @@ func StartServiceProcessListener(AMQP_HOST, Exchange, Queue string) {
 }
 
 func ProcessEvents(eventListener events.EventListener) error {
+	FlwKey := os.Getenv("FL_LIVE_KEY")
+	JWTkey := "CreWwdvOO3pclP3ZFqZUbsDZYL0HyWoU"
 	received, errors, err := eventListener.Listen("NaeraExchange", "buy.airtime")
 	if err != nil {
 		log.Fatalf("event listenner error %v", err.Error())
@@ -41,9 +53,48 @@ func ProcessEvents(eventListener events.EventListener) error {
 		case evt := <-received:
 			log.Printf("got event %s ", evt.EventName())
 
-			// log
 			switch e := evt.(type) {
 			case *events.ServiceAirTimeEvent:
+				request := models.ServiceRequestPayload{
+					Country:    "NG",
+					Customer:   e.Phone,
+					Amount:     e.Amount,
+					Recurrence: "ONCE",
+					Type:       "AIRTIME",
+					Reference:  e.ID,
+				}
+				_request, _ := json.Marshal(&request)
+
+				_, err := billoperations.ServiceTransaction(FlwKey, string(_request))
+				order := &billoperations.Order{
+					TransactionId: e.Transaction,
+					CreatedAt:     time.Now().Unix(),
+					Amount:        float32(e.Amount),
+					Id:            uuid.NewV4().String(),
+					Title:         "Buy Airtime" + " " + e.Phone,
+					Charged:       true,
+					Fulfilled:     true,
+				}
+				if err != nil {
+					order.Fulfilled = false
+				}
+				_body, _ := json.Marshal(&order)
+				body := string(_body)
+				orderCreateURL, _ := url.Parse(e.OrderURL)
+
+				createOrderReq := &http.Request{
+					Method: "POST",
+					URL:    orderCreateURL,
+					Header: map[string][]string{
+						"Content-Type":  {"application/json"},
+						"Authorization": {"Bearer " + JWTkey},
+					},
+					Body: ioutil.NopCloser(strings.NewReader(body)),
+				}
+				_, err = billoperations.HttpReq(createOrderReq)
+				if err != nil {
+					log.Println("")
+				}
 			default:
 				log.Printf("unknown event: %t", e)
 			}

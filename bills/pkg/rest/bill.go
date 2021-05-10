@@ -60,7 +60,6 @@ func (handler *BillHandler) CreateBill(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Please send a request body", 400)
 		return
 	}
-	log.Println(r.Body)
 	err = json.NewDecoder(r.Body).Decode(&u)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
@@ -86,6 +85,8 @@ func (handler *BillHandler) CreateBill(w http.ResponseWriter, r *http.Request) {
 	tRes, err := handler.GrpcPlug.CreateBill(r.Context(), bill, opts...)
 	if err != nil {
 		err = errors.New("Error creating the bill record")
+		respondWithError(w, http.StatusBadRequest, err.Error())
+
 	}
 	respondWithJSON(w, http.StatusCreated, tRes.Id)
 }
