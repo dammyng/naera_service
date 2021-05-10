@@ -2,6 +2,7 @@ package myredis
 
 import (
 	"github.com/go-redis/redis/v7"
+	"log"
 )
 
 type MyRedis struct {
@@ -15,7 +16,7 @@ func NewMyRedis(dsn , pass string) MyRedis {
 
 	_, err := client.Ping().Result()
 	if err != nil {
-		panic(err)
+		log.Panicf("%v : %v  --- %v ", err, dsn, dsn )
 	}
 	return MyRedis{
 		Client: client,

@@ -22,6 +22,7 @@ type Handler interface {
 
 	CreateATransaction(*models.Transaction) (string, error)
 	BillerTransactions(string) ([]*models.Transaction, error)
+	BillTransactions(string) ([]*models.Transaction, error)
 	FindATransaction(*models.Transaction) (*models.Transaction, error)
 
 
@@ -30,5 +31,9 @@ type Handler interface {
 	TransactionOrders(string) ([]*models.Order, error)
 	FindAOrder(*models.Order) (*models.Order, error)
 
+	CreateACard(*models.Card) (string, error)
+	BillerCards(string) ([]*models.Card, error)
+	FindACard(*models.Card) (*models.Card, error)
+	UpdateACard(*models.Card, *models.Card) error
 
 }

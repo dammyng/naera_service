@@ -147,7 +147,19 @@ func (sql *SqlLayer) BillerTransactions(arg string) ([]*models.Transaction, erro
 	session := sql.Session
 	 dTs := []*models.Transaction{}
 
-	err := session.Where(&args).Find(dTs).Error
+	err := session.Where(&args).Find(&dTs).Error
+	if err != nil {
+		return nil, err
+	}
+	return dTs, nil
+}
+
+func (sql *SqlLayer) BillTransactions(arg string) ([]*models.Transaction, error) {
+	args := models.Transaction{Bill: arg}
+	session := sql.Session
+	 dTs := []*models.Transaction{}
+
+	err := session.Where(&args).Find(&dTs).Error
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +194,7 @@ func (sql *SqlLayer) TransactionOrders(arg string) ([]*models.Order, error) {
 	session := sql.Session
 	 dTs := []*models.Order{}
 
-	err := session.Where(&args).Find(dTs).Error
+	err := session.Where(&args).Find(&dTs).Error
 	if err != nil {
 		return nil, err
 	}
@@ -200,4 +212,49 @@ func (sql *SqlLayer) FindAOrder(arg *models.Order) (*models.Order, error) {
 		return nil, err
 	}
 	return &dA, err
+}
+
+
+
+func (sql *SqlLayer) CreateACard(card *models.Card) (string, error) {
+	err := sql.Session.Create(&card).Error
+	if err != nil {
+		return "", err
+	}
+	return card.Id, err
+}
+
+func (sql *SqlLayer) BillerCards(arg string) ([]*models.Card, error) {
+	args := models.Card{AddedBy: arg}
+	session := sql.Session
+	 dTs := []*models.Card{}
+
+	err := session.Where(&args).Find(&dTs).Error
+	if err != nil {
+		return nil, err
+	}
+	return dTs, nil
+}
+
+func (sql *SqlLayer) FindACard(arg *models.Card) (*models.Card, error) {
+	session := sql.Session
+	var dA models.Card
+	err := session.Where(arg).First(&dA).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, gorm.ErrRecordNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &dA, err
+}
+
+func (sql *SqlLayer) UpdateACard(old *models.Card, new *models.Card) error {
+	session := sql.Session
+	return session.Model(&old).Updates(new).Error
+}
+
+func (sql *SqlLayer) UpdateACardMap(arg *models.Card, dict map[string]interface{}) error {
+	session := sql.Session
+	return session.Model(&arg).Updates(dict).Error
 }

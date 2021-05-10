@@ -2,7 +2,6 @@ package rest
 
 import (
 	"bills/pkg/helpers"
-	"log"
 	"net/http"
 
 	"google.golang.org/grpc"
@@ -24,6 +23,5 @@ func (handler *BillHandler) LiveCategories(w http.ResponseWriter, r *http.Reques
 		respondWithJSON(w, http.StatusOK, make([]string, 0))
 		return
 	}
-	log.Println("x")
 	respondWithJSON(w, http.StatusOK, res.Categories)
 }
