@@ -6,11 +6,18 @@ import (
 	"testing"
 
 	"gopkg.in/stretchr/testify.v1/require"
+	m "bills/models"
+
 )
 
 
 func TestVerifiedBill(t *testing.T){
-	rs, err := services.FWVerifyBillsHandler("/bill-items/AT099/validate?code=BIL107&customer=09055913141")
-	log.Println(rs)
+	_order := m.OrderRequest{
+		ItemCode: "AT099",
+		Customer: "08069475323",
+		BillerCode: "BIL099",
+	}
+	rs, err := services.ValidateOrderItem(_order)
+	log.Println(rs.Data.Name)
 	require.NoError(t, err)
 }
