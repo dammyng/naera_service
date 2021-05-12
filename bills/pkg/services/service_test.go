@@ -9,7 +9,7 @@ import (
 
 func TestMain(m *testing.M) {
 	os.Setenv("Environment", "test")
-	os.Setenv("CMD_PATH", "C:\\Users\\KD\\Desktop\\naera_service\\bills\\cmd\\")
+	os.Setenv("CMD_PATH", "/Users/kd/src/naera/naera_service/bills/cmd/")
 	
 	config.NewApConfig()
 
