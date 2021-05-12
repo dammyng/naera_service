@@ -4,15 +4,20 @@ import (
 	"bills/models/v1"
 	"encoding/json"
 	"net/http"
+	"shared/amqp/sender"
+
 )
 
 type BillHandler struct {
 	GrpcPlug models.NaeraBillingServiceClient
+	EventEmitter sender.EventEmitter
+
 }
 
-func NewBillHandler(grpcPlug models.NaeraBillingServiceClient) *BillHandler {
+func NewBillHandler(grpcPlug models.NaeraBillingServiceClient, emitter sender.EventEmitter) *BillHandler {
 	return &BillHandler{
 		GrpcPlug: grpcPlug,
+		EventEmitter: emitter,
 	}
 }
 

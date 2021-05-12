@@ -12,9 +12,11 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"shared/amqp/sender"
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/streadway/amqp"
 	"google.golang.org/grpc"
 )
 
@@ -26,7 +28,7 @@ func NewNaeraBill() *NaeraBill {
 	return &NaeraBill{}
 }
 
-func (n *NaeraBill) Initialize(grpcHost string) error {
+func (n *NaeraBill) Initialize(grpcHost, amqpHost string) error {
 
 	//GRPC
 	grpcClient, err := billsgrpc.NewNaeraRPClient(grpcHost)
@@ -34,8 +36,18 @@ func (n *NaeraBill) Initialize(grpcHost string) error {
 		return err
 	}
 
+	//AMQP
+	conn, err := amqp.Dial(amqpHost)
+	if err != nil {
+		return err
+	}
+	eventEmitter, err := sender.NewAmqpEventEmitter(conn, "NaeraExchange")
+	if err != nil {
+		return err
+	}
+
 	// Router
-	router := router.InitServiceRouter(grpcClient)
+	router := router.InitServiceRouter(grpcClient, eventEmitter)
 	n.Router = router
 	return nil
 }
@@ -84,7 +96,7 @@ func (n *NaeraBill) RunGRPCServer(ctx context.Context, port, dsn string) error {
 	log.Printf("Starting GRPC Server on port %v", lis.Addr().String())
 
 	db := db.NewSqlLayer(dsn)
-	db.Session.AutoMigrate(migration.Biller{}, migration.Bill{}, migration.BillCategory{}, migration.Transaction{}, migration.Order{})
+	db.Session.AutoMigrate(migration.Biller{}, migration.Bill{}, migration.BillCategory{}, migration.Transaction{}, migration.Order{}, migration.Card{})
 
 	grpcServer := grpc.NewServer()
 	_naeragrpc := billsgrpc.NewNaeraBillsRpcServer(db)

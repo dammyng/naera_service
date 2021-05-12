@@ -2,6 +2,7 @@ package restclient_test
 
 import (
 	"bills/pkg/restclient"
+	"fmt"
 	"log"
 	"testing"
 
@@ -10,7 +11,7 @@ import (
 
 
 func TestFlwTransacVerify(t *testing.T)  {
-	r, err := restclient.VerifyFwTransaction("FLWSECK_TEST-be6475503d295c1be0b10ee8e971671f-X", "2062317")
+	r, err := restclient.VerifyFwTransaction("2062317")
 	log.Println(r)
 	require.NoError(t, err)
 }
@@ -25,7 +26,7 @@ func TestFlwServiceTransaction(t *testing.T)  {
 		"type": "AIRTIME",
 		"reference": "9300049404445"
 	 }`
-	 _, err := restclient.ServiceTransaction("FLWSECK_TEST-be6475503d295c1be0b10ee8e971671f-X", payload)
+	 _, err := restclient.ServiceTransaction( payload)
 	require.NoError(t, err)
 }
 
@@ -41,6 +42,8 @@ func TestFlwChargingCard(t *testing.T)  {
 		"narration": "Sample tokenized charge",
 		"tx_ref": "tokenid-c-001"
 	}`
-	result := restclient.ChargeCard("FLWSECK_TEST-be6475503d295c1be0b10ee8e971671f-X", payload)
+	_res, result := restclient.ChargeCard(payload)
+	log.Println(_res)
+	fmt.Println(_res)
 	require.NoError(t, result)
 }

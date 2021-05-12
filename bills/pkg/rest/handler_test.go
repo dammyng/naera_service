@@ -12,8 +12,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"shared/amqp/sender"
 	"testing"
 
+	"github.com/streadway/amqp"
 	"google.golang.org/grpc"
 	"gopkg.in/stretchr/testify.v1/require"
 )
@@ -22,7 +24,8 @@ var TestBills pkg.NaeraBill
 
 func TestMain(m *testing.M) {
 	os.Setenv("Environment", "test")
-	os.Setenv("test_token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjNhNzU1NjVhLWQ4OTItNDEyZC1hM2IxLTEwMDAzZDczMzlhMCIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyMDA0MzczNCwidXNlcl9pZCI6IjdiYTg3MGJiLWQ2NzMtNGU4ZC05YjUxLTExODhjZjVkZWQ4MyJ9.PsrbbRvi38ZQ5gj27dL68M24R9uIbv-DQ2kWJDVor5I")
+	os.Setenv("CMD_PATH", "/Users/kd/src/naera/naera_service/bills/cmd/")
+	os.Setenv("test_token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6IjRhYzJjZmQzLWVhMjctNDBkMC05MDA2LWQ1MmEyMGEzYzkwZiIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYyMTEzMjQyNCwidXNlcl9pZCI6ImVkNDFmYmIzLWY5MzItNGJiOC1hNjIzLTAxOWNhNGM3NGNmNyJ9.dvaI0BCX6OHTSr63Ol0caXKIKnxhdMysuflH324o5Gg")
 	GRPC_PORT := "0.0.0.0:9999"
 
 	env := config.NewApConfig()
@@ -48,8 +51,20 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Panicln("Test setup failed")
 	}
+
+		//AMQP
+		conn, err := amqp.Dial(env.AmqpBroker)
+		if err != nil {
+			log.Panicln("Test setup failed -- " + err.Error())
+
+		}
+		eventEmitter, err := sender.NewAmqpEventEmitter(conn, "NaeraExchange")
+		if err != nil {
+			log.Panicln("Test setup failed")
+
+		}
 	
-	testRouter := router.InitServiceRouter(grpcClient)
+	testRouter := router.InitServiceRouter(grpcClient, eventEmitter)
 
 	TestBills.Router = testRouter
 
