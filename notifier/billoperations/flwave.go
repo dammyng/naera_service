@@ -9,7 +9,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
-	"shared/models"
+	"notifier/models"
 	"strings"
 	"time"
 )
@@ -52,6 +52,9 @@ func ServiceTransaction(key, body string) (*models.ServicedTransaction, error) {
 	}
 
 	result, err := HttpReq(flutterReq)
+	if err != nil {
+		return nil, err
+	}
 	defer result.Body.Close()
 	bytes, err := ioutil.ReadAll(result.Body)
 	if err != nil {

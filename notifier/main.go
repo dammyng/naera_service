@@ -15,7 +15,7 @@ func main() {
 		loadEnv()
 	}
 	go func() {
-		service.StartServiceProcessListener(os.Getenv("AMQP_URL"), os.Getenv("Exchange"), os.Getenv("Queue"))
+		service.StartServiceProcessListener(os.Getenv("AMQP_URL"), os.Getenv("Exchange"), os.Getenv("BillsQueue"))
 	}()
 	auth.StartAuthenticationListener(os.Getenv("AMQP_URL"), os.Getenv("Exchange"), os.Getenv("Queue"))
 }

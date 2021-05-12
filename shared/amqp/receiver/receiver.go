@@ -85,6 +85,8 @@ func (a *amqpEventListener) Listen(exchange string, eventNames ...string) (<-cha
 				event = new(events.PasswordResetRequest)
 			case "user.resendemailvalidation":
 				event = new(events.ResendEmailEvent)
+			case "buy.airtime":
+				event = new(events.ServiceAirTimeEvent)
 			default:
 				errors <- fmt.Errorf("event type %s i unknown", eventName)
 				continue

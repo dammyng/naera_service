@@ -14,7 +14,7 @@ func RunServers(ctx context.Context) error {
 
 	env := config.NewApConfig()
 
-	err := App.Initialize(env.GrpcHost)
+	err := App.Initialize(env.GrpcHost, env.AmqpBroker)
 	if err != nil {
 		return err
 	}

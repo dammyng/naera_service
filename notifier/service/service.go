@@ -11,12 +11,12 @@ import (
 	"os"
 	"strings"
 	"time"
+	"github.com/twinj/uuid"
 
 	"shared/amqp/events"
 	"shared/amqp/receiver"
 	"shared/amqp/sender"
 
-	"github.com/gofrs/uuid"
 	"github.com/streadway/amqp"
 )
 
@@ -33,14 +33,17 @@ func StartServiceProcessListener(AMQP_HOST, Exchange, Queue string) {
 		log.Fatal("could not establish amqp connection :" + err.Error())
 	}
 
-	billsListener, err := receiver.NewEventEventListener(connection, Queue)
+	billsListener, err := receiver.NewEventEventListener(connection, "xx")
+	if err != nil {
+		log.Fatalf("receiver listenner error %v", err.Error())
+	}
 	go ProcessEvents(billsListener)
 	c := make(chan int)
 	<-c
 }
 
 func ProcessEvents(eventListener events.EventListener) error {
-	FlwKey := os.Getenv("FL_LIVE_KEY")
+	FlwKey := os.Getenv("FL_SECRETKEY")
 	JWTkey := "CreWwdvOO3pclP3ZFqZUbsDZYL0HyWoU"
 	received, errors, err := eventListener.Listen("NaeraExchange", "buy.airtime")
 	if err != nil {

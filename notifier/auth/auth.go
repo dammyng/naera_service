@@ -28,7 +28,10 @@ func StartAuthenticationListener(AMQP_HOST, Exchange, Queue string) {
 		log.Fatal("could not establish amqp connection :" + err.Error())
 	}
 
-	authLister, err := receiver.NewEventEventListener(connection, Queue)
+	authLister, err := receiver.NewEventEventListener(connection, "mm")
+	if err != nil {
+		log.Fatalf("receiver listenner error %v", err.Error())
+	}
 	go ProcessEvents(authLister)
 	c := make(chan int)
 	<-c

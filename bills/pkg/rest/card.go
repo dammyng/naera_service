@@ -3,10 +3,60 @@ package rest
 import (
 	"bills/models/v1"
 	"bills/pkg/helpers"
+	"bills/pkg/restclient"
 	"net/http"
+	"os"
+	"time"
 
+	"github.com/gorilla/mux"
+	"github.com/twinj/uuid"
 	"google.golang.org/grpc"
 )
+
+func (handler *BillHandler) AddCard(w http.ResponseWriter, r *http.Request) {
+	helpers.SetupCors(&w, r)
+	if r.Method == "OPTIONS" {
+		respondWithJSON(w, http.StatusOK, nil)
+		return
+	}
+	var opts []grpc.CallOption
+	access, err := helpers.ExtractTokenMetadata(r)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+	params := mux.Vars(r)
+	trans_id := params["trans_id"]
+	//key := os.Getenv("FL_SECRETKEY_LIVE")
+	key := os.Getenv("FL_SECRETKEY_TEST")
+
+	verified, err := restclient.VerifyFwTransaction(key, string(trans_id))
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	newCard := models.Card{
+		Id: uuid.NewV4().String(),
+		Token: verified.Data.Card.Token,
+		Email: verified.Data.Customer.Email,
+		Status: "active",
+		LastDigits: verified.Data.Card.Last4Digits,
+		FirstDigits: verified.Data.Card.First6Digits,
+		Provider: "FL",
+		Expires: verified.Data.Card.Expiry,
+		AddedBy: access.UserId,
+		CreatedAt: time.Now().Unix(),
+		UpdatedAt: time.Now().Unix(),
+	}
+
+	res, err := handler.GrpcPlug.CreateCard(r.Context(), &newCard, opts...)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusOK, res.Id)
+}
 
 func (handler *BillHandler) BillerCards(w http.ResponseWriter, r *http.Request) {
 	helpers.SetupCors(&w, r)

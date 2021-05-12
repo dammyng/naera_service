@@ -6,12 +6,14 @@ import (
 	"bills/pkg/helpers"
 	"bills/pkg/restclient"
 	"bills/pkg/services"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"shared/amqp/events"
 	"strings"
 	"sync"
 	"time"
@@ -448,7 +450,25 @@ func (handler *BillHandler) ChargeCard(w http.ResponseWriter, r *http.Request) {
 		err = errors.New(err.Error())
 		respondWithError(w, http.StatusInternalServerError, err.Error() + " _Error creating transactiom")
 	}
+
+	var cartEvent []events.Event 
+	for _, v := range items {
+
+	}
+
+		msg := events.ServiceAirTimeEvent{
+			ID:    hex.EncodeToString(uuid.NewV4().Bytes()),
+			Phone: "08069475323",
+			Amount: 10,
+			Transaction: tRes.Id,
+			OrderURL: "http://localhost:7777/v1/bills/createorder",
+			
+		}
+	
+		handler.EventEmitter.Emit(&msg, "NaeraExchange")
+	
 	// pass idem array to background
+
 
 	respondWithJSON(w, http.StatusCreated, tRes.Id)
 

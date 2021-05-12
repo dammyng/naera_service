@@ -12,8 +12,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"shared/amqp/sender"
 	"testing"
 
+	"github.com/streadway/amqp"
 	"google.golang.org/grpc"
 	"gopkg.in/stretchr/testify.v1/require"
 )
@@ -49,8 +51,20 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Panicln("Test setup failed")
 	}
+
+		//AMQP
+		conn, err := amqp.Dial(env.AmqpBroker)
+		if err != nil {
+			log.Panicln("Test setup failed -- " + err.Error())
+
+		}
+		eventEmitter, err := sender.NewAmqpEventEmitter(conn, "NaeraExchange")
+		if err != nil {
+			log.Panicln("Test setup failed")
+
+		}
 	
-	testRouter := router.InitServiceRouter(grpcClient)
+	testRouter := router.InitServiceRouter(grpcClient, eventEmitter)
 
 	TestBills.Router = testRouter
 
