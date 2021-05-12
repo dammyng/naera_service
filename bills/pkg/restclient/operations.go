@@ -6,20 +6,22 @@ import (
 	"io/ioutil"
 	"log"
 	"strings"
-	
-"bills/pkg/helpers"
+
+	"bills/pkg/helpers"
 )
 
 func VerifyFwTransaction(txRef string) (*FlwVerifiedTransaction, error) {
 	// jwt authentication
 	reqURL := fmt.Sprintf("/transactions/%v/verify", txRef)
 
-
 	flutterReq, err := helpers.BuildFlutterWaveRequest("GET", reqURL, nil)
 	if err != nil {
 		return nil, err
 	}
 	result, err := HttpReq(flutterReq)
+	if err != nil {
+		return nil, err
+	}
 	defer result.Body.Close()
 	bytes, err := ioutil.ReadAll(result.Body)
 	if err != nil {
@@ -48,12 +50,15 @@ func ServiceTransaction(body string) (*ServicedTransaction, error) {
 	}
 
 	result, err := HttpReq(flutterReq)
+	if err != nil {
+		return nil, err
+	}
 	defer result.Body.Close()
 	bytes, err := ioutil.ReadAll(result.Body)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var response ServicedTransaction
 	err = json.Unmarshal(bytes, &response)
 	if err != nil {
@@ -68,10 +73,10 @@ func ServiceTransaction(body string) (*ServicedTransaction, error) {
 }
 
 func ChargeCard(body string) (*FlwVerifiedTransaction, error) {
-	flutterReq, err := helpers.BuildFlutterWaveRequest("POST","/tokenized-charges",  ioutil.NopCloser(strings.NewReader(body)))
-if err != nil {
-	return nil, err
-}
+	flutterReq, err := helpers.BuildFlutterWaveRequest("POST", "/tokenized-charges", ioutil.NopCloser(strings.NewReader(body)))
+	if err != nil {
+		return nil, err
+	}
 	result, err := HttpReq(flutterReq)
 	if err != nil {
 		return nil, err

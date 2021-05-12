@@ -42,7 +42,7 @@ func TestFlwChargingCard(t *testing.T)  {
 		"narration": "Sample tokenized charge",
 		"tx_ref": "tokenid-c-001"
 	}`
-	_res, result := restclient.ChargeCard("FLWSECK_TEST-be6475503d295c1be0b10ee8e971671f-X", payload)
+	_res, result := restclient.ChargeCard(payload)
 	log.Println(_res)
 	fmt.Println(_res)
 	require.NoError(t, result)
