@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"notifier/billoperations"
 	"notifier/models"
-	"os"
 	"strings"
 	"time"
 	"github.com/twinj/uuid"
@@ -43,7 +42,6 @@ func StartServiceProcessListener(AMQP_HOST, Exchange, Queue string) {
 }
 
 func ProcessEvents(eventListener events.EventListener) error {
-	FlwKey := os.Getenv("FL_SECRETKEY")
 	JWTkey := "CreWwdvOO3pclP3ZFqZUbsDZYL0HyWoU"
 	received, errors, err := eventListener.Listen("NaeraExchange", "buy.airtime")
 	if err != nil {
@@ -68,7 +66,7 @@ func ProcessEvents(eventListener events.EventListener) error {
 				}
 				_request, _ := json.Marshal(&request)
 
-				_, err := billoperations.ServiceTransaction(FlwKey, string(_request))
+				_, err := billoperations.ServiceTransaction(string(_request))
 				order := &billoperations.Order{
 					TransactionId: e.Transaction,
 					CreatedAt:     time.Now().Unix(),

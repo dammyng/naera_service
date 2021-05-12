@@ -5,7 +5,6 @@ import (
 	"bills/pkg/helpers"
 	"bills/pkg/restclient"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -27,10 +26,9 @@ func (handler *BillHandler) AddCard(w http.ResponseWriter, r *http.Request) {
 	}
 	params := mux.Vars(r)
 	trans_id := params["trans_id"]
-	//key := os.Getenv("FL_SECRETKEY_LIVE")
-	key := os.Getenv("FL_SECRETKEY_TEST")
 
-	verified, err := restclient.VerifyFwTransaction(key, string(trans_id))
+
+	verified, err := restclient.VerifyFwTransaction(string(trans_id))
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return

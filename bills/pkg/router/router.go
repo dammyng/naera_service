@@ -33,7 +33,7 @@ func InitServiceRouter(grpcPlug models.NaeraBillingServiceClient,emitter sender.
 	v1.Path("/bills/vetnewcart").HandlerFunc(handler.VerifyNewCart).Methods("GET", "OPTIONS")
 	v1.Path("/bills/{bill_id}/transactions").HandlerFunc(handler.BillTransactions).Methods("GET", "OPTIONS")
 	v1.Path("/bills/{bill_id}/transaction/{trans_id}").HandlerFunc(handler.BillTransactionOrders).Methods("GET", "OPTIONS")
-	v1.Path("/bills/paybill/{bill_id}").HandlerFunc(handler.PayForBill).Methods("POST", "OPTIONS")
+//	v1.Path("/bills/paybill/{bill_id}").HandlerFunc(handler.PayForBill).Methods("POST", "OPTIONS")
 	v1.Path("/bills/chargecard").HandlerFunc(handler.ChargeCard).Methods("POST", "OPTIONS")
 	v1.Path("/bills/updatebill/{bill_id}").HandlerFunc(handler.UpdateBill).Methods("PUT", "OPTIONS")
 	v1.Path("/biller/transactions").HandlerFunc(handler.BillerTransactions).Methods("GET", "OPTIONS")

@@ -5,23 +5,20 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net/http"
-	"net/url"
 	"strings"
+	
+"bills/pkg/helpers"
 )
 
-func VerifyFwTransaction(key, txRef string) (*FlwVerifiedTransaction, error) {
+func VerifyFwTransaction(txRef string) (*FlwVerifiedTransaction, error) {
 	// jwt authentication
-	reqURL, _ := url.Parse(fmt.Sprintf("https://api.flutterwave.com/v3/transactions/%v/verify", txRef))
-	flutterReq := &http.Request{
-		Method: "GET",
-		URL:    reqURL,
-		Header: map[string][]string{
-			"Content-Type":  {"application/json"},
-			"Authorization": {"Bearer " + key},
-		},
-	}
+	reqURL := fmt.Sprintf("/transactions/%v/verify", txRef)
 
+
+	flutterReq, err := helpers.BuildFlutterWaveRequest("GET", reqURL, nil)
+	if err != nil {
+		return nil, err
+	}
 	result, err := HttpReq(flutterReq)
 	defer result.Body.Close()
 	bytes, err := ioutil.ReadAll(result.Body)
@@ -42,25 +39,21 @@ func VerifyFwTransaction(key, txRef string) (*FlwVerifiedTransaction, error) {
 	return &response, err
 }
 
-func ServiceTransaction(key, body string) (*ServicedTransaction, error) {
-	reqURL, _ := url.Parse(fmt.Sprintf("https://api.flutterwave.com/v3/bills"))
-	flutterReq := &http.Request{
-		Method: "POST",
-		URL:    reqURL,
-		Header: map[string][]string{
-			"Content-Type":  {"application/json"},
-			"Authorization": {"Bearer " + key},
-		},
-		Body: ioutil.NopCloser(strings.NewReader(body)),
+func ServiceTransaction(body string) (*ServicedTransaction, error) {
+	reqURL := "/bills"
+
+	flutterReq, err := helpers.BuildFlutterWaveRequest("POST", reqURL, ioutil.NopCloser(strings.NewReader(body)))
+	if err != nil {
+		return nil, err
 	}
 
 	result, err := HttpReq(flutterReq)
 	defer result.Body.Close()
 	bytes, err := ioutil.ReadAll(result.Body)
 	if err != nil {
-		//log.Fatalln(err)
 		return nil, err
 	}
+	
 	var response ServicedTransaction
 	err = json.Unmarshal(bytes, &response)
 	if err != nil {
@@ -74,18 +67,11 @@ func ServiceTransaction(key, body string) (*ServicedTransaction, error) {
 	return &response, err
 }
 
-func ChargeCard(key, body string) (*FlwVerifiedTransaction, error) {
-	reqURL, _ := url.Parse(fmt.Sprintf("https://api.flutterwave.com/v3/tokenized-charges"))
-	flutterReq := &http.Request{
-		Method: "POST",
-		URL:    reqURL,
-		Header: map[string][]string{
-			"Content-Type":  {"application/json"},
-			"Authorization": {"Bearer " + key},
-		},
-		Body: ioutil.NopCloser(strings.NewReader(body)),
-	}
-
+func ChargeCard(body string) (*FlwVerifiedTransaction, error) {
+	flutterReq, err := helpers.BuildFlutterWaveRequest("POST","/tokenized-charges",  ioutil.NopCloser(strings.NewReader(body)))
+if err != nil {
+	return nil, err
+}
 	result, err := HttpReq(flutterReq)
 	if err != nil {
 		return nil, err

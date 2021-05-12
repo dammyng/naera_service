@@ -6,13 +6,10 @@ import (
 	"bills/pkg/helpers"
 	"bills/pkg/restclient"
 	"bills/pkg/services"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
-	"os"
 	"shared/amqp/events"
 	"strings"
 	"sync"
@@ -43,6 +40,7 @@ func (handler *BillHandler) MyBills(w http.ResponseWriter, r *http.Request) {
 	}
 	respondWithJSON(w, http.StatusCreated, tRes)
 }
+
 
 func (handler *BillHandler) CreateBill(w http.ResponseWriter, r *http.Request) {
 	helpers.SetupCors(&w, r)
@@ -93,136 +91,6 @@ func (handler *BillHandler) CreateBill(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusCreated, tRes.Id)
 }
 
-func (handler *BillHandler) PayForBill(w http.ResponseWriter, r *http.Request) {
-	helpers.SetupCors(&w, r)
-	if r.Method == "OPTIONS" {
-		respondWithJSON(w, http.StatusOK, nil)
-		return
-	}
-
-	access, err := helpers.ExtractTokenMetadata(r)
-	if err != nil {
-		respondWithError(w, http.StatusUnauthorized, err.Error())
-		return
-	}
-
-	var u models.Bill
-	if r.Body == nil {
-		http.Error(w, "Please send a request body", 400)
-		return
-	}
-
-	err = json.NewDecoder(r.Body).Decode(&u)
-	if err != nil {
-		http.Error(w, err.Error(), 400)
-		return
-	}
-
-	var opts []grpc.CallOption
-	params := mux.Vars(r)
-	billID := params["bill_id"]
-
-	bill, err := handler.GrpcPlug.FindBill(r.Context(), &models.Bill{
-		Id: billID,
-	}, opts...)
-
-	if err != nil {
-		respondWithError(w, http.StatusNotFound, err.Error())
-	}
-
-	key := os.Getenv("FL_SECRETKEY_LIVE")
-	// Verify transaction
-	data, err := restclient.VerifyFwTransaction(key," u.TransactionId")
-	if err != nil {
-		err = errors.New(err.Error())
-		respondWithError(w, http.StatusBadGateway, err.Error()+" -- "+key+" -- "+"u.TransactionId")
-		return
-	}
-
-	transaction := models.Transaction{
-		Id:        uuid.NewV4().String(),
-		Biller:    access.UserId,
-		Title:     bill.Title,
-		Amount:    float32(data.Data.Amount),
-		Bill:      bill.Id,
-		CreatedAt: time.Now().Unix(),
-	}
-	tRes, err := handler.GrpcPlug.CreateTransaction(r.Context(), &transaction, opts...)
-	if err != nil {
-		err = errors.New(err.Error())
-		respondWithError(w, http.StatusInternalServerError, err.Error()+" -- "+key+" -- "+"u.TransactionId")
-	}
-
-	var items []models.InCartItem
-	if err := json.Unmarshal([]byte(bill.Cart), &items); err != nil {
-		panic(err)
-	}
-
-	fatalErrors := make(chan error, len(items))
-	orderErrors := make(chan error, len(items))
-	var wg sync.WaitGroup
-	wg.Add(len(items))
-	for _, v := range items {
-
-		go func(v models.InCartItem) {
-
-			log.Printf("Request from cart Item %v", v)
-
-			request := models.ServiceRequestPayload{
-				Country:    "NG",
-				Customer:   v.Beneficiary,
-				Amount:     v.Amount,
-				Recurrence: "ONCE",
-				Type:       "AIRTIME",
-				Reference:  v.ID,
-			}
-			_request, _ := json.Marshal(&request)
-
-			_, err := restclient.ServiceTransaction(key, string(_request))
-			order := &models.Order{
-				TransactionId: transaction.Id,
-				CreatedAt:     time.Now().Unix(),
-				Amount:        float32(data.Data.Amount),
-				Id:            uuid.NewV4().String(),
-				Title:         request.Type + " " + request.Customer,
-				Charged:       true,
-				Fulfilled:     true,
-			}
-
-			if err != nil {
-				fatalErrors <- errors.New("We are unable to service your transaction for - " + err.Error() + request.Type + "_" + request.Customer)
-				order.Fulfilled = false
-			}
-			_, err = handler.GrpcPlug.CreateOrder(r.Context(), order, opts...)
-			if err != nil {
-				orderErrors <- errors.New("Your bills were serviced but we could not crete your order record because - " + err.Error() + request.Type + "_ for _" + request.Customer)
-				err = errors.New(err.Error())
-				respondWithError(w, http.StatusInternalServerError, err.Error()+" -- "+key+" -- "+"u.TransactionId")
-			}
-			wg.Done()
-		}(v)
-
-	}
-
-	wg.Wait()
-	close(fatalErrors)
-	var total string
-
-	resErrors := ""
-
-	for msg := range fatalErrors {
-		resErrors += fmt.Sprintf("%v, ", msg)
-	}
-	for msg := range orderErrors {
-		resErrors += fmt.Sprintf("%v, ", msg)
-	}
-
-	if resErrors != "" {
-		respondWithJSON(w, http.StatusBadRequest, total)
-		return
-	}
-	respondWithJSON(w, http.StatusCreated, tRes.Id)
-}
 
 func (handler *BillHandler) UpdateBill(w http.ResponseWriter, r *http.Request) {
 	helpers.SetupCors(&w, r)
@@ -373,8 +241,6 @@ func (handler *BillHandler) ChargeCard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var opts []grpc.CallOption
-	//key := os.Getenv("FL_SECRETKEY_LIVE")
-	key := os.Getenv("FL_SECRETKEY_TEST")
 
 	// Find the card referenced in the bill
 	card, err := handler.GrpcPlug.FindCard(r.Context(), &models.Card{Id: u.CardId}, opts...)
@@ -428,7 +294,7 @@ func (handler *BillHandler) ChargeCard(w http.ResponseWriter, r *http.Request) {
 		"narration": "%s",
 		"tx_ref": "%s"
 	}`, card.Token, totalAmount, card.Email, bill.Title, access.UserId, fmt.Sprintf("%s_%v", helpers.RandAlpha(5) , time.Now().Unix()))
-	vTran, err := restclient.ChargeCard(key,payload)
+	vTran, err := restclient.ChargeCard(payload)
 	if err != nil {
 		err = errors.New(err.Error())
 		respondWithError(w, http.StatusBadGateway, "Unable to charge card - " + err.Error())
@@ -451,21 +317,15 @@ func (handler *BillHandler) ChargeCard(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error() + " _Error creating transactiom")
 	}
 
-	var cartEvent []events.Event 
+	cartEvent := []events.Event{}
 	for _, v := range items {
-
+		v.Transaction = tRes.Id
+		cartEvent = append(cartEvent, v.CreateMsg())
 	}
 
-		msg := events.ServiceAirTimeEvent{
-			ID:    hex.EncodeToString(uuid.NewV4().Bytes()),
-			Phone: "08069475323",
-			Amount: 10,
-			Transaction: tRes.Id,
-			OrderURL: "http://localhost:7777/v1/bills/createorder",
-			
-		}
-	
-		handler.EventEmitter.Emit(&msg, "NaeraExchange")
+	for _, v := range cartEvent {
+		handler.EventEmitter.Emit(v, "NaeraExchange")	
+	}	
 	
 	// pass idem array to background
 

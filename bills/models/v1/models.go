@@ -1,5 +1,11 @@
 package models
+import(
+	"shared/amqp/events"
+	"encoding/hex"
+	"github.com/twinj/uuid"
+	"os"
 
+)
 type DisplayCategory struct {
 	Title     string `json:"title"`
 	CreatedOn string `json:"created_on"`
@@ -20,4 +26,25 @@ type InCartItem struct {
 	Beneficiary string  `json:"beneficiary"`
 	Provider    string  `json:"provider"`
 	Amount      float64 `json:"amount"`
+	Category      string `json:"category"`
+	Transaction      string `json:"transaction"`
+}
+
+func (i *InCartItem)CreateMsg() events.Event {
+
+	switch i.Category {
+	case "airtime":
+		msg := events.ServiceAirTimeEvent{
+			ID:    hex.EncodeToString(uuid.NewV4().Bytes()),
+			Phone: i.Beneficiary,
+			Amount: i.Amount,
+			Transaction: i.Transaction,
+			OrderURL: os.Getenv("CreateOrderUrl"),// "http://localhost:7777/v1/bills/createorder",
+		}
+		return &msg
+	case "cabletv":
+		return &events.ServiceAirTimeEvent{}
+	default:
+		return &events.ServiceAirTimeEvent{}
+	}
 }
