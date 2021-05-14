@@ -331,6 +331,102 @@ func (handler *BillHandler) ChargeCard(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (handler *BillHandler) PayWithFL(w http.ResponseWriter, r *http.Request) {
+	// Avoid cors error
+	helpers.SetupCors(&w, r)
+	if r.Method == "OPTIONS" {
+		respondWithJSON(w, http.StatusOK, nil)
+		return
+	}
+
+	// Get Authorization token
+	access, err := helpers.ExtractTokenMetadata(r)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	// Get Request body and parse to bill struct
+	var u models.Bill
+	if r.Body == nil {
+		http.Error(w, "Please send a request body", 400)
+		return
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&u)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+	var opts []grpc.CallOption
+
+	// Find the card referenced in the bill
+	verified, err := restclient.VerifyFwTransaction(u.CardId)
+		if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Could not find complete transaction - Invalid transaction")
+		return
+	}
+	// Creade the bill
+	bill := &models.Bill{
+		Biller:          access.UserId,
+		Cart:            u.Cart,
+		Reoccurring:     u.Reoccurring,
+		NextPaymentDate: u.NextPaymentDate,
+		Active:          u.Active,
+		PayingWith:      u.PayingWith,
+		Title:           u.Title,
+		Id:              uuid.NewV4().String(),
+		By:              access.UserId,
+		UpdatedAt:       time.Now().Unix(),
+		CreatedAt:       time.Now().Unix(),
+		LastPaymentDate: time.Now().Unix(),
+		CardId:         u.CardId,
+	}
+	_, err = handler.GrpcPlug.CreateBill(r.Context(), bill, opts...)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Could not find complete transaction - Unable to create bill record")
+		return
+	}
+
+	// Get list of items to be paid for
+	var items []models.InCartItem
+	if err := json.Unmarshal([]byte(u.Cart), &items); err != nil {
+		panic(err)
+	}
+	// Get total sum to charge card
+	totalAmount := 0.0
+	for _, v := range items {
+		totalAmount += v.Amount
+	}
+
+	transaction := models.Transaction{
+		Id:        uuid.NewV4().String(),
+		Biller:    access.UserId,
+		Title:     bill.Title,
+		Amount:    float32(verified.Data.Amount),
+		Bill:      bill.Id,
+		CreatedAt: time.Now().Unix(),
+		FlRef:     verified.Data.TxRef,
+		TransRef:  verified.Data.TxRef,
+	}
+	tRes, err := handler.GrpcPlug.CreateTransaction(r.Context(), &transaction, opts...)
+	if err != nil {
+		err = errors.New(err.Error())
+		respondWithError(w, http.StatusInternalServerError, err.Error()+" _Error creating transactiom")
+	}
+
+	cartEvent := []events.Event{}
+	for _, v := range items {
+		v.Transaction = tRes.Id
+		cartEvent = append(cartEvent, v.CreateMsg())
+	}
+
+	for _, v := range cartEvent {
+		handler.EventEmitter.Emit(v, "NaeraExchange")
+	}
+	respondWithJSON(w, http.StatusCreated, tRes.Id)
+}
+
 func (handler *BillHandler) BillTransactions(w http.ResponseWriter, r *http.Request) {
 	// Avoid corde errror
 	helpers.SetupCors(&w, r)

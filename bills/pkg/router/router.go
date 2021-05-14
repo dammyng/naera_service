@@ -8,10 +8,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-
-
-
-func InitServiceRouter(grpcPlug models.NaeraBillingServiceClient,emitter sender.EventEmitter) *mux.Router {
+func InitServiceRouter(grpcPlug models.NaeraBillingServiceClient, emitter sender.EventEmitter) *mux.Router {
 	var r = mux.NewRouter()
 	handler := rest.NewBillHandler(grpcPlug, emitter)
 
@@ -33,13 +30,14 @@ func InitServiceRouter(grpcPlug models.NaeraBillingServiceClient,emitter sender.
 	v1.Path("/bills/vetnewcart").HandlerFunc(handler.VerifyNewCart).Methods("GET", "OPTIONS")
 	v1.Path("/bills/{bill_id}/transactions").HandlerFunc(handler.BillTransactions).Methods("GET", "OPTIONS")
 	v1.Path("/bills/{bill_id}/transaction/{trans_id}").HandlerFunc(handler.BillTransactionOrders).Methods("GET", "OPTIONS")
-//	v1.Path("/bills/paybill/{bill_id}").HandlerFunc(handler.PayForBill).Methods("POST", "OPTIONS")
+	//	v1.Path("/bills/paybill/{bill_id}").HandlerFunc(handler.PayForBill).Methods("POST", "OPTIONS")
 	v1.Path("/bills/chargecard").HandlerFunc(handler.ChargeCard).Methods("POST", "OPTIONS")
+	v1.Path("/bills/paywithfl").HandlerFunc(handler.PayWithFL).Methods("POST", "OPTIONS")
 	v1.Path("/bills/updatebill/{bill_id}").HandlerFunc(handler.UpdateBill).Methods("PUT", "OPTIONS")
 	v1.Path("/biller/transactions").HandlerFunc(handler.BillerTransactions).Methods("GET", "OPTIONS")
 	v1.Path("/transaction/{trans_id}").HandlerFunc(handler.BillTransactionOrders).Methods("GET", "OPTIONS")
 	v1.Path("/bills/createorder").HandlerFunc(handler.CreateOrder).Methods("POST", "OPTIONS")
 	v1.Path("/bills/biller/addcard/{trans_id}").HandlerFunc(handler.AddCard).Methods("POST", "OPTIONS")
 
-	return r	
+	return r
 }
