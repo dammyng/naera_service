@@ -25,5 +25,4 @@ type Card struct {
 	UpdatedAt   int64  `json:"updated_at,omitempty"`
 	DeletedAt   int64  `json:"deleted_at,omitempty"`
 	Expires     string `json:"expires,omitempty"`
-	CardId      string `json:"cardId,omitempty"`
 }

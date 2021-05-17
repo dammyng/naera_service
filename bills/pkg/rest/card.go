@@ -10,6 +10,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/twinj/uuid"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/status"
+	"gorm.io/gorm"
 )
 
 func (handler *BillHandler) AddCard(w http.ResponseWriter, r *http.Request) {
@@ -48,12 +50,17 @@ func (handler *BillHandler) AddCard(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt: time.Now().Unix(),
 	}
 
-	res, err := handler.GrpcPlug.CreateCard(r.Context(), &newCard, opts...)
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
-		return
+	_, err = handler.GrpcPlug.FindCard(r.Context(), &models.Card{Provider: newCard.Provider, FirstDigits: newCard.FirstDigits, LastDigits: newCard.LastDigits, AddedBy: newCard.AddedBy})
+	if status.Convert(err).Message() == gorm.ErrRecordNotFound.Error(){
+		res, err := handler.GrpcPlug.CreateCard(r.Context(), &newCard, opts...)
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		respondWithJSON(w, http.StatusOK, res.Id)
+	}else{
+		respondWithJSON(w, http.StatusOK, "")
 	}
-	respondWithJSON(w, http.StatusOK, res.Id)
 }
 
 func (handler *BillHandler) BillerCards(w http.ResponseWriter, r *http.Request) {

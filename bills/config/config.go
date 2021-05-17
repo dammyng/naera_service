@@ -20,7 +20,7 @@ type AppConfig struct {
 
 func NewApConfig() AppConfig {
 
-	if os.Getenv("Environment") == "test" {
+	if os.Getenv("Environment") != "production" && os.Getenv("Environment") != "docker" {
 		loadEnv()
 	}
 

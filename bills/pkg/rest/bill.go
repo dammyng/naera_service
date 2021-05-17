@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"net/http"
 	"shared/amqp/events"
-	"strings"
 	"sync"
 	"time"
 
@@ -173,38 +172,39 @@ func (handler *BillHandler) VerifyNewCart(w http.ResponseWriter, r *http.Request
 	BillerCode := ""
 	for _, v := range items {
 		go func(v models.InCartItem) {
-			if strings.Contains(v.Provider, "Airtime") {
+			if v.Category == "airtime" {
 				ItemCode = "AT099"
 				BillerCode = "BIL099"
-
-				order := m.OrderRequest{
-					ItemCode:   ItemCode,
-					Customer:   v.Beneficiary,
-					BillerCode: BillerCode,
-				}
-				res, err := services.ValidateOrderItem(order)
-				if err != nil {
-					_item := m.DisplayVerifyBill{
-						Id:          v.ID,
-						Name:        v.Provider,
-						Amount:      0,
-						Title:       fmt.Sprintf("%s for %s", v.Provider, v.Beneficiary),
-						Beneficiary: v.Beneficiary,
-						Status:      err.Error(),
-					}
-					verifiedItems = append(verifiedItems, _item)
-				} else {
-					_item := m.DisplayVerifyBill{
-						Id:          v.ID,
-						Name:        "Airtime",
-						Amount:      v.Amount,
-						Title:       fmt.Sprintf("%s for %s", "Airtime", res.Data.Customer),
-						Beneficiary: res.Data.Customer,
-						Status:      res.Data.ResponseMessage,
-					}
-					verifiedItems = append(verifiedItems, _item)
-				}
 			}
+			order := m.OrderRequest{
+				ItemCode:   ItemCode,
+				Customer:   v.Beneficiary,
+				BillerCode: BillerCode,
+			}
+			res, err := services.ValidateOrderItem(order)
+
+			if err != nil {
+				_item := m.DisplayVerifyBill{
+					Id:          v.ID,
+					Name:        v.Provider,
+					Amount:      0,
+					Title:       fmt.Sprintf("%s for %s", v.Provider, v.Beneficiary),
+					Beneficiary: v.Beneficiary,
+					Status:      err.Error(),
+				}
+				verifiedItems = append(verifiedItems, _item)
+			} else {
+				_item := m.DisplayVerifyBill{
+					Id:          v.ID,
+					Name:        "Airtime",
+					Amount:      v.Amount,
+					Title:       fmt.Sprintf("%s for %s", "Airtime", res.Data.Customer),
+					Beneficiary: res.Data.Customer,
+					Status:      res.Data.ResponseMessage,
+				}
+				verifiedItems = append(verifiedItems, _item)
+			}
+
 			wg.Done()
 		}(v)
 	}
@@ -362,7 +362,7 @@ func (handler *BillHandler) PayWithFL(w http.ResponseWriter, r *http.Request) {
 
 	// Find the card referenced in the bill
 	verified, err := restclient.VerifyFwTransaction(u.CardId)
-		if err != nil {
+	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Could not find complete transaction - Invalid transaction")
 		return
 	}
@@ -380,7 +380,7 @@ func (handler *BillHandler) PayWithFL(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:       time.Now().Unix(),
 		CreatedAt:       time.Now().Unix(),
 		LastPaymentDate: time.Now().Unix(),
-		CardId:         u.CardId,
+		CardId:          u.CardId,
 	}
 	_, err = handler.GrpcPlug.CreateBill(r.Context(), bill, opts...)
 	if err != nil {
