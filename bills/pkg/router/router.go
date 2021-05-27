@@ -16,6 +16,7 @@ func InitServiceRouter(grpcPlug models.NaeraBillingServiceClient, emitter sender
 	v1 := r.PathPrefix("/v1").Subrouter()
 
 	v1.Path("/livebills").HandlerFunc(handler.LiveCategories).Methods("GET", "OPTIONS")
+	v1.Path("/flbills").HandlerFunc(handler.FLBills).Methods("GET", "OPTIONS")
 	v1.Path("/bills/airtime").HandlerFunc(handler.AllAirtimes).Methods("GET", "OPTIONS")
 	v1.Path("/bills/cable").HandlerFunc(handler.AllCables).Methods("GET", "OPTIONS")
 	v1.Path("/bills/databundle").HandlerFunc(handler.AllDataBundles).Methods("GET", "OPTIONS")
@@ -32,6 +33,7 @@ func InitServiceRouter(grpcPlug models.NaeraBillingServiceClient, emitter sender
 	v1.Path("/bills/{bill_id}/transaction/{trans_id}").HandlerFunc(handler.BillTransactionOrders).Methods("GET", "OPTIONS")
 	//	v1.Path("/bills/paybill/{bill_id}").HandlerFunc(handler.PayForBill).Methods("POST", "OPTIONS")
 	v1.Path("/bills/chargecard").HandlerFunc(handler.ChargeCard).Methods("POST", "OPTIONS")
+	v1.Path("/bills/chargeloan").HandlerFunc(handler.ChargeLoan).Methods("POST", "OPTIONS")
 	v1.Path("/bills/paywithfl").HandlerFunc(handler.PayWithFL).Methods("POST", "OPTIONS")
 	v1.Path("/bills/updatebill/{bill_id}").HandlerFunc(handler.UpdateBill).Methods("PUT", "OPTIONS")
 	v1.Path("/biller/transactions").HandlerFunc(handler.BillerTransactions).Methods("GET", "OPTIONS")

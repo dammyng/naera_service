@@ -6,7 +6,7 @@ build:
 	go build -o cmd/bin/naera_bills cmd/main.go
 
 run:
-	go run cmd/main.go
+	cd cmd && go run main.go
 
 test:
 	go test ./... -v

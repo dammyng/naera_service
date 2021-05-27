@@ -2,6 +2,7 @@ package rest
 
 import (
 	"bills/pkg/helpers"
+	"bills/pkg/services"
 	"net/http"
 
 	"google.golang.org/grpc"
@@ -24,4 +25,20 @@ func (handler *BillHandler) LiveCategories(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	respondWithJSON(w, http.StatusOK, res.Categories)
+}
+
+
+func (handler *BillHandler) FLBills(w http.ResponseWriter, r *http.Request) {
+	helpers.SetupCors(&w, r)
+
+	res, err := services.GetAllFLBills()
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	if len(res) ==0 {
+		respondWithJSON(w, http.StatusOK, make([]string, 0))
+		return
+	}
+	respondWithJSON(w, http.StatusOK, res)
 }

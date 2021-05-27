@@ -43,6 +43,18 @@ func (sql *SqlLayer) FindUser(arg *models.Account) (*models.Account, error) {
 	return &dA, err
 }
 
+func (sql *SqlLayer) FindUsers(arg string) ([]*models.Account, error) {
+	session := sql.Session
+	var dA []*models.Account
+	log.Println(arg)
+	err := session.Where("user_name LIKE ?", arg + "%").Find(&dA).Error
+	if err != nil {
+		return nil, err
+	}
+	log.Println(dA)
+	return dA, err
+}
+
 func (sql *SqlLayer) UpdateUser(old *models.Account, new *models.Account) error {
 	session := sql.Session
 	return session.Model(&old).Updates(new).Error

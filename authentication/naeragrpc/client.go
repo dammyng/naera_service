@@ -45,6 +45,16 @@ func (c *naeraServiceClient) FindAccount(ctx context.Context, in *models.Account
 	return result, err
 }
 
+func (c *naeraServiceClient) FindAccounts(ctx context.Context, in *models.FindAccountsRequest, opts ...grpc.CallOption) (*models.AccountsResponse, error) {
+	ss := models.NewNaeraServiceClient(c.Conn)
+	result, err := ss.FindAccounts(ctx, in, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return result, err
+}
+
+
 func (c *naeraServiceClient) UpdateAccount(ctx context.Context, in *models.UpdateAccountRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
 	err := c.Conn.Invoke(ctx, "/models.NaeraService/UpdateAccount", in, out, opts...)

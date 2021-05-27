@@ -31,6 +31,7 @@ func InitServiceRouter(redis myredis.MyRedis, emitter sender.EventEmitter, grpcP
 	r.HandleFunc("/v1/sendverificationsms/{phone}", handler.SendVerificationSMS).Methods("POST", "OPTIONS")
 
 	v1.Use(authBearer)
+	v1.HandleFunc("/find/{query}", handler.FindProfiles).Methods("GET", "OPTIONS")
 	v1.HandleFunc("/profile", handler.GetProfile).Methods("GET", "OPTIONS")
 	v1.HandleFunc("/profile/{id}", handler.GetProfile).Methods("PUT", "OPTIONS")
 
