@@ -62,7 +62,7 @@ func (handler *AuthHandler) AccountLogin(w http.ResponseWriter, r *http.Request)
 			RefreshToken: u.Id,
 		}
 		respondWithJSON(w, http.StatusOK, res)
-		return
+	return
 	}
 
 	ts, err := helpers.CreateToken(u.Id)
