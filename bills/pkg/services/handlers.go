@@ -6,22 +6,25 @@ import (
 	"encoding/json"
 )
 
-func FWBillsHandler(path string) ([]models.DisplayBill, error) {
-	var result []models.DisplayBill
+func FWBillsHandler(path string) ([]models.FwBill, error) {
+	var result []models.FwBill
 	req, err := helpers.BuildFlutterWaveRequest("GET", path, nil)
 	if err != nil {
 		return nil, err
 	}
 	res, err := helpers.NetClient.Do(req)
-	var fwCart models.FwBillCategory
-	err = json.NewDecoder(res.Body).Decode(&fwCart)
 	if err != nil {
 		return nil, err
 
 	}
+	var fwCart models.FwBillCategory
+	err = json.NewDecoder(res.Body).Decode(&fwCart)
+	if err != nil {
+		return nil, err
+	}
 	for _, v := range fwCart.Data {
 		if v.Country == "NG"{
-			result = append(result, v.ToDefaults("fw")) 
+			result = append(result, v) 
 		}
 	}
 	return result, err

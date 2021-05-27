@@ -9,6 +9,11 @@ import (
 
 	"net/http"
 
+
+	//"shared/amqp/events"
+
+	"github.com/gorilla/mux"
+
 	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
@@ -44,6 +49,39 @@ func (handler *AuthHandler) GetProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondWithJSON(w, http.StatusOK, user)
+}
+
+
+func (handler *AuthHandler) FindProfiles(w http.ResponseWriter, r *http.Request) {
+	helpers.SetupCors(&w, r)
+	if r.Method == "OPTIONS"{
+		respondWithJSON(w, http.StatusOK, nil)
+		return
+	}
+	
+	_, err := helpers.ExtractTokenMetadata(r)
+    if err != nil {
+        respondWithError(w, http.StatusUnauthorized, "unauthorized")
+        return
+    }
+	params := mux.Vars(r)
+	query := params["query"]
+	var opts []grpc.CallOption
+
+  
+
+	users, err := handler.GrpcPlug.FindAccounts(r.Context(), &models.FindAccountsRequest{Query: query}, opts...)
+	if err != nil {
+		
+		respondWithError(w, http.StatusInternalServerError, grpc.ErrorDesc(err))
+		return
+	}
+
+	if len(users.Accounts) ==0 {
+		respondWithJSON(w, http.StatusOK, make([]string, 0))
+		return
+	}
+	respondWithJSON(w, http.StatusOK, users.Accounts)
 }
 
 func (handler *AuthHandler) GetSetUpProfile(w http.ResponseWriter, r *http.Request) {

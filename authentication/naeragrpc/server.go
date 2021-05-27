@@ -50,6 +50,16 @@ func (n *NaeraRpcServer) FindAccount(ctx context.Context, arg *models.Account) (
 	return result, nil
 }
 
+func (n *NaeraRpcServer) FindAccounts(ctx context.Context, arg *models.FindAccountsRequest) (*models.AccountsResponse, error) {
+	result, err := n.DB.FindUsers(arg.Query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &models.AccountsResponse{Accounts: result}, nil
+}
+
 func (n *NaeraRpcServer) UpdateAccount(ctx context.Context, arg *models.UpdateAccountRequest) (*empty.Empty , error) {
 	err := n.DB.UpdateUser(arg.Old, arg.New)
 	return &empty.Empty{},err

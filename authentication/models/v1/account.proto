@@ -3,6 +3,7 @@ syntax = "proto3";
 package models;
 import "google/protobuf/empty.proto";
 
+option go_package = "models/v1/;models"; 
 
 message Account{
     string id = 1;
@@ -38,6 +39,14 @@ message Account{
 
    }
 
+   message FindAccountsRequest{
+      string query = 1;
+      }
+
+      message AccountsResponse{
+         repeated Account accounts = 1;
+         }
+
   message UserCreatedResponse{
   string id = 1;
   }
@@ -54,5 +63,6 @@ message Account{
    service NaeraService {
     rpc RegisterAccount(Account) returns (UserCreatedResponse);
     rpc FindAccount(Account) returns (Account);
+    rpc FindAccounts(FindAccountsRequest) returns (AccountsResponse);
     rpc UpdateAccount(UpdateAccountRequest) returns (google.protobuf.Empty);
   }
