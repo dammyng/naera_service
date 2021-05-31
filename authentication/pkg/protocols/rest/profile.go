@@ -8,13 +8,13 @@ import (
 	"log"
 	"time"
 
-	//"encoding/hex"
-
 	"net/http"
+
 
 	//"shared/amqp/events"
 
 	"github.com/gorilla/mux"
+
 	"github.com/jinzhu/copier"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc"
