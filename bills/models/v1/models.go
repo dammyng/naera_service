@@ -26,13 +26,14 @@ type InCartItem struct {
 	Beneficiary string  `json:"beneficiary"`
 	Provider    string  `json:"provider"`
 	Amount      float64 `json:"amount"`
-	Category      string `json:"category"`
 	Transaction      string `json:"transaction"`
+	ItemCode string `json:"itemCode"`
+	BillerCode string `json:"billerCode"`
 }
 
 func (i *InCartItem)CreateMsg() events.Event {
 
-	switch i.Category {
+	switch i.BillerCode {
 	case "airtime":
 		msg := events.ServiceAirTimeEvent{
 			ID:    hex.EncodeToString(uuid.NewV4().Bytes()),

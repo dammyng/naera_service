@@ -58,3 +58,8 @@ type ServicedTransaction struct {
 		FlwRef      string  `json:"flw_ref"`
 	} `json:"data"`
 }
+
+type FundWalletPayload struct {
+	TransactionID string  `json:"transactionID"`
+	WalletID string  `json:"walletID"`
+}

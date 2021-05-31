@@ -54,8 +54,11 @@ message Bill{
     string title =10;
     string cardId =15;
     bool reoccurring =3;
+    string reoccurringType =16;
+    string reoccurringDay =17;
     int64 nextPaymentDate =4;
     int64 LastPaymentDate =14;
+    string note =13;
     bool active =5;
     enum PayingWith {
         LOAN = 0;
@@ -89,12 +92,16 @@ message BillCreatedResponse{
         string id = 1;
         string biller = 2;
         string title = 7;
+        string class = 10;
+        string walletID = 9;
         string billingMethod = 8;
         float amount = 5;
         string transRef = 6;
         string bill = 3;
         string flRef = 11;
+        string channel = 12;
         int64 created_at = 4;
+
     }
     message TransactionCreatedResponse{
         string id = 1;

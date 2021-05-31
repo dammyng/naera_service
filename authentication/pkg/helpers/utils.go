@@ -29,6 +29,9 @@ func AccountReady(a *models.Account)  bool {
 	if a.EmailVerifiedAt < 1000 {
 		return false
 	}
+	if len(a.UserName) < 3 {
+		return false
+	}
 	
 	return true
 }

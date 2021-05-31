@@ -4,6 +4,7 @@ import (
 	"bills/models"
 	"bills/pkg/helpers"
 	"encoding/json"
+	"errors"
 )
 
 func FWBillsHandler(path string) ([]models.FwBill, error) {
@@ -45,6 +46,9 @@ func FWVerifyBillsHandler(path string) (*models.VerifiedBill, error) {
 	err = json.NewDecoder(res.Body).Decode(&result)
 	if err != nil {
 		return nil, err
+	}
+	if result.Status != "success"{
+		return nil, errors.New(result.Message)
 	}
 	return &result, err
 }

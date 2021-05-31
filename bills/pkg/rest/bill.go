@@ -9,8 +9,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"shared/amqp/events"
+	"strings"
 	"sync"
 	"time"
 
@@ -89,6 +91,39 @@ func (handler *BillHandler) CreateBill(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusCreated, tRes.Id)
 }
 
+func (handler *BillHandler) GetBill(w http.ResponseWriter, r *http.Request) {
+	// Avoid corde errror
+	helpers.SetupCors(&w, r)
+	if r.Method == "OPTIONS" {
+		respondWithJSON(w, http.StatusOK, nil)
+		return
+	}
+
+	// Get Authorization token
+	_, err := helpers.ExtractTokenMetadata(r)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+	params := mux.Vars(r)
+	billID := params["bill_id"]
+
+	var opts []grpc.CallOption
+
+	bill, err := handler.GrpcPlug.FindBill(r.Context(), &models.Bill{Id: billID}, opts...)
+	if err != nil {
+		if grpc.ErrorDesc(err) == gorm.ErrRecordNotFound.Error() {
+			respondWithError(w, http.StatusNotFound, BillNotFound)
+			return
+		}
+		respondWithError(w, http.StatusBadRequest, err.Error()+"---"+InternalServerError)
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, bill)
+}
+
+
 func (handler *BillHandler) UpdateBill(w http.ResponseWriter, r *http.Request) {
 	helpers.SetupCors(&w, r)
 	if r.Method == "OPTIONS" {
@@ -140,7 +175,92 @@ func (handler *BillHandler) UpdateBill(w http.ResponseWriter, r *http.Request) {
 }
 
 func (handler *BillHandler) DeleteBill(w http.ResponseWriter, r *http.Request) {
+	helpers.SetupCors(&w, r)
+	if r.Method == "OPTIONS" {
+		respondWithJSON(w, http.StatusOK, nil)
+		return
+	}
+	params := mux.Vars(r)
+	billID := params["bill_id"]
+	var u models.Bill
+	if r.Body == nil {
+		http.Error(w, "Please send a request body", 400)
+		return
+	}
+	err := json.NewDecoder(r.Body).Decode(&u)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
 
+	var opts []grpc.CallOption
+	_, err = helpers.ExtractTokenMetadata(r)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+	bill, err := handler.GrpcPlug.FindBill(r.Context(), &models.Bill{Id: billID}, opts...)
+
+	if err != nil {
+		if grpc.ErrorDesc(err) == gorm.ErrRecordNotFound.Error() {
+			respondWithError(w, http.StatusNotFound, BillNotFound)
+			return
+		}
+		respondWithError(w, http.StatusBadRequest, err.Error()+"---"+InternalServerError)
+		return
+	}
+
+	_, err = handler.GrpcPlug.UpdateBill(r.Context(), &models.UpdateBillRequest{Old: bill, New: &models.Bill{DeletedAt: time.Now().Unix()}}, opts...)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, InternalServerError)
+		return
+	}
+	respondWithJSON(w, http.StatusCreated, "")
+}
+
+
+func (handler *BillHandler) DisableBill(w http.ResponseWriter, r *http.Request) {
+	helpers.SetupCors(&w, r)
+	if r.Method == "OPTIONS" {
+		respondWithJSON(w, http.StatusOK, nil)
+		return
+	}
+	params := mux.Vars(r)
+	billID := params["bill_id"]
+	var u models.Bill
+	if r.Body == nil {
+		http.Error(w, "Please send a request body", 400)
+		return
+	}
+	err := json.NewDecoder(r.Body).Decode(&u)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	var opts []grpc.CallOption
+	_, err = helpers.ExtractTokenMetadata(r)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+	bill, err := handler.GrpcPlug.FindBill(r.Context(), &models.Bill{Id: billID}, opts...)
+
+	if err != nil {
+		if grpc.ErrorDesc(err) == gorm.ErrRecordNotFound.Error() {
+			respondWithError(w, http.StatusNotFound, BillNotFound)
+			return
+		}
+		respondWithError(w, http.StatusBadRequest, err.Error()+"---"+InternalServerError)
+		return
+	}
+
+	_, err = handler.GrpcPlug.UpdateBill(r.Context(), &models.UpdateBillRequest{Old: bill, New: &models.Bill{Active: false}}, opts...)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, InternalServerError)
+		return
+	}
+	respondWithJSON(w, http.StatusCreated, "")
 }
 
 func (handler *BillHandler) VerifyNewCart(w http.ResponseWriter, r *http.Request) {
@@ -168,18 +288,13 @@ func (handler *BillHandler) VerifyNewCart(w http.ResponseWriter, r *http.Request
 	}
 	var wg sync.WaitGroup
 	wg.Add(len(items))
-	ItemCode := ""
-	BillerCode := ""
+
 	for _, v := range items {
 		go func(v models.InCartItem) {
-			if v.Category == "airtime" {
-				ItemCode = "AT099"
-				BillerCode = "BIL099"
-			}
 			order := m.OrderRequest{
-				ItemCode:   ItemCode,
+				ItemCode:   v.ItemCode,
 				Customer:   v.Beneficiary,
-				BillerCode: BillerCode,
+				BillerCode: v.BillerCode,
 			}
 			res, err := services.ValidateOrderItem(order)
 
@@ -192,6 +307,7 @@ func (handler *BillHandler) VerifyNewCart(w http.ResponseWriter, r *http.Request
 					Beneficiary: v.Beneficiary,
 					Status:      err.Error(),
 				}
+				log.Println(_item)
 				verifiedItems = append(verifiedItems, _item)
 			} else {
 				_item := m.DisplayVerifyBill{
@@ -202,6 +318,7 @@ func (handler *BillHandler) VerifyNewCart(w http.ResponseWriter, r *http.Request
 					Beneficiary: res.Data.Customer,
 					Status:      res.Data.ResponseMessage,
 				}
+
 				verifiedItems = append(verifiedItems, _item)
 			}
 
@@ -210,6 +327,121 @@ func (handler *BillHandler) VerifyNewCart(w http.ResponseWriter, r *http.Request
 	}
 	wg.Wait()
 	respondWithJSON(w, http.StatusOK, verifiedItems)
+}
+
+func (handler *BillHandler) ChargeWallet(w http.ResponseWriter, r *http.Request) {
+	// Avoid corde errror
+	helpers.SetupCors(&w, r)
+	if r.Method == "OPTIONS" {
+		respondWithJSON(w, http.StatusOK, nil)
+		return
+	}
+
+	// Get Authorization token
+	access, err := helpers.ExtractTokenMetadata(r)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	// Get Request body and parse to bill struct
+	var u models.Bill
+	if r.Body == nil {
+		http.Error(w, "Please send a request body", 400)
+		return
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&u)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+	var opts []grpc.CallOption
+
+	transactions, err := handler.GrpcPlug.BillTransactions(r.Context(), &models.GetBillTransactionsRequest{BillID: u.CardId})
+	
+	balance := 0.0
+	for _, transaction := range transactions.Transactions {
+		if transaction.Class =="credit"{
+			balance += float64(transaction.Amount)
+		}else if transaction.Class == "debit"{
+			balance -= float64(transaction.Amount)
+		}
+	}
+
+	// Get list of items to be paid for
+	var items []models.InCartItem
+	if err := json.Unmarshal([]byte(u.Cart), &items); err != nil {
+		panic(err)
+	}
+	// Get total sum to charge card
+	totalAmount := 0.0
+	for _, v := range items {
+		totalAmount += v.Amount
+	}
+
+	if balance < totalAmount{
+		respondWithError(w, http.StatusBadRequest, "Insufficient Funds")
+		return
+	}
+	
+
+	// Creade the bill
+	bill := &models.Bill{
+		Biller:          access.UserId,
+		Cart:            u.Cart,
+		Reoccurring:     u.Reoccurring,
+		NextPaymentDate: u.NextPaymentDate,
+		Active:          u.Active,
+		PayingWith:      u.PayingWith,
+		Title:           u.Title,
+		Id:              uuid.NewV4().String(),
+		By:              access.UserId,
+		UpdatedAt:       time.Now().Unix(),
+		CreatedAt:       time.Now().Unix(),
+		LastPaymentDate: time.Now().Unix(),
+		CardId:          u.CardId,
+	}
+	if !strings.Contains(strings.ToLower(bill.Title), "order"){
+		bill.Title = "Order " + bill.Title
+	}
+	_, err = handler.GrpcPlug.CreateBill(r.Context(), bill, opts...)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Could not find complete transaction - Unable to create bill record")
+		return
+	}
+
+
+	transaction := models.Transaction{
+		Id:        uuid.NewV4().String(),
+		Biller:    access.UserId,
+		Title:     bill.Title,
+		Amount:    float32(totalAmount),
+		Bill:      bill.Id,
+		Class: "debit",
+		CreatedAt: time.Now().Unix(),
+		TransRef:  "wal" + helpers.RandAlpha(5),
+	}
+	tRes, err := handler.GrpcPlug.CreateTransaction(r.Context(), &transaction, opts...)
+	if err != nil {
+		err = errors.New(err.Error())
+		respondWithError(w, http.StatusInternalServerError, err.Error()+" _Error creating transactiom")
+	}
+
+	cartEvent := []events.Event{}
+	for _, v := range items {
+		v.Transaction = tRes.Id
+		cartEvent = append(cartEvent, v.CreateMsg())
+	}
+
+	for _, v := range cartEvent {
+		handler.EventEmitter.Emit(v, "NaeraExchange")
+	}
+
+	// pass idem array to background
+
+	respondWithJSON(w, http.StatusCreated, tRes.Id)
+
 }
 
 func (handler *BillHandler) ChargeCard(w http.ResponseWriter, r *http.Request) {

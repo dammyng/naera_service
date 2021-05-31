@@ -36,6 +36,7 @@ message Account{
     string document = 27;
     string utilityBill = 28;
     string nin = 29;
+    string walletID = 33;
 
    }
 

@@ -39,7 +39,7 @@ func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.R
 	_, err = valid.ValidateStruct(reg)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
-		return	
+		return
 	}
 	var opts []grpc.CallOption
 
@@ -56,7 +56,7 @@ func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.R
 		respondWithError(w, http.StatusBadRequest, err.Error())
 	}
 
-	res, err := handler.GrpcPlug.RegisterAccount(r.Context(), &models.Account{Id: id.String(), Email: reg.Email, FirstName: reg.FirstName, Surname: reg.LastName, PhoneNumber: reg.Phone, Password: hashedPass, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix(), IsReady: false}, opts...)
+	res, err := handler.GrpcPlug.RegisterAccount(r.Context(), &models.Account{Id: id.String(), Email: reg.Email, FirstName: reg.FirstName, Surname: reg.LastName, PhoneNumber: reg.Phone, Password: hashedPass, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix(), IsReady: false, WalletID: helpers.RandInt(10)}, opts...)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, grpc.ErrorDesc(err))
 		return
@@ -78,9 +78,8 @@ func (handler *AuthHandler) AccountRegistration(w http.ResponseWriter, r *http.R
 			Email: reg.Email,
 			Token: token,
 		}
-	
-		handler.EventEmitter.Emit(&msg, "NaeraExchange")
-		}
 
-	
+		handler.EventEmitter.Emit(&msg, "NaeraExchange")
+	}
+
 }

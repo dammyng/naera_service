@@ -8,6 +8,9 @@ type Transaction struct {
 	Title         string  `json:"title,omitempty"`
 	BillingMethod string  `json:"billingMethod,omitempty"`
 	Amount        float32 `json:"amount,omitempty"`
+	WalletId             string `json:"walletId"`
+	Class             string `json:"class"`
+	Channel             string `json:"channel"`
 	TransRef      string  `json:"transRef,omitempty"`
 	CreatedAt     int64   `json:"created_at,omitempty"`
 }
