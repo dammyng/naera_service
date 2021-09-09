@@ -64,5 +64,3 @@ jobs:
       
     - name: Upload auth build
       run: scp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
-
-
