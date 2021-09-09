@@ -2,36 +2,25 @@ name: Go
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ naerar ]
 
 jobs:
 
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./authentication
+
     steps:
     - uses: actions/checkout@v2
 
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.15
+        go-version: 1.16
 
-    - name: Test
-      run: make test
 
-    - name: Build Notifiers
-      working-directory: ./notifier
-      run: make build
-    
     - name: Build Authentication
-      run: make build
-
-    - name: Build Bills
-      working-directory: ./bills
-      run: make build
+      working-directory: ./auth
+      run: make build_linux_prod
       
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
@@ -40,16 +29,6 @@ jobs:
         name: id_rsa 
         known_hosts: ${{ secrets.KNOWN_HOSTS }}
         if_key_exists: replace 
-
-    - name: Upload notifier build
-      working-directory: ./notifier
-      run: scp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
-
-    - name: Upload bills build
-      working-directory: ./bills
-      run: scp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
       
     - name: Upload auth build
       run: scp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
-
-
