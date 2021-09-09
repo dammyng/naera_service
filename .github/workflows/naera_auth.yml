@@ -41,6 +41,16 @@ jobs:
         known_hosts: ${{ secrets.KNOWN_HOSTS }}
         if_key_exists: replace 
 
+    - name: echo stuff
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }}
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+      run: |
+        echo $SSH_PRIVATE_KEY >> secrets.txt
+        echo $KNOWN_HOSTS >> secrets.txt
+        echo $SERVER_IP >> secret.txt
+
     - name: Upload notifier build
       working-directory: ./notifier
       run: scp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
