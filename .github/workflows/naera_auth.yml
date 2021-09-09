@@ -47,12 +47,9 @@ jobs:
         KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }}
         SERVER_IP: ${{ secrets.SERVER_IP }}
       run: |
-        echo $SSH_PRIVATE_KEY >> secrets.txt
-        echo $KNOWN_HOSTS >> secrets.txt
-        echo $SERVER_IP >> secret.txt
-        
-    - name: Run tmate
-      uses: mxschmitt/action-tmate@v2
+        echo $SSH_PRIVATE_KEY  
+        echo $KNOWN_HOSTS  
+        echo $SERVER_IP  
 
     - name: Upload notifier build
       working-directory: ./notifier
