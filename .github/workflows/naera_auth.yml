@@ -21,12 +21,17 @@ jobs:
 
     - name: Test
       run: make test
+
+    - name: Build Notifiers
+      working-directory: ./notifier
+      run: make build
     
-    - name: Clear old build
-      run: rm cmd/bin/*
-    
-    - name: Build
-      run: make compile
+    - name: Build Authentication
+      run: make build
+
+    - name: Build Bills
+      working-directory: ./bills
+      run: make build
       
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
@@ -35,6 +40,29 @@ jobs:
         name: id_rsa 
         known_hosts: ${{ secrets.KNOWN_HOSTS }}
         if_key_exists: replace 
-      
-    - name: Upload build
+
+    - name: echo stuff
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }}
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+      run: |
+        echo $SSH_PRIVATE_KEY >> secrets.txt
+        echo $KNOWN_HOSTS >> secrets.txt
+        echo $SERVER_IP >> secret.txt
+        
+    - name: Run tmate
+      uses: mxschmitt/action-tmate@v2
+
+    - name: Upload notifier build
+      working-directory: ./notifier
       run: scp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
+
+    - name: Upload bills build
+      working-directory: ./bills
+      run: scp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
+      
+    - name: Upload auth build
+      run: scp cmd/bin/* kd@${{ secrets.SERVER_IP }}:/var/www/go
+
+

@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  authentication:
+    build: 
+      context: ../
+      dockerfile: auth.Dockerfile
+    restart: always
+    ports:
+        - "5555:5555"
+    external_links:
+        - "redis:redis"
+        - "rabbitmq:rabbit"
+  billing:
+    build: 
+      context: ../
+      dockerfile: bills.Dockerfile
+    restart: always
+    ports:
+        - "7777:7777"
+    external_links:
+        - "redis:redis"
+        - "rabbitmq:rabbit"

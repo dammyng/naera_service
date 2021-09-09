@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package models;
+import "google/protobuf/empty.proto";
+
+option go_package = "models/v1/;models"; 
+
+message Account{
+    string id = 1;
+    string first_name = 2;
+    string surname = 3;
+    string user_name = 12;
+    string email = 4;
+    string phone_number =5;
+    int64 dob = 6;
+    int64 emailVerifiedAt = 9;
+    int64 phoneVerifiedAt = 10;
+    string ref_code = 7;
+    string photo  = 8;
+    string bvn = 11;
+    bytes password = 13;
+    bytes pin = 14;
+    int64 created_at = 16;
+    int64 updated_at = 15;
+    int64 deleted_at = 30;
+    bool isReady = 17;
+    int64 bvnVerifiedAt = 18;
+    int64 nubanVerifiedAt = 19;
+    int64 pinUpdatedAt = 31;
+    string bankCode = 20;
+    string nuban = 21;
+    string address = 22;
+    string state = 23;
+    string city = 24;
+    string idCard = 26;
+    string document = 27;
+    string utilityBill = 28;
+    string nin = 29;
+    string walletID = 33;
+
+   }
+
+   message FindAccountsRequest{
+      string query = 1;
+      }
+
+      message AccountsResponse{
+         repeated Account accounts = 1;
+         }
+
+  message UserCreatedResponse{
+  string id = 1;
+  }
+
+  message UpdateAccountRequest{
+     Account old =1;
+     Account  new=2;
+  }
+
+
+
+
+
+   service NaeraService {
+    rpc RegisterAccount(Account) returns (UserCreatedResponse);
+    rpc FindAccount(Account) returns (Account);
+    rpc FindAccounts(FindAccountsRequest) returns (AccountsResponse);
+    rpc UpdateAccount(UpdateAccountRequest) returns (google.protobuf.Empty);
+  }

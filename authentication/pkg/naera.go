@@ -1,15 +1,25 @@
 package pkg
 
 import (
+	"authentication/internals/db"
+	"authentication/models/migration"
+	models "authentication/models/v1"
+	"authentication/myredis"
+	"authentication/naeragrpc"
 	"authentication/pkg/router"
 	"context"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
+	"shared/amqp/sender"
+
 	"github.com/gorilla/mux"
+	"github.com/streadway/amqp"
+	"google.golang.org/grpc"
 )
 
 type Naera struct {
@@ -27,10 +37,28 @@ func NewNaera() *Naera {
 // 4. GRPC Client
 // 5. RabbitMQ Emitter
 // 6. Router
-func (n *Naera) Initialize() error {
+func (n *Naera) Initialize(redisHost, redisPass, amqpHost, grpcHost string) error {
+	//GRPC
+	grpcClient, err := naeragrpc.NewNaeraRPClient(grpcHost)
+	if err != nil {
+		return  err
+	}
+
+	//Redis
+	redis := myredis.NewMyRedis(redisHost, redisPass)
+
+	//AMQP
+	conn, err := amqp.Dial(amqpHost)
+	if err != nil {
+		return err
+	}
+	eventEmitter, err := sender.NewAmqpEventEmitter(conn, "NaeraExchange")
+	if err != nil {
+		return err
+	}
 
 	// Router
-	router := router.InitServiceRouter()
+	router := router.InitServiceRouter(redis, eventEmitter, grpcClient)
 	n.Router = router
 	return nil
 }
@@ -73,8 +101,20 @@ func (n *Naera) RunHTTPServer(ctx context.Context, port string) error {
 }
 
 // RunGRPCServer starts a GRPC server for the application
-func (n *Naera) RunGRPCServer(ctx context.Context, port string) error {
-	log.Println("Starting GRPC Server")
+func (n *Naera) RunGRPCServer(ctx context.Context, port , dsn string) error {
 
-	return nil
+	lis, err := net.Listen("tcp", port)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	log.Printf("Starting HTTP Server on port %v", lis.Addr().String())
+
+	db := db.NewSqlLayer(dsn)
+	db.Session.AutoMigrate(migration.Account{})
+
+	grpcServer := grpc.NewServer()
+	_naeragrpc := naeragrpc.NewNaeraRpcServer(db)
+	models.RegisterNaeraServiceServer(grpcServer, _naeragrpc)
+	err = grpcServer.Serve(lis)
+	return err
 }

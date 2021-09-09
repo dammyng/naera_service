@@ -11,22 +11,27 @@ import (
 
 type AppConfig struct {
 	DSN        string
-	AmpqBroker string
+	AmqpBroker string
 	JWTKey     string
-	ReddisHost string
+	RedisHost string
+	RedisPass string
+	GrpcHost string
 }
 
 func NewApConfig() AppConfig {
 
-	if os.Getenv("Environment") != "production" {
+	if os.Getenv("Environment") != "production" && os.Getenv("Environment") != "docker" {
 		loadEnv()
 	}
+	
 
 	var appConfig AppConfig
 	appConfig.DSN = getDSN(db.NewDBConfig())
-	appConfig.AmpqBroker = os.Getenv("AmpqHost")
+	appConfig.AmqpBroker = os.Getenv("AMQP_URL")
 	appConfig.JWTKey = os.Getenv("JWTKey")
-	appConfig.ReddisHost = os.Getenv("ReddisHost")
+	appConfig.RedisHost = os.Getenv("Redis_Host")
+	appConfig.RedisPass = os.Getenv("RedisPass")
+	appConfig.GrpcHost = os.Getenv("GRPC_PORT")
 	return appConfig
 }
 
